@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import "@alphardex/aqua.sp/dist/aqua.sp.min.css";
+import "@alphardex/aqua.css/dist/aqua.sp.min.css";
 import { defineComponent } from "vue";
 import MockServer from "@/mock/index";
 import VConsole from "vconsole";
