@@ -1,8 +1,8 @@
 <template>
-  <nav class="nav">
+  <nav class="fixed z-5 bottom-0 flex w-full">
     <router-link
       :to="item.to"
-      class="nav-item"
+      class="flex-1 p-3 text-center"
       v-for="(item, i) in navItems"
       :key="i"
       >{{ item.text }}</router-link
