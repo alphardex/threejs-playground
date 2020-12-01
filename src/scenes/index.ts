@@ -1,9 +1,10 @@
 import { Cube } from "@/types";
 import { calcAspect } from "@/utils/math";
 import {
+  AxesHelper,
   BoxBufferGeometry,
   Color,
-  GammaEncoding,
+  DirectionalLight,
   Mesh,
   MeshStandardMaterial,
   OrthographicCamera,
@@ -15,14 +16,16 @@ import {
 import Tweakpane from "tweakpane";
 
 class Starter {
+  debug: boolean;
   container: HTMLElement | null;
   scene!: Scene;
   camera!: PerspectiveCamera | OrthographicCamera;
   renderer!: WebGLRenderer;
   box!: Mesh;
-  pointLight!: PointLight;
+  light!: PointLight | DirectionalLight;
   pane!: Tweakpane;
-  constructor(sel: string) {
+  constructor(sel: string, debug = false) {
+    this.debug = debug;
     this.container = document.querySelector(sel);
   }
   init() {
@@ -37,6 +40,9 @@ class Starter {
   }
   createScene() {
     const scene = new Scene();
+    if (this.debug) {
+      scene.add(new AxesHelper());
+    }
     this.scene = scene;
   }
   createCamera() {
@@ -51,11 +57,9 @@ class Starter {
       antialias: true,
     });
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
-    renderer.physicallyCorrectLights = true;
-    renderer.outputEncoding = GammaEncoding;
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
-    this.renderer.setClearColor(0x121212);
+    this.renderer.setClearColor(0x000000, 0);
   }
   createBox(cube: Cube = { width: 1, height: 1, depth: 1, color: new Color("#ffffff") }) {
     const { width, height, depth, color } = cube;
@@ -66,10 +70,10 @@ class Starter {
     this.scene.add(box);
   }
   createLight() {
-    const pointLight = new PointLight(0xff0055, 500, 100, 2);
-    pointLight.position.set(8, 10, 3);
-    this.scene.add(pointLight);
-    this.pointLight = pointLight;
+    const directionalLight = new DirectionalLight(new Color("#fffff"), 1.5);
+    directionalLight.position.set(5, 10, 7.5);
+    this.scene.add(directionalLight);
+    this.light = directionalLight;
   }
   addListeners() {
     window.addEventListener("resize", (e) => {
@@ -81,11 +85,6 @@ class Starter {
   }
   createDebugPanel() {
     const pane = new Tweakpane();
-    const sceneFolder = pane.addFolder({ title: "Scene" });
-    const bgParams = { background: { r: 18, g: 18, b: 18, a: 1 } };
-    sceneFolder.addInput(bgParams, "background", { label: "Background Color" }).on("change", (value: any) => {
-      this.renderer.setClearColor(`rgb(${parseInt(value.r)},${parseInt(value.g)},${parseInt(value.b)})`, value.a);
-    });
     const boxFolder = pane.addFolder({ title: "Box" });
     const boxParams = { width: 1, height: 1, depth: 1, metalness: 0.5, roughness: 0.5 };
     boxFolder.addInput(boxParams, "width", { label: "Width", min: 1, max: 10 }).on("change", (value: any) => {
@@ -104,12 +103,12 @@ class Starter {
       (this.box.material as any).roughness = value;
     });
     const lightFolder = pane.addFolder({ title: "Light" });
-    const lightParams = { color: { r: 255, g: 0, b: 85 }, intensity: 500 };
+    const lightParams = { color: { r: 255, g: 255, b: 255 }, intensity: 1.5 };
     lightFolder.addInput(lightParams, "color", { label: "Color" }).on("change", (value: any) => {
-      this.pointLight.color = new Color(`rgb(${parseInt(value.r)}, ${parseInt(value.g)}, ${parseInt(value.b)})`);
+      this.light.color = new Color(`rgb(${parseInt(value.r)}, ${parseInt(value.g)}, ${parseInt(value.b)})`);
     });
     lightFolder.addInput(lightParams, "intensity", { label: "Intensity", min: 0, max: 1000 }).on("change", (value: any) => {
-      this.pointLight.intensity = value;
+      this.light.intensity = value;
     });
   }
   update() {
@@ -125,16 +124,17 @@ class Starter {
 }
 
 class Stack extends Starter {
-  constructor(sel: string) {
-    super(sel);
+  constructor(sel: string, debug: boolean) {
+    super(sel, debug);
   }
   init() {
     this.createScene();
     this.createCamera();
     this.createRenderer();
-    this.createBox({ width: 1, height: 0.5, depth: 1, color: new Color("#ffffff") });
+    this.createBox({ width: 1, height: 0.5, depth: 1, color: new Color("#d9dfc8") });
     this.createLight();
     this.addListeners();
+    this.createDebugPanel();
     this.setLoop();
   }
   createCamera() {

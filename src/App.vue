@@ -31,6 +31,7 @@ body {
 // colors
 
 :root {
+  --blue-grad-1: linear-gradient(to top, #37ecba 0%, #72afd3 100%);
 }
 
 // reset

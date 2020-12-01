@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Starter",
   setup() {
     onMounted(() => {
-      const starter = new Starter(".starter");
+      const starter = new Starter(".starter", true);
       starter.init();
     });
   },
@@ -21,5 +21,6 @@ export default defineComponent({
 .starter {
   width: 100%;
   height: 100%;
+  background: var(--blue-grad-1);
 }
 </style>

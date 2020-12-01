@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Stack",
   setup() {
     onMounted(() => {
-      const stack = new Stack(".stack");
+      const stack = new Stack(".stack", true);
       stack.init();
     });
   },
@@ -21,5 +21,6 @@ export default defineComponent({
 .stack {
   width: 100%;
   height: 100%;
+  background: var(--blue-grad-1);
 }
 </style>
