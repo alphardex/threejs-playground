@@ -1,3 +1,5 @@
+import { Color } from "three";
+
 declare module "@alphardex/aqua.sp/dist/aqua.sp.min.css";
 
 export interface NavItem {
@@ -42,4 +44,11 @@ export interface ShareInfo {
 export interface PostReturn {
   code: number;
   msg: string;
+}
+
+export interface Cube {
+  width: number;
+  height: number;
+  depth: number;
+  color: string | Color;
 }

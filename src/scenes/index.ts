@@ -1,10 +1,23 @@
-import { BoxBufferGeometry, Color, Mesh, MeshStandardMaterial, PerspectiveCamera, PointLight, Scene, WebGLRenderer } from "three";
+import { Cube } from "@/types";
+import { calcAspect } from "@/utils/math";
+import {
+  BoxBufferGeometry,
+  Color,
+  GammaEncoding,
+  Mesh,
+  MeshStandardMaterial,
+  OrthographicCamera,
+  PerspectiveCamera,
+  PointLight,
+  Scene,
+  WebGLRenderer,
+} from "three";
 import Tweakpane from "tweakpane";
 
 class Starter {
   container: HTMLElement | null;
   scene!: Scene;
-  camera!: PerspectiveCamera;
+  camera!: PerspectiveCamera | OrthographicCamera;
   renderer!: WebGLRenderer;
   box!: Mesh;
   pointLight!: PointLight;
@@ -27,7 +40,7 @@ class Starter {
     this.scene = scene;
   }
   createCamera() {
-    const aspect = this.container!.clientWidth / this.container!.clientHeight;
+    const aspect = calcAspect(this.container!);
     const camera = new PerspectiveCamera(75, aspect, 0.1, 100);
     camera.position.set(0, 1, 10);
     this.camera = camera;
@@ -39,20 +52,17 @@ class Starter {
     });
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
     renderer.physicallyCorrectLights = true;
-    // @ts-ignore
-    renderer.gammaOutput = true;
+    renderer.outputEncoding = GammaEncoding;
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.renderer.setClearColor(0x121212);
   }
-  createBox() {
-    const geo = new BoxBufferGeometry(1, 1, 1, 1, 1, 1);
-    const material = new MeshStandardMaterial({ color: 0xfffff });
+  createBox(cube: Cube = { width: 1, height: 1, depth: 1, color: new Color("#ffffff") }) {
+    const { width, height, depth, color } = cube;
+    const geo = new BoxBufferGeometry(width, height, depth);
+    const material = new MeshStandardMaterial({ color });
     const box = new Mesh(geo, material);
     this.box = box;
-    box.scale.x = 5;
-    box.scale.y = 5;
-    box.scale.z = 5;
     this.scene.add(box);
   }
   createLight() {
@@ -63,8 +73,8 @@ class Starter {
   }
   addListeners() {
     window.addEventListener("resize", (e) => {
-      const aspect = this.container!.clientWidth / this.container!.clientHeight;
-      this.camera.aspect = aspect;
+      const aspect = calcAspect(this.container!);
+      (this.camera as any).aspect = aspect;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
     });
@@ -77,7 +87,7 @@ class Starter {
       this.renderer.setClearColor(`rgb(${parseInt(value.r)},${parseInt(value.g)},${parseInt(value.b)})`, value.a);
     });
     const boxFolder = pane.addFolder({ title: "Box" });
-    const boxParams = { width: 5, height: 5, depth: 5, metalness: 0.5, roughness: 0.5 };
+    const boxParams = { width: 1, height: 1, depth: 1, metalness: 0.5, roughness: 0.5 };
     boxFolder.addInput(boxParams, "width", { label: "Width", min: 1, max: 10 }).on("change", (value: any) => {
       this.box.scale.x = value;
     });
@@ -114,4 +124,32 @@ class Starter {
   }
 }
 
-export { Starter };
+class Stack extends Starter {
+  constructor(sel: string) {
+    super(sel);
+  }
+  init() {
+    this.createScene();
+    this.createCamera();
+    this.createRenderer();
+    this.createBox({ width: 1, height: 0.5, depth: 1, color: new Color("#ffffff") });
+    this.createLight();
+    this.addListeners();
+    this.setLoop();
+  }
+  createCamera() {
+    const aspect = calcAspect(this.container!);
+    const d = 2;
+    const camera = new OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+    camera.position.set(2, 2, 2);
+    camera.lookAt(0, 0, 0);
+    this.camera = camera;
+  }
+  setLoop() {
+    this.renderer.setAnimationLoop(() => {
+      this.renderer.render(this.scene, this.camera);
+    });
+  }
+}
+
+export { Starter, Stack };

@@ -4,6 +4,9 @@
       <li>
         <router-link :to="{ name: 'Starter' }">Starter</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'Stack' }">Stack</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

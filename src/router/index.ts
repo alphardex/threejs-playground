@@ -2,17 +2,23 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import NotFound from "../views/NotFound.vue";
 import Starter from "../views/Starter.vue";
+import Stack from "../views/Stack.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/main.html",
+    path: "/",
     name: "Home",
     component: Home,
   },
   {
-    path: "/starter.html",
+    path: "/starter",
     name: "Starter",
     component: Starter,
+  },
+  {
+    path: "/stack",
+    name: "Stack",
+    component: Stack,
   },
   {
     path: "/:pathMatch(.*)*",
