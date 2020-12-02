@@ -49,6 +49,6 @@ export interface PostReturn {
 export interface Cube {
   width: number;
   height: number;
-  depth: number;
+  depth?: number;
   color: string | Color;
 }

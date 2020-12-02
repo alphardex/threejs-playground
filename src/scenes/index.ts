@@ -1,14 +1,17 @@
 import { Cube } from "@/types";
 import { calcAspect } from "@/utils/math";
 import {
+  AmbientLight,
   AxesHelper,
   BoxBufferGeometry,
   Color,
   DirectionalLight,
   Mesh,
+  MeshLambertMaterial,
   MeshStandardMaterial,
   OrthographicCamera,
   PerspectiveCamera,
+  PlaneBufferGeometry,
   PointLight,
   Scene,
   WebGLRenderer,
@@ -21,6 +24,7 @@ class Starter {
   scene!: Scene;
   camera!: PerspectiveCamera | OrthographicCamera;
   renderer!: WebGLRenderer;
+  plane!: Mesh;
   box!: Mesh;
   light!: PointLight | DirectionalLight;
   pane!: Tweakpane;
@@ -61,18 +65,31 @@ class Starter {
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
   }
+  createPlane(cube: Cube = { width: 10e2, height: 10e2, color: new Color("#ffffff") }) {
+    const { width, height, color } = cube;
+    const geo = new PlaneBufferGeometry(width, height);
+    const material = new MeshLambertMaterial({ color });
+    const plane = new Mesh(geo, material);
+    plane.rotation.x = -0.5 * Math.PI;
+    plane.position.y = -0.1;
+    this.plane = plane;
+    this.scene.add(plane);
+  }
   createBox(cube: Cube = { width: 1, height: 1, depth: 1, color: new Color("#ffffff") }) {
     const { width, height, depth, color } = cube;
     const geo = new BoxBufferGeometry(width, height, depth);
     const material = new MeshStandardMaterial({ color });
     const box = new Mesh(geo, material);
+    box.castShadow = true;
     this.box = box;
     this.scene.add(box);
   }
   createLight() {
-    const directionalLight = new DirectionalLight(new Color("#fffff"), 1.5);
+    const directionalLight = new DirectionalLight(new Color("#ffffff"), 1);
     directionalLight.position.set(5, 10, 7.5);
     this.scene.add(directionalLight);
+    const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
+    this.scene.add(ambientLight);
     this.light = directionalLight;
   }
   addListeners() {
