@@ -7,16 +7,17 @@ import {
   Color,
   DirectionalLight,
   Mesh,
-  MeshLambertMaterial,
   MeshStandardMaterial,
   OrthographicCamera,
   PerspectiveCamera,
-  PlaneBufferGeometry,
   PointLight,
   Scene,
+  Vector,
+  Vector3,
   WebGLRenderer,
 } from "three";
 import Tweakpane from "tweakpane";
+import gsap from "gsap";
 
 class Starter {
   debug: boolean;
@@ -140,6 +141,8 @@ class Stack extends Starter {
   currentY: number; // 当前的y轴高度
   baseHeight: number; // 基座高度
   blockHeight: number; // 移动方块高度
+  cameraPosition: Vector3; // 相机位置
+  lookAtPosition: Vector3; // 视点
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.moveLimit = 1.2;
@@ -149,6 +152,8 @@ class Stack extends Starter {
     this.baseHeight = 0.1;
     this.currentY = this.baseHeight;
     this.blockHeight = 0.1;
+    this.cameraPosition = new Vector3(2, 2, 2);
+    this.lookAtPosition = new Vector3(0, 0, 0);
   }
   // 初始化
   init() {
@@ -162,11 +167,12 @@ class Stack extends Starter {
   }
   // 创建正交相机
   createCamera() {
-    const aspect = calcAspect(this.container!);
+    const { container, cameraPosition, lookAtPosition } = this;
+    const aspect = calcAspect(container!);
     const d = 2;
     const camera = new OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
-    camera.position.set(2, 2, 2);
-    camera.lookAt(0, 0, 0);
+    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
   }
   // 动画
@@ -199,6 +205,20 @@ class Stack extends Starter {
     this.createBox({ height: this.blockHeight, y: this.currentY });
     this.state = "running";
     this.currentY += this.blockHeight;
+    this.updateCamera();
+  }
+  // 更新相机
+  updateCamera() {
+    this.cameraPosition.y += this.blockHeight;
+    this.lookAtPosition.y += this.blockHeight;
+    gsap.to(this.camera.position, {
+      y: this.cameraPosition.y,
+      duration: 0.4,
+    });
+    gsap.to(this.camera.lookAt, {
+      y: this.lookAtPosition.y,
+      duration: 0.4,
+    });
   }
   // 开始游戏
   start() {

@@ -12,6 +12,7 @@
     "axios": "^0.20.0",
     "blueimp-md5": "^2.18.0",
     "core-js": "^3.6.5",
+    "gsap": "^3.5.1",
     "jsencrypt": "^3.0.0-rc.1",
     "kyouka": "^1.2.0",
     "qs": "^6.9.4",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/blueimp-md5": "^2.7.0",
+    "@types/gsap": "^1.20.2",
     "@types/mockjs": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
