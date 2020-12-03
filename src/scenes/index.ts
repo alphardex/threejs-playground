@@ -18,6 +18,7 @@ import {
 import Tweakpane from "tweakpane";
 import gsap from "gsap";
 import ky from "kyouka";
+import { render } from "vue";
 
 class Starter {
   debug: boolean;
@@ -62,6 +63,7 @@ class Starter {
       antialias: true,
     });
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+    renderer.shadowMap.enabled = true;
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
@@ -74,16 +76,18 @@ class Starter {
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
+    box.receiveShadow = true;
+    box.castShadow = true;
     this.box = box;
     this.scene.add(box);
   }
   createLight() {
-    const directionalLight = new DirectionalLight(new Color("#ffffff"), 1);
-    directionalLight.position.set(5, 10, 7.5);
-    this.scene.add(directionalLight);
+    const light = new DirectionalLight(new Color("#ffffff"), 0.5);
+    light.position.set(5, 10, 7.5);
+    this.scene.add(light);
     const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
     this.scene.add(ambientLight);
-    this.light = directionalLight;
+    this.light = light;
   }
   addListeners() {
     window.addEventListener("resize", (e) => {
@@ -168,6 +172,8 @@ class Stack extends Starter {
     this.createRenderer();
     this.updateColor();
     this.createBox({ height: this.baseHeight, y: 0, color: this.color });
+    this.box.scale.y = 20;
+    this.box.position.y = -1 + 1 / 20;
     this.createLight();
     this.addListeners();
     this.setLoop();
@@ -177,7 +183,7 @@ class Stack extends Starter {
     const { container, cameraPosition, lookAtPosition } = this;
     const aspect = calcAspect(container!);
     const d = 2;
-    const camera = new OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+    const camera = new OrthographicCamera(-d * aspect, d * aspect, d, -d, -100, 1000);
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
@@ -216,7 +222,9 @@ class Stack extends Starter {
     this.speed = Math.abs(this.speed);
     this.state = "running";
     this.currentY += this.blockHeight;
-    this.updateCamera();
+    if (this.level > 1) {
+      this.updateCamera();
+    }
   }
   // 更新相机
   updateCamera() {
