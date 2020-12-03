@@ -12,7 +12,6 @@ import {
   PerspectiveCamera,
   PointLight,
   Scene,
-  Vector,
   Vector3,
   WebGLRenderer,
 } from "three";
