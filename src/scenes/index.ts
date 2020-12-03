@@ -207,6 +207,7 @@ class Stack extends Starter {
     this.state = "static";
     this.createBox({ height: this.blockHeight, y: this.currentY });
     this.moveAxis = this.level % 2 ? "x" : "z";
+    this.speed = Math.abs(this.speed);
     this.state = "running";
     this.currentY += this.blockHeight;
     this.updateCamera();
