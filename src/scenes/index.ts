@@ -134,6 +134,7 @@ class Starter {
 }
 
 class Stack extends Starter {
+  level: number; // 关卡
   moveLimit: number; // 移动上限
   moveAxis: "x" | "y" | "z"; // 移动所沿的轴
   speed: number; // 移动速度
@@ -145,6 +146,7 @@ class Stack extends Starter {
   lookAtPosition: Vector3; // 视点
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.level = 0;
     this.moveLimit = 1.2;
     this.moveAxis = "x";
     this.speed = 0.01;
@@ -201,8 +203,10 @@ class Stack extends Starter {
   }
   // 开始下一关
   startNextLevel() {
+    this.level += 1;
     this.state = "static";
     this.createBox({ height: this.blockHeight, y: this.currentY });
+    this.moveAxis = this.level % 2 ? "x" : "z";
     this.state = "running";
     this.currentY += this.blockHeight;
     this.updateCamera();
