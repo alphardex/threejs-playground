@@ -36,7 +36,7 @@ class Starter {
     this.createScene();
     this.createCamera();
     this.createRenderer();
-    this.createBox();
+    this.createBox({});
     this.createLight();
     this.addListeners();
     this.createDebugPanel();
@@ -65,22 +65,14 @@ class Starter {
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
   }
-  createPlane(cube: Cube = { width: 10e2, height: 10e2, color: new Color("#ffffff") }) {
-    const { width, height, color } = cube;
-    const geo = new PlaneBufferGeometry(width, height);
-    const material = new MeshLambertMaterial({ color });
-    const plane = new Mesh(geo, material);
-    plane.rotation.x = -0.5 * Math.PI;
-    plane.position.y = -0.1;
-    this.plane = plane;
-    this.scene.add(plane);
-  }
-  createBox(cube: Cube = { width: 1, height: 1, depth: 1, color: new Color("#ffffff") }) {
-    const { width, height, depth, color } = cube;
+  createBox(cube: Cube) {
+    const { width = 1, height = 1, depth = 1, color = new Color("#d9dfc8"), x = 0, y = 0, z = 0 } = cube;
     const geo = new BoxBufferGeometry(width, height, depth);
     const material = new MeshStandardMaterial({ color });
     const box = new Mesh(geo, material);
-    box.castShadow = true;
+    box.position.x = x;
+    box.position.y = y;
+    box.position.z = z;
     this.box = box;
     this.scene.add(box);
   }
@@ -141,19 +133,34 @@ class Starter {
 }
 
 class Stack extends Starter {
+  moveLimit: number; // 移动上限
+  moveAxis: "x" | "y" | "z"; // 移动所沿的轴
+  speed: number; // 移动速度
+  state: string; // 状态：paused - 静止；running - 运动
+  currentY: number; // 当前的y轴高度
+  baseHeight: number; // 基座高度
+  blockHeight: number; // 移动方块高度
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.moveLimit = 1.2;
+    this.moveAxis = "x";
+    this.speed = 0.01;
+    this.state = "paused";
+    this.baseHeight = 0.1;
+    this.currentY = this.baseHeight;
+    this.blockHeight = 0.1;
   }
+  // 初始化
   init() {
     this.createScene();
     this.createCamera();
     this.createRenderer();
-    this.createBox({ width: 1, height: 0.5, depth: 1, color: new Color("#d9dfc8") });
+    this.createBox({ height: this.baseHeight, y: 0 });
     this.createLight();
     this.addListeners();
-    this.createDebugPanel();
     this.setLoop();
   }
+  // 创建正交相机
   createCamera() {
     const aspect = calcAspect(this.container!);
     const d = 2;
@@ -162,10 +169,40 @@ class Stack extends Starter {
     camera.lookAt(0, 0, 0);
     this.camera = camera;
   }
+  // 动画
+  update() {
+    if (this.state === "running") {
+      const { moveAxis } = this;
+      this.box.position[moveAxis] += this.speed;
+      const currentPosition = this.box.position[moveAxis];
+      if (Math.abs(currentPosition) > this.moveLimit) {
+        this.speed = this.speed * -1;
+      }
+    }
+  }
+  // 事件监听
+  addListeners() {
+    document.addEventListener("click", () => {
+      this.startNextLevel();
+    });
+  }
+  // 渲染
   setLoop() {
     this.renderer.setAnimationLoop(() => {
+      this.update();
       this.renderer.render(this.scene, this.camera);
     });
+  }
+  // 开始下一关
+  startNextLevel() {
+    this.state = "static";
+    this.createBox({ height: this.blockHeight, y: this.currentY });
+    this.state = "running";
+    this.currentY += this.blockHeight;
+  }
+  // 开始游戏
+  start() {
+    this.startNextLevel();
   }
 }
 

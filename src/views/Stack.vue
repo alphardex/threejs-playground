@@ -12,6 +12,7 @@ export default defineComponent({
     onMounted(() => {
       const stack = new Stack(".stack", true);
       stack.init();
+      stack.start();
     });
   },
 });
