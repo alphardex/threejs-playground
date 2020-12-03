@@ -17,6 +17,7 @@ import {
 } from "three";
 import Tweakpane from "tweakpane";
 import gsap from "gsap";
+import ky from "kyouka";
 
 class Starter {
   debug: boolean;
@@ -143,6 +144,8 @@ class Stack extends Starter {
   blockHeight: number; // 移动方块高度
   cameraPosition: Vector3; // 相机位置
   lookAtPosition: Vector3; // 视点
+  color: Color; // 方块颜色
+  colorOffset: number; // 颜色偏移量
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -155,13 +158,16 @@ class Stack extends Starter {
     this.blockHeight = 0.1;
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
+    this.color = new Color("#d9dfc8");
+    this.colorOffset = ky.randomIntegerInRange(0, 255);
   }
   // 初始化
   init() {
     this.createScene();
     this.createCamera();
     this.createRenderer();
-    this.createBox({ height: this.baseHeight, y: 0 });
+    this.updateColor();
+    this.createBox({ height: this.baseHeight, y: 0, color: this.color });
     this.createLight();
     this.addListeners();
     this.setLoop();
@@ -204,7 +210,8 @@ class Stack extends Starter {
   startNextLevel() {
     this.level += 1;
     this.state = "static";
-    this.createBox({ height: this.blockHeight, y: this.currentY });
+    this.updateColor();
+    this.createBox({ height: this.blockHeight, y: this.currentY, color: this.color });
     this.moveAxis = this.level % 2 ? "x" : "z";
     this.speed = Math.abs(this.speed);
     this.state = "running";
@@ -223,6 +230,15 @@ class Stack extends Starter {
       y: this.lookAtPosition.y,
       duration: 0.4,
     });
+  }
+  // 更新颜色
+  updateColor() {
+    const { level, colorOffset } = this;
+    const colorValue = level + colorOffset;
+    const r = (Math.sin(0.25 * colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(0.25 * colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(0.25 * colorValue + 4) * 55 + 200) / 255;
+    this.color = new Color(r, g, b);
   }
   // 开始游戏
   start() {
