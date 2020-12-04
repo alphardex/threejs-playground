@@ -30,6 +30,7 @@ class Starter {
     this.debug = debug;
     this.container = document.querySelector(sel);
   }
+  // 初始化
   init() {
     this.createScene();
     this.createCamera();
@@ -39,6 +40,7 @@ class Starter {
     this.addListeners();
     this.setLoop();
   }
+  // 创建场景
   createScene() {
     const scene = new Scene();
     if (this.debug) {
@@ -46,12 +48,14 @@ class Starter {
     }
     this.scene = scene;
   }
+  // 创建透视相机
   createCamera() {
     const aspect = calcAspect(this.container!);
     const camera = new PerspectiveCamera(75, aspect, 0.1, 100);
     camera.position.set(0, 1, 10);
     this.camera = camera;
   }
+  // 创建渲染
   createRenderer() {
     const renderer = new WebGLRenderer({
       alpha: true,
@@ -62,6 +66,7 @@ class Starter {
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
   }
+  // 创建方块
   createBox(cube: Cube) {
     const { width = 1, height = 1, depth = 1, color = new Color("#d9dfc8"), x = 0, y = 0, z = 0 } = cube;
     const geo = new BoxBufferGeometry(width, height, depth);
@@ -73,6 +78,7 @@ class Starter {
     this.box = box;
     this.scene.add(box);
   }
+  // 创建光源
   createLight() {
     const light = new DirectionalLight(new Color("#ffffff"), 0.5);
     light.position.set(5, 10, 7.5);
@@ -81,9 +87,11 @@ class Starter {
     this.scene.add(ambientLight);
     this.light = light;
   }
+  // 监听事件
   addListeners() {
     this.onResize();
   }
+  // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
       const aspect = calcAspect(this.container!);
@@ -92,10 +100,12 @@ class Starter {
       this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
     });
   }
+  // 动画
   update() {
     this.box.rotation.y += 0.01;
     this.box.rotation.z += 0.006;
   }
+  // 渲染
   setLoop() {
     this.renderer.setAnimationLoop(() => {
       this.update();
@@ -179,13 +189,6 @@ class Stack extends Starter {
   onClick() {
     document.addEventListener("click", () => {
       this.startNextLevel();
-    });
-  }
-  // 渲染
-  setLoop() {
-    this.renderer.setAnimationLoop(() => {
-      this.update();
-      this.renderer.render(this.scene, this.camera);
     });
   }
   // 开始下一关
