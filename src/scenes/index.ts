@@ -169,16 +169,14 @@ class Stack extends Starter {
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
   }
-  // 动画
-  update() {
-    if (this.state === "running") {
-      const { moveAxis } = this;
-      this.box.position[moveAxis] += this.speed;
-      const currentPosition = this.box.position[moveAxis];
-      if (Math.abs(currentPosition) > this.moveLimit) {
-        this.speed = this.speed * -1;
-      }
-    }
+  // 更新颜色
+  updateColor() {
+    const { level, colorOffset } = this;
+    const colorValue = level + colorOffset;
+    const r = (Math.sin(0.25 * colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(0.25 * colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(0.25 * colorValue + 4) * 55 + 200) / 255;
+    this.color = new Color(r, g, b);
   }
   // 事件监听
   addListeners() {
@@ -223,14 +221,16 @@ class Stack extends Starter {
       duration: 0.4,
     });
   }
-  // 更新颜色
-  updateColor() {
-    const { level, colorOffset } = this;
-    const colorValue = level + colorOffset;
-    const r = (Math.sin(0.25 * colorValue) * 55 + 200) / 255;
-    const g = (Math.sin(0.25 * colorValue + 2) * 55 + 200) / 255;
-    const b = (Math.sin(0.25 * colorValue + 4) * 55 + 200) / 255;
-    this.color = new Color(r, g, b);
+  // 动画
+  update() {
+    if (this.state === "running") {
+      const { moveAxis } = this;
+      this.box.position[moveAxis] += this.speed;
+      const currentPosition = this.box.position[moveAxis];
+      if (Math.abs(currentPosition) > this.moveLimit) {
+        this.speed = this.speed * -1;
+      }
+    }
   }
   // 开始游戏
   start() {
