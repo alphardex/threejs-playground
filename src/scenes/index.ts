@@ -224,8 +224,10 @@ class Stack extends Starter {
     }
     this.state = "static";
     this.updateColor();
-    this.createBox({ height: this.blockHeight, y: this.currentY, color: this.color });
     this.moveAxis = this.level % 2 ? "x" : "z";
+    const boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: this.color };
+    boxParams[this.moveAxis] = this.moveLimit * -1;
+    this.createBox(boxParams);
     this.speed = Math.abs(this.speed);
     this.state = "running";
     this.currentY += this.blockHeight;
