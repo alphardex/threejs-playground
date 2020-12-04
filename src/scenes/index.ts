@@ -215,6 +215,9 @@ class Stack extends Starter {
   // 开始下一关
   startNextLevel() {
     this.level += 1;
+    if (this.speed <= 0.05) {
+      this.speed += 0.0005;
+    }
     this.state = "static";
     this.updateColor();
     this.createBox({ height: this.blockHeight, y: this.currentY, color: this.color });
