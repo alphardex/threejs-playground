@@ -35,7 +35,8 @@ class Starter {
     this.createScene();
     this.createCamera();
     this.createRenderer();
-    this.createBox({});
+    const box = this.createBox({});
+    this.box = box;
     this.createLight();
     this.addListeners();
     this.setLoop();
@@ -75,8 +76,8 @@ class Starter {
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
-    this.box = box;
     this.scene.add(box);
+    return box;
   }
   // 创建光源
   createLight() {
@@ -131,6 +132,7 @@ class Stack extends Starter {
   color: Color; // 方块颜色
   colorOffset: number; // 颜色偏移量
   cameraParams: Record<string, any>; // 相机参数
+  prevBox: Mesh | null; // 前一个物体
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -149,6 +151,7 @@ class Stack extends Starter {
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
     this.updateCameraParams();
+    this.prevBox = null;
   }
   // 更新相机参数
   updateCameraParams() {
@@ -163,7 +166,8 @@ class Stack extends Starter {
     this.createCamera();
     this.createRenderer();
     this.updateColor();
-    this.createBox({ height: this.baseHeight, y: 0, color: this.color });
+    const base = this.createBox({ height: this.baseHeight, y: 0, color: this.color });
+    this.box = base;
     this.box.scale.y = 20;
     this.box.position.y = -1 + 1 / 20;
     this.createLight();
@@ -212,8 +216,19 @@ class Stack extends Starter {
   // 监听点击
   onClick() {
     document.addEventListener("click", () => {
+      this.detectOverlap();
       this.startNextLevel();
     });
+  }
+  // 检测重叠部分
+  detectOverlap() {
+    const { prevBox, box } = this;
+    const prevPosition = prevBox?.position;
+    const currentPosition = box.position;
+    const prevScale = prevBox?.scale;
+    const currentScale = box.scale;
+    const overlap = prevScale![this.moveAxis] - Math.abs(currentPosition[this.moveAxis]);
+    console.log(overlap);
   }
   // 开始下一关
   startNextLevel() {
@@ -226,7 +241,9 @@ class Stack extends Starter {
     this.moveAxis = this.level % 2 ? "x" : "z";
     const boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: this.color };
     boxParams[this.moveAxis] = this.moveLimit * -1;
-    this.createBox(boxParams);
+    this.prevBox = this.box;
+    const box = this.createBox(boxParams);
+    this.box = box;
     this.speed = Math.abs(this.speed);
     this.state = "running";
     this.currentY += this.blockHeight;
