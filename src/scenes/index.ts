@@ -8,6 +8,7 @@ import {
   DirectionalLight,
   Mesh,
   MeshStandardMaterial,
+  MeshToonMaterial,
   OrthographicCamera,
   PerspectiveCamera,
   PointLight,
@@ -70,7 +71,7 @@ class Starter {
   createBox(cube: Cube) {
     const { width = 1, height = 1, depth = 1, color = new Color("#d9dfc8"), x = 0, y = 0, z = 0 } = cube;
     const geo = new BoxBufferGeometry(width, height, depth);
-    const material = new MeshStandardMaterial({ color });
+    const material = new MeshToonMaterial({ color, flatShading: true });
     const box = new Mesh(geo, material);
     box.position.x = x;
     box.position.y = y;
@@ -81,7 +82,7 @@ class Starter {
   // 创建光源
   createLight() {
     const light = new DirectionalLight(new Color("#ffffff"), 0.5);
-    light.position.set(5, 10, 7.5);
+    light.position.set(0, 500, 0);
     this.scene.add(light);
     const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
     this.scene.add(ambientLight);
