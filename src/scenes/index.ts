@@ -235,7 +235,6 @@ class Stack extends Starter {
     const moveDistance = currentPosition![this.moveAxis]; // 移动距离
     // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(moveDistance);
-    console.log({ overlapBox: this.overlapBox });
     console.log({ edge });
     console.log({ edgeValue });
     console.log({ moveDistance });
