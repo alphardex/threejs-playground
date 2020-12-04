@@ -230,13 +230,17 @@ class Stack extends Starter {
   // 检测重叠部分
   detectOverlap() {
     console.log(this.boxParams);
-    // 确定当前移动的边和当前的位置
     const edge = this.moveAxis === "x" ? "width" : "depth";
+    const edgeValue = this.boxParams![edge]; // 边长
     const currentPosition = this.box.position;
-    // 计算重叠距离
-    const overlap = this.boxParams![edge] - Math.abs(currentPosition[this.moveAxis]);
+    const moveDistance = currentPosition[this.moveAxis]; // 移动距离
+    // 计算重叠距离：边长 - |移动距离|
+    const overlap = edgeValue - Math.abs(moveDistance);
+    console.log(edgeValue);
+    console.log(moveDistance);
     console.log(overlap);
     if (overlap <= 0) {
+      alert("gameover");
       this.gameover = true;
       return;
     }
@@ -244,7 +248,7 @@ class Stack extends Starter {
     const boxParams = { ...this.boxParams };
     boxParams.y = currentPosition.y;
     boxParams[edge] = overlap;
-    boxParams[this.moveAxis] = currentPosition[this.moveAxis] / 2;
+    boxParams[this.moveAxis] = moveDistance / 2;
     this.boxParams = boxParams;
     this.createBox(boxParams);
     this.scene.remove(this.box);
