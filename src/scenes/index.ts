@@ -82,7 +82,7 @@ class Starter {
   // 创建光源
   createLight() {
     const light = new DirectionalLight(new Color("#ffffff"), 0.5);
-    light.position.set(0, 500, 0);
+    light.position.set(0, 100, 0);
     this.scene.add(light);
     const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
     this.scene.add(ambientLight);
