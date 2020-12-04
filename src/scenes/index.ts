@@ -142,6 +142,8 @@ class Stack extends Starter {
   moveLimit: number; // 移动上限
   moveAxis: "x" | "y" | "z"; // 移动所沿的轴
   speed: number; // 移动速度
+  speedInc: number; // 速度增量
+  speedLimit: number; // 速度上限
   state: string; // 状态：paused - 静止；running - 运动
   currentY: number; // 当前的y轴高度
   baseHeight: number; // 基座高度
@@ -156,6 +158,8 @@ class Stack extends Starter {
     this.moveLimit = 1.2;
     this.moveAxis = "x";
     this.speed = 0.01;
+    this.speedInc = 0.0005;
+    this.speedLimit = 0.05;
     this.state = "paused";
     this.baseHeight = 0.1;
     this.currentY = this.baseHeight;
@@ -215,8 +219,8 @@ class Stack extends Starter {
   // 开始下一关
   startNextLevel() {
     this.level += 1;
-    if (this.speed <= 0.05) {
-      this.speed += 0.0005;
+    if (this.speed <= this.speedLimit) {
+      this.speed += this.speedInc;
     }
     this.state = "static";
     this.updateColor();
