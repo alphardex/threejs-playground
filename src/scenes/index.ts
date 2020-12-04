@@ -229,7 +229,7 @@ class Stack extends Starter {
     const edgeValue = boxParams![moveEdge];
     const boxPosition = this.boxPosition;
     // 计算重叠距离：边长 - |移动距离|
-    const overlap = edgeValue - Math.abs(boxPosition);
+    const overlap = edgeValue - Math.abs(boxPosition); // 第2个后不准
     console.log({ boxParams, edgeValue, overlap, boxPosition });
     if (overlap <= 0) {
       alert("gameover");
