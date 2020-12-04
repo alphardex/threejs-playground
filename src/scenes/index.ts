@@ -234,7 +234,7 @@ class Stack extends Starter {
     const edgeValue = boxParams![edge]; // 边长
     const currentPosition = box.position;
     const moveDistance = currentPosition![moveAxis]; // 移动距离
-    // 计算重叠距离：边长 - |移动距离| - 原始位置
+    // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(moveDistance);
     if (overlap <= 0) {
       alert("gameover");
