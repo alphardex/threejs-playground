@@ -132,6 +132,7 @@ class Stack extends Starter {
   color: Color; // 方块颜色
   colorOffset: number; // 颜色偏移量
   cameraParams: Record<string, any>; // 相机参数
+  boxParams: Record<string, any>; // 方块参数
   prevBox: Mesh | null; // 前一个物体
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -143,13 +144,14 @@ class Stack extends Starter {
     this.speedLimit = 0.05;
     this.state = "paused";
     this.baseHeight = 0.1;
-    this.currentY = this.baseHeight;
+    this.currentY = 0;
     this.blockHeight = 0.1;
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.color = new Color("#d9dfc8");
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
+    this.boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: this.color };
     this.updateCameraParams();
     this.prevBox = null;
   }
@@ -166,7 +168,10 @@ class Stack extends Starter {
     this.createCamera();
     this.createRenderer();
     this.updateColor();
-    const base = this.createBox({ height: this.baseHeight, y: 0, color: this.color });
+    const baseParams = { ...this.boxParams };
+    baseParams.height = this.baseHeight;
+    baseParams.color = this.color;
+    const base = this.createBox(baseParams);
     this.box = base;
     this.box.scale.y = 20;
     this.box.position.y = -1 + 1 / 20;
@@ -223,12 +228,24 @@ class Stack extends Starter {
   // 检测重叠部分
   detectOverlap() {
     const { prevBox, box } = this;
-    const prevPosition = prevBox?.position;
     const currentPosition = box.position;
     const prevScale = prevBox?.scale;
-    const currentScale = box.scale;
     const overlap = prevScale![this.moveAxis] - Math.abs(currentPosition[this.moveAxis]);
+    if (overlap < 0) {
+      alert("lose");
+      return;
+    }
+    const boxParams = { ...this.boxParams };
+    boxParams.y = currentPosition.y;
+    boxParams.color = this.color;
+    const edge = this.moveAxis === "x" ? "width" : "depth";
+    boxParams[edge] = overlap;
+    boxParams[this.moveAxis] = currentPosition[this.moveAxis] / 2;
     console.log(overlap);
+    console.log(boxParams);
+    this.boxParams = boxParams;
+    this.scene.remove(this.box);
+    this.createBox(boxParams);
   }
   // 开始下一关
   startNextLevel() {
@@ -239,14 +256,16 @@ class Stack extends Starter {
     this.state = "static";
     this.updateColor();
     this.moveAxis = this.level % 2 ? "x" : "z";
-    const boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: this.color };
-    boxParams[this.moveAxis] = this.moveLimit * -1;
+    this.boxParams[this.moveAxis] = this.moveLimit * -1;
     this.prevBox = this.box;
+    this.currentY += this.blockHeight;
+    const boxParams = { ...this.boxParams };
+    boxParams.y = this.currentY;
+    boxParams.color = this.color;
     const box = this.createBox(boxParams);
     this.box = box;
     this.speed = Math.abs(this.speed);
     this.state = "running";
-    this.currentY += this.blockHeight;
     if (this.level > 1) {
       this.updateCamera();
     }
