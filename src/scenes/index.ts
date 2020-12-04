@@ -126,16 +126,14 @@ class Stack extends Starter {
   speedLimit: number; // 速度上限
   state: string; // 状态：paused - 静止；running - 运动
   currentY: number; // 当前的y轴高度
-  baseHeight: number; // 基座高度
-  blockHeight: number; // 移动方块高度
+  boxHeight: number; // 移动方块高度
+  boxParams: Record<string, any>; // 方块参数
+  boxPosition: number; // 当前方块的位置
+  colorOffset: number; // 颜色偏移量
   cameraPosition: Vector3; // 相机位置
   lookAtPosition: Vector3; // 视点
-  colorOffset: number; // 颜色偏移量
   cameraParams: Record<string, any>; // 相机参数
-  boxParams: Record<string, any>; // 方块参数
-  prevBox: Mesh | null; // 前一个方块
   gameover: boolean; // 游戏结束
-  boxPosition: number; // 当前方块的位置
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -146,16 +144,14 @@ class Stack extends Starter {
     this.speedInc = 0.0005;
     this.speedLimit = 0.05;
     this.state = "paused";
-    this.baseHeight = 0.1;
     this.currentY = 0;
-    this.blockHeight = 0.1;
+    this.boxHeight = 0.1;
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
-    this.boxParams = { width: 1, height: this.blockHeight, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
+    this.boxParams = { width: 1, height: this.boxHeight, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
-    this.prevBox = null;
     this.gameover = false;
     this.boxPosition = 0;
   }
@@ -173,10 +169,9 @@ class Stack extends Starter {
     this.createRenderer();
     this.updateColor();
     const baseParams = { ...this.boxParams };
-    baseParams.height = this.baseHeight;
+    baseParams.height = 0.1;
     const base = this.createBox(baseParams);
     this.box = base;
-    this.prevBox = base;
     this.box.scale.y = 20;
     this.box.position.y = -1 + 1 / 20;
     this.createLight();
@@ -237,7 +232,7 @@ class Stack extends Starter {
     const edgeValue = boxParams![moveEdge];
     // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(boxPosition);
-    console.log({ edgeValue, overlap, boxPosition });
+    console.log({ boxParams, edgeValue, overlap, boxPosition });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -265,7 +260,7 @@ class Stack extends Starter {
     // 确定初始移动位置
     this.boxParams[this.moveAxis] = this.moveLimit * -1;
     // 增加方块生成的高度
-    this.currentY += this.blockHeight;
+    this.currentY += this.boxHeight;
     this.updateColor();
     const boxParams = { ...this.boxParams };
     boxParams.y = this.currentY;
@@ -278,8 +273,8 @@ class Stack extends Starter {
   }
   // 更新相机
   updateCamera() {
-    this.cameraPosition.y += this.blockHeight;
-    this.lookAtPosition.y += this.blockHeight;
+    this.cameraPosition.y += this.boxHeight;
+    this.lookAtPosition.y += this.boxHeight;
     gsap.to(this.camera.position, {
       y: this.cameraPosition.y,
       duration: 0.4,
