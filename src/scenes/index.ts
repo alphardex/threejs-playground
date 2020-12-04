@@ -149,7 +149,7 @@ class Stack extends Starter {
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
-    this.boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: new Color("#d9dfc8") };
+    this.boxParams = { width: 1, height: this.blockHeight, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.prevBox = null;
   }
@@ -170,6 +170,7 @@ class Stack extends Starter {
     baseParams.height = this.baseHeight;
     const base = this.createBox(baseParams);
     this.box = base;
+    this.prevBox = base;
     this.box.scale.y = 20;
     this.box.position.y = -1 + 1 / 20;
     this.createLight();
@@ -224,21 +225,19 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    const { prevBox, box } = this;
-    const currentPosition = box.position;
-    const prevScale = prevBox?.scale;
-    const overlap = prevScale![this.moveAxis] - Math.abs(currentPosition[this.moveAxis]);
+    const edge = this.moveAxis === "x" ? "width" : "depth";
+    console.log(this.boxParams);
+    const currentPosition = this.box.position;
+    const overlap = this.boxParams![edge] - Math.abs(currentPosition[this.moveAxis]);
+    console.log(overlap);
     if (overlap < 0) {
       alert("lose");
       return;
     }
     const boxParams = { ...this.boxParams };
     boxParams.y = currentPosition.y;
-    const edge = this.moveAxis === "x" ? "width" : "depth";
     boxParams[edge] = overlap;
     boxParams[this.moveAxis] = currentPosition[this.moveAxis] / 2;
-    console.log(overlap);
-    console.log(boxParams);
     this.boxParams = boxParams;
     this.scene.remove(this.box);
     this.createBox(boxParams);
@@ -246,20 +245,21 @@ class Stack extends Starter {
   // 开始下一关
   startNextLevel() {
     this.level += 1;
+    // 关卡数越大，速度越快
     if (this.speed <= this.speedLimit) {
       this.speed += this.speedInc;
     }
-    this.state = "static";
-    this.updateColor();
+    // 确定移动轴：奇数x；偶数z
     this.moveAxis = this.level % 2 ? "x" : "z";
+    // 确定初始移动位置
     this.boxParams[this.moveAxis] = this.moveLimit * -1;
-    this.prevBox = this.box;
+    // 增加方块生成的高度
     this.currentY += this.blockHeight;
+    this.updateColor();
     const boxParams = { ...this.boxParams };
     boxParams.y = this.currentY;
     const box = this.createBox(boxParams);
     this.box = box;
-    this.speed = Math.abs(this.speed);
     this.state = "running";
     if (this.level > 1) {
       this.updateCamera();
