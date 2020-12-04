@@ -132,7 +132,7 @@ class Stack extends Starter {
   colorOffset: number; // 颜色偏移量
   cameraParams: Record<string, any>; // 相机参数
   boxParams: Record<string, any>; // 方块参数
-  prevBox: Mesh | null; // 前一个物体
+  prevBox: Mesh | null; // 前一个方块
   gameover: boolean; // 游戏结束
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -229,27 +229,27 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    console.log(this.boxParams);
     const edge = this.moveAxis === "x" ? "width" : "depth";
     const edgeValue = this.boxParams![edge]; // 边长
     const currentPosition = this.box.position;
-    const moveDistance = currentPosition[this.moveAxis]; // 移动距离
+    const moveDistance = currentPosition![this.moveAxis]; // 移动距离
     // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(moveDistance);
-    console.log(edgeValue);
-    console.log(moveDistance);
-    console.log(overlap);
+    console.log({ overlapBox: this.overlapBox });
+    console.log({ edge });
+    console.log({ edgeValue });
+    console.log({ moveDistance });
+    console.log({ overlap });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
       return;
     }
     // 创建重叠部分的方块
-    const boxParams = { ...this.boxParams };
-    boxParams.y = currentPosition.y;
+    const boxParams = this.boxParams;
+    boxParams.y = currentPosition!.y;
     boxParams[edge] = overlap;
     boxParams[this.moveAxis] = moveDistance / 2;
-    this.boxParams = boxParams;
     this.createBox(boxParams);
     this.scene.remove(this.box);
   }
