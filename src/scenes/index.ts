@@ -229,22 +229,25 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    const edge = this.moveAxis === "x" ? "width" : "depth";
     console.log(this.boxParams);
+    // 确定当前移动的边和当前的位置
+    const edge = this.moveAxis === "x" ? "width" : "depth";
     const currentPosition = this.box.position;
+    // 计算重叠距离
     const overlap = this.boxParams![edge] - Math.abs(currentPosition[this.moveAxis]);
     console.log(overlap);
-    if (overlap < 0) {
+    if (overlap <= 0) {
       this.gameover = true;
       return;
     }
+    // 创建重叠部分的方块
     const boxParams = { ...this.boxParams };
     boxParams.y = currentPosition.y;
     boxParams[edge] = overlap;
     boxParams[this.moveAxis] = currentPosition[this.moveAxis] / 2;
     this.boxParams = boxParams;
-    this.scene.remove(this.box);
     this.createBox(boxParams);
+    this.scene.remove(this.box);
   }
   // 开始下一关
   startNextLevel() {
