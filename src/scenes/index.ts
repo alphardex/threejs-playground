@@ -133,6 +133,7 @@ class Stack extends Starter {
   cameraParams: Record<string, any>; // 相机参数
   boxParams: Record<string, any>; // 方块参数
   prevBox: Mesh | null; // 前一个物体
+  gameover: boolean; // 游戏结束
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -152,6 +153,7 @@ class Stack extends Starter {
     this.boxParams = { width: 1, height: this.blockHeight, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.prevBox = null;
+    this.gameover = false;
   }
   // 更新相机参数
   updateCameraParams() {
@@ -220,7 +222,9 @@ class Stack extends Starter {
   onClick() {
     document.addEventListener("click", () => {
       this.detectOverlap();
-      this.startNextLevel();
+      if (!this.gameover) {
+        this.startNextLevel();
+      }
     });
   }
   // 检测重叠部分
@@ -231,7 +235,7 @@ class Stack extends Starter {
     const overlap = this.boxParams![edge] - Math.abs(currentPosition[this.moveAxis]);
     console.log(overlap);
     if (overlap < 0) {
-      alert("lose");
+      this.gameover = true;
       return;
     }
     const boxParams = { ...this.boxParams };
