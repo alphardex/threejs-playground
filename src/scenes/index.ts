@@ -229,28 +229,26 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    const edge = this.moveAxis === "x" ? "width" : "depth";
-    const edgeValue = this.boxParams![edge]; // 边长
-    const currentPosition = this.box.position;
-    const moveDistance = currentPosition![this.moveAxis]; // 移动距离
-    // 计算重叠距离：边长 - |移动距离|
+    const { box, moveAxis, boxParams } = this;
+    const edge = moveAxis === "x" ? "width" : "depth";
+    const edgeValue = boxParams![edge]; // 边长
+    const currentPosition = box.position;
+    const moveDistance = currentPosition![moveAxis]; // 移动距离
+    // 计算重叠距离：边长 - |移动距离| - 原始位置
     const overlap = edgeValue - Math.abs(moveDistance);
-    console.log({ edge });
-    console.log({ edgeValue });
-    console.log({ moveDistance });
-    console.log({ overlap });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
       return;
     }
     // 创建重叠部分的方块
-    const boxParams = this.boxParams;
-    boxParams.y = currentPosition!.y;
-    boxParams[edge] = overlap;
-    boxParams[this.moveAxis] = moveDistance / 2;
-    this.createBox(boxParams);
-    this.scene.remove(this.box);
+    const overlapBoxParams = { ...boxParams };
+    overlapBoxParams.y = currentPosition!.y;
+    overlapBoxParams[edge] = overlap;
+    overlapBoxParams[moveAxis] = moveDistance / 2;
+    this.createBox(overlapBoxParams);
+    this.boxParams = overlapBoxParams;
+    this.scene.remove(box);
   }
   // 开始下一关
   startNextLevel() {
