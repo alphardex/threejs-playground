@@ -126,8 +126,7 @@ class Stack extends Starter {
   speedLimit: number; // 速度上限
   state: string; // 状态：paused - 静止；running - 运动
   currentY: number; // 当前的y轴高度
-  boxHeight: number; // 移动方块高度
-  boxParams: Record<string, any>; // 方块参数
+  boxParams: Record<string, any>; // 方块属性参数
   boxPosition: number; // 当前方块的位置
   colorOffset: number; // 颜色偏移量
   cameraPosition: Vector3; // 相机位置
@@ -145,12 +144,11 @@ class Stack extends Starter {
     this.speedLimit = 0.05;
     this.state = "paused";
     this.currentY = 0;
-    this.boxHeight = 0.1;
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
-    this.boxParams = { width: 1, height: this.boxHeight, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
+    this.boxParams = { width: 1, height: 0.1, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.gameover = false;
     this.boxPosition = 0;
@@ -260,7 +258,7 @@ class Stack extends Starter {
     // 确定初始移动位置
     this.boxParams[this.moveAxis] = this.moveLimit * -1;
     // 增加方块生成的高度
-    this.currentY += this.boxHeight;
+    this.currentY += this.boxParams.height;
     this.updateColor();
     const boxParams = { ...this.boxParams };
     boxParams.y = this.currentY;
@@ -273,8 +271,8 @@ class Stack extends Starter {
   }
   // 更新相机
   updateCamera() {
-    this.cameraPosition.y += this.boxHeight;
-    this.lookAtPosition.y += this.boxHeight;
+    this.cameraPosition.y += this.boxParams.height;
+    this.lookAtPosition.y += this.boxParams.height;
     gsap.to(this.camera.position, {
       y: this.cameraPosition.y,
       duration: 0.4,
