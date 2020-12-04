@@ -18,7 +18,6 @@ import {
 import Tweakpane from "tweakpane";
 import gsap from "gsap";
 import ky from "kyouka";
-import { render } from "vue";
 
 class Starter {
   debug: boolean;
@@ -41,7 +40,6 @@ class Starter {
     this.createBox({});
     this.createLight();
     this.addListeners();
-    this.createDebugPanel();
     this.setLoop();
   }
   createScene() {
@@ -90,39 +88,14 @@ class Starter {
     this.light = light;
   }
   addListeners() {
+    this.onResize();
+  }
+  onResize() {
     window.addEventListener("resize", (e) => {
       const aspect = calcAspect(this.container!);
       (this.camera as any).aspect = aspect;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
-    });
-  }
-  createDebugPanel() {
-    const pane = new Tweakpane();
-    const boxFolder = pane.addFolder({ title: "Box" });
-    const boxParams = { width: 1, height: 1, depth: 1, metalness: 0.5, roughness: 0.5 };
-    boxFolder.addInput(boxParams, "width", { label: "Width", min: 1, max: 10 }).on("change", (value: any) => {
-      this.box.scale.x = value;
-    });
-    boxFolder.addInput(boxParams, "height", { label: "Height", min: 1, max: 10 }).on("change", (value: any) => {
-      this.box.scale.y = value;
-    });
-    boxFolder.addInput(boxParams, "depth", { label: "Depth", min: 1, max: 10 }).on("change", (value: any) => {
-      this.box.scale.z = value;
-    });
-    boxFolder.addInput(boxParams, "metalness", { label: "Metalness", min: 0, max: 1 }).on("change", (value: any) => {
-      (this.box.material as any).metalness = value;
-    });
-    boxFolder.addInput(boxParams, "roughness", { label: "Roughness", min: 0, max: 1 }).on("change", (value: any) => {
-      (this.box.material as any).roughness = value;
-    });
-    const lightFolder = pane.addFolder({ title: "Light" });
-    const lightParams = { color: { r: 255, g: 255, b: 255 }, intensity: 1.5 };
-    lightFolder.addInput(lightParams, "color", { label: "Color" }).on("change", (value: any) => {
-      this.light.color = new Color(`rgb(${parseInt(value.r)}, ${parseInt(value.g)}, ${parseInt(value.b)})`);
-    });
-    lightFolder.addInput(lightParams, "intensity", { label: "Intensity", min: 0, max: 1000 }).on("change", (value: any) => {
-      this.light.intensity = value;
     });
   }
   update() {
@@ -205,6 +178,11 @@ class Stack extends Starter {
   }
   // 事件监听
   addListeners() {
+    this.onResize();
+    this.onClick();
+  }
+  // 监听点击
+  onClick() {
     document.addEventListener("click", () => {
       this.startNextLevel();
     });
