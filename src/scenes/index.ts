@@ -119,7 +119,7 @@ class Starter {
 class Stack extends Starter {
   level: number; // 关卡
   moveLimit: number; // 移动上限
-  moveAxis: "x" | "y" | "z"; // 移动所沿的轴
+  moveAxis: "x" | "z"; // 移动所沿的轴
   speed: number; // 移动速度
   speedInc: number; // 速度增量
   speedLimit: number; // 速度上限
