@@ -7,7 +7,6 @@ import {
   Color,
   DirectionalLight,
   Mesh,
-  MeshStandardMaterial,
   MeshToonMaterial,
   OrthographicCamera,
   PerspectiveCamera,
@@ -96,8 +95,9 @@ class Starter {
   onResize() {
     window.addEventListener("resize", (e) => {
       const aspect = calcAspect(this.container!);
-      (this.camera as any).aspect = aspect;
-      this.camera.updateProjectionMatrix();
+      const camera = this.camera as PerspectiveCamera;
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
       this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
     });
   }
@@ -130,6 +130,7 @@ class Stack extends Starter {
   lookAtPosition: Vector3; // 视点
   color: Color; // 方块颜色
   colorOffset: number; // 颜色偏移量
+  cameraParams: Record<string, any>; // 相机参数
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -146,6 +147,15 @@ class Stack extends Starter {
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.color = new Color("#d9dfc8");
     this.colorOffset = ky.randomIntegerInRange(0, 255);
+    this.cameraParams = {};
+    this.updateCameraParams();
+  }
+  // 更新相机参数
+  updateCameraParams() {
+    const { container } = this;
+    const aspect = calcAspect(container!);
+    const zoom = 2;
+    this.cameraParams = { left: -zoom * aspect, right: zoom * aspect, top: zoom, bottom: -zoom, near: -100, far: 1000 };
   }
   // 初始化
   init() {
@@ -162,10 +172,9 @@ class Stack extends Starter {
   }
   // 创建正交相机
   createCamera() {
-    const { container, cameraPosition, lookAtPosition } = this;
-    const aspect = calcAspect(container!);
-    const d = 2;
-    const camera = new OrthographicCamera(-d * aspect, d * aspect, d, -d, -100, 1000);
+    const { cameraParams, cameraPosition, lookAtPosition } = this;
+    const { left, right, top, bottom, near, far } = cameraParams;
+    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
@@ -183,6 +192,22 @@ class Stack extends Starter {
   addListeners() {
     this.onResize();
     this.onClick();
+  }
+  // 监听画面缩放
+  onResize() {
+    window.addEventListener("resize", (e) => {
+      this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+      this.updateCameraParams();
+      const camera = this.camera as OrthographicCamera;
+      const { left, right, top, bottom, near, far } = this.cameraParams;
+      camera.left = left;
+      camera.right = right;
+      camera.top = top;
+      camera.bottom = bottom;
+      camera.near = near;
+      camera.far = far;
+      camera.updateProjectionMatrix();
+    });
   }
   // 监听点击
   onClick() {
