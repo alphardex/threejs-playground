@@ -6,6 +6,7 @@ import {
   BoxBufferGeometry,
   Color,
   DirectionalLight,
+  Matrix4,
   Mesh,
   MeshToonMaterial,
   OrthographicCamera,
@@ -170,8 +171,6 @@ class Stack extends Starter {
     baseParams.height = 0.1;
     const base = this.createBox(baseParams);
     this.box = base;
-    this.box.scale.y = 20;
-    this.box.position.y = -1 + 1 / 20;
     this.createLight();
     this.addListeners();
     this.setLoop();
