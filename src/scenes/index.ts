@@ -120,6 +120,7 @@ class Stack extends Starter {
   level: number; // 关卡
   moveLimit: number; // 移动上限
   moveAxis: "x" | "z"; // 移动所沿的轴
+  moveEdge: "width" | "depth"; // 移动的边
   speed: number; // 移动速度
   speedInc: number; // 速度增量
   speedLimit: number; // 速度上限
@@ -134,11 +135,13 @@ class Stack extends Starter {
   boxParams: Record<string, any>; // 方块参数
   prevBox: Mesh | null; // 前一个方块
   gameover: boolean; // 游戏结束
+  currentPosition: number; // 当前方块的位置
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
     this.moveLimit = 1.2;
     this.moveAxis = "x";
+    this.moveEdge = "width";
     this.speed = 0.01;
     this.speedInc = 0.0005;
     this.speedLimit = 0.05;
@@ -154,6 +157,7 @@ class Stack extends Starter {
     this.updateCameraParams();
     this.prevBox = null;
     this.gameover = false;
+    this.currentPosition = 0;
   }
   // 更新相机参数
   updateCameraParams() {
@@ -229,13 +233,11 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    const { box, moveAxis, boxParams } = this;
-    const edge = moveAxis === "x" ? "width" : "depth";
-    const edgeValue = boxParams![edge]; // 边长
-    const currentPosition = box.position;
-    const moveDistance = currentPosition![moveAxis]; // 移动距离
+    const { boxParams, moveEdge, currentPosition, box, moveAxis } = this;
+    const edgeValue = boxParams![moveEdge]; // 边长
     // 计算重叠距离：边长 - |移动距离|
-    const overlap = edgeValue - Math.abs(moveDistance);
+    const overlap = edgeValue - Math.abs(currentPosition);
+    console.log({ edgeValue, overlap, currentPosition });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -243,9 +245,9 @@ class Stack extends Starter {
     }
     // 创建重叠部分的方块
     const overlapBoxParams = { ...boxParams };
-    overlapBoxParams.y = currentPosition!.y;
-    overlapBoxParams[edge] = overlap;
-    overlapBoxParams[moveAxis] = moveDistance / 2;
+    overlapBoxParams.y = box.position.y;
+    overlapBoxParams[moveEdge] = overlap;
+    overlapBoxParams[moveAxis] = currentPosition / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
@@ -257,8 +259,9 @@ class Stack extends Starter {
     if (this.speed <= this.speedLimit) {
       this.speed += this.speedInc;
     }
-    // 确定移动轴：奇数x；偶数z
+    // 确定移动轴和移动边：奇数x；偶数z
     this.moveAxis = this.level % 2 ? "x" : "z";
+    this.moveEdge = this.level % 2 ? "width" : "depth";
     // 确定初始移动位置
     this.boxParams[this.moveAxis] = this.moveLimit * -1;
     // 增加方块生成的高度
@@ -292,6 +295,7 @@ class Stack extends Starter {
       const { moveAxis } = this;
       this.box.position[moveAxis] += this.speed;
       const currentPosition = this.box.position[moveAxis];
+      this.currentPosition = currentPosition;
       // 移到末端就反转方向
       if (Math.abs(currentPosition) > this.moveLimit) {
         this.speed = this.speed * -1;
