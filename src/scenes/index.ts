@@ -234,7 +234,7 @@ class Stack extends Starter {
   // 检测重叠部分
   detectOverlap() {
     const { boxParams, moveEdge, boxPosition, box, moveAxis } = this;
-    const edgeValue = boxParams![moveEdge]; // 边长
+    const edgeValue = boxParams![moveEdge];
     // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(boxPosition);
     console.log({ edgeValue, overlap, boxPosition });
