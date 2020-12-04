@@ -15,7 +15,6 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
-import Tweakpane from "tweakpane";
 import gsap from "gsap";
 import ky from "kyouka";
 
@@ -25,10 +24,8 @@ class Starter {
   scene!: Scene;
   camera!: PerspectiveCamera | OrthographicCamera;
   renderer!: WebGLRenderer;
-  plane!: Mesh;
   box!: Mesh;
   light!: PointLight | DirectionalLight;
-  pane!: Tweakpane;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -61,7 +58,6 @@ class Starter {
       antialias: true,
     });
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
-    renderer.shadowMap.enabled = true;
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
@@ -74,8 +70,6 @@ class Starter {
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
-    box.receiveShadow = true;
-    box.castShadow = true;
     this.box = box;
     this.scene.add(box);
   }
