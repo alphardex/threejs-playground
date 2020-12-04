@@ -284,6 +284,7 @@ class Stack extends Starter {
       const { moveAxis } = this;
       this.box.position[moveAxis] += this.speed;
       const currentPosition = this.box.position[moveAxis];
+      // 移到末端就反转方向
       if (Math.abs(currentPosition) > this.moveLimit) {
         this.speed = this.speed * -1;
       }
