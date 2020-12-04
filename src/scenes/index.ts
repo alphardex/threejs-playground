@@ -129,7 +129,6 @@ class Stack extends Starter {
   blockHeight: number; // 移动方块高度
   cameraPosition: Vector3; // 相机位置
   lookAtPosition: Vector3; // 视点
-  color: Color; // 方块颜色
   colorOffset: number; // 颜色偏移量
   cameraParams: Record<string, any>; // 相机参数
   boxParams: Record<string, any>; // 方块参数
@@ -148,10 +147,9 @@ class Stack extends Starter {
     this.blockHeight = 0.1;
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
-    this.color = new Color("#d9dfc8");
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
-    this.boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: this.color };
+    this.boxParams = { height: this.blockHeight, x: 0, y: this.currentY, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.prevBox = null;
   }
@@ -170,7 +168,6 @@ class Stack extends Starter {
     this.updateColor();
     const baseParams = { ...this.boxParams };
     baseParams.height = this.baseHeight;
-    baseParams.color = this.color;
     const base = this.createBox(baseParams);
     this.box = base;
     this.box.scale.y = 20;
@@ -195,7 +192,7 @@ class Stack extends Starter {
     const r = (Math.sin(0.25 * colorValue) * 55 + 200) / 255;
     const g = (Math.sin(0.25 * colorValue + 2) * 55 + 200) / 255;
     const b = (Math.sin(0.25 * colorValue + 4) * 55 + 200) / 255;
-    this.color = new Color(r, g, b);
+    this.boxParams.color = new Color(r, g, b);
   }
   // 事件监听
   addListeners() {
@@ -237,7 +234,6 @@ class Stack extends Starter {
     }
     const boxParams = { ...this.boxParams };
     boxParams.y = currentPosition.y;
-    boxParams.color = this.color;
     const edge = this.moveAxis === "x" ? "width" : "depth";
     boxParams[edge] = overlap;
     boxParams[this.moveAxis] = currentPosition[this.moveAxis] / 2;
@@ -261,7 +257,6 @@ class Stack extends Starter {
     this.currentY += this.blockHeight;
     const boxParams = { ...this.boxParams };
     boxParams.y = this.currentY;
-    boxParams.color = this.color;
     const box = this.createBox(boxParams);
     this.box = box;
     this.speed = Math.abs(this.speed);
