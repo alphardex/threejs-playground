@@ -135,7 +135,7 @@ class Stack extends Starter {
   boxParams: Record<string, any>; // 方块参数
   prevBox: Mesh | null; // 前一个方块
   gameover: boolean; // 游戏结束
-  currentPosition: number; // 当前方块的位置
+  boxPosition: number; // 当前方块的位置
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.level = 0;
@@ -157,7 +157,7 @@ class Stack extends Starter {
     this.updateCameraParams();
     this.prevBox = null;
     this.gameover = false;
-    this.currentPosition = 0;
+    this.boxPosition = 0;
   }
   // 更新相机参数
   updateCameraParams() {
@@ -233,11 +233,11 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   detectOverlap() {
-    const { boxParams, moveEdge, currentPosition, box, moveAxis } = this;
+    const { boxParams, moveEdge, boxPosition, box, moveAxis } = this;
     const edgeValue = boxParams![moveEdge]; // 边长
     // 计算重叠距离：边长 - |移动距离|
-    const overlap = edgeValue - Math.abs(currentPosition);
-    console.log({ edgeValue, overlap, currentPosition });
+    const overlap = edgeValue - Math.abs(boxPosition);
+    console.log({ edgeValue, overlap, boxPosition });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -247,7 +247,7 @@ class Stack extends Starter {
     const overlapBoxParams = { ...boxParams };
     overlapBoxParams.y = box.position.y;
     overlapBoxParams[moveEdge] = overlap;
-    overlapBoxParams[moveAxis] = currentPosition / 2;
+    overlapBoxParams[moveAxis] = boxPosition / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
@@ -294,10 +294,10 @@ class Stack extends Starter {
     if (this.state === "running") {
       const { moveAxis } = this;
       this.box.position[moveAxis] += this.speed;
-      const currentPosition = this.box.position[moveAxis];
-      this.currentPosition = currentPosition;
+      const boxPosition = this.box.position[moveAxis];
+      this.boxPosition = boxPosition;
       // 移到末端就反转方向
-      if (Math.abs(currentPosition) > this.moveLimit) {
+      if (Math.abs(boxPosition) > this.moveLimit) {
         this.speed = this.speed * -1;
       }
     }
