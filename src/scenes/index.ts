@@ -6,7 +6,6 @@ import {
   BoxBufferGeometry,
   Color,
   DirectionalLight,
-  Matrix4,
   Mesh,
   MeshToonMaterial,
   OrthographicCamera,
@@ -128,7 +127,6 @@ class Stack extends Starter {
   state: string; // 状态：paused - 静止；running - 运动
   currentY: number; // 当前的y轴高度
   boxParams: Record<string, any>; // 方块属性参数
-  boxPosition: number; // 当前方块的位置
   colorOffset: number; // 颜色偏移量
   cameraPosition: Vector3; // 相机位置
   lookAtPosition: Vector3; // 视点
@@ -152,7 +150,6 @@ class Stack extends Starter {
     this.boxParams = { width: 1, height: 0.1, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.gameover = false;
-    this.boxPosition = 0;
   }
   // 更新相机参数
   updateCameraParams() {
@@ -233,9 +230,9 @@ class Stack extends Starter {
       } else if (code === "Space") {
         this.detectOverlap();
       } else if (code === "ArrowUp") {
-        this.box.position[this.moveAxis] += this.speed;
+        this.box.position[this.moveAxis] += this.speed / 2;
       } else if (code === "ArrowDown") {
-        this.box.position[this.moveAxis] -= this.speed;
+        this.box.position[this.moveAxis] -= this.speed / 2;
       }
     });
   }
@@ -243,9 +240,8 @@ class Stack extends Starter {
   detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
     const edgeValue = boxParams![moveEdge];
-    const boxPosition = this.boxPosition;
     // 计算重叠距离：边长 - |移动距离|
-    const overlap = edgeValue - Math.abs(boxPosition); // 第2个后不准
+    const overlap = edgeValue - Math.abs(box.position[moveAxis]); // 第2个后不准
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -255,7 +251,7 @@ class Stack extends Starter {
     const overlapBoxParams = { ...boxParams };
     overlapBoxParams.y = box.position.y;
     overlapBoxParams[moveEdge] = overlap;
-    overlapBoxParams[moveAxis] = boxPosition / 2;
+    overlapBoxParams[moveAxis] = box.position[moveAxis] / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
     console.log({ boxParams: this.boxParams });
@@ -306,10 +302,8 @@ class Stack extends Starter {
     if (this.state === "running") {
       const { moveAxis } = this;
       this.box.position[moveAxis] += this.speed;
-      const boxPosition = this.box.position[moveAxis];
-      this.boxPosition = boxPosition;
       // 移到末端就反转方向
-      if (Math.abs(boxPosition) > this.moveLimit) {
+      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
         this.speed = this.speed * -1;
       }
     }
