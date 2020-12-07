@@ -224,7 +224,7 @@ class Stack extends Starter {
       this.detectOverlap();
     });
   }
-  // 监听键盘（调试时使用：空格下一关；P键暂停）
+  // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
   onKeyDown() {
     document.addEventListener("keydown", (e) => {
       const code = e.code;
@@ -232,6 +232,10 @@ class Stack extends Starter {
         this.state = this.state === "running" ? "paused" : "running";
       } else if (code === "Space") {
         this.detectOverlap();
+      } else if (code === "ArrowUp") {
+        this.box.position[this.moveAxis] += this.speed;
+      } else if (code === "ArrowDown") {
+        this.box.position[this.moveAxis] -= this.speed;
       }
     });
   }
@@ -242,7 +246,6 @@ class Stack extends Starter {
     const boxPosition = this.boxPosition;
     // 计算重叠距离：边长 - |移动距离|
     const overlap = edgeValue - Math.abs(boxPosition); // 第2个后不准
-    console.log({ boxParams, edgeValue, overlap, boxPosition });
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -255,6 +258,7 @@ class Stack extends Starter {
     overlapBoxParams[moveAxis] = boxPosition / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
+    console.log({ boxParams: this.boxParams });
     this.scene.remove(box);
     if (!this.gameover) {
       this.startNextLevel();
