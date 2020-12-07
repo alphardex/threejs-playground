@@ -196,7 +196,11 @@ class Stack extends Starter {
   // 事件监听
   addListeners() {
     this.onResize();
-    this.onClick();
+    if (this.debug) {
+      this.onKeyDown();
+    } else {
+      this.onClick();
+    }
   }
   // 监听画面缩放
   onResize() {
@@ -218,8 +222,16 @@ class Stack extends Starter {
   onClick() {
     document.addEventListener("click", () => {
       this.detectOverlap();
-      if (!this.gameover) {
-        this.startNextLevel();
+    });
+  }
+  // 监听键盘（调试时使用：空格下一关；P键暂停）
+  onKeyDown() {
+    document.addEventListener("keydown", (e) => {
+      const code = e.code;
+      if (code === "KeyP") {
+        this.state = this.state === "running" ? "paused" : "running";
+      } else if (code === "Space") {
+        this.detectOverlap();
       }
     });
   }
@@ -244,6 +256,9 @@ class Stack extends Starter {
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
+    if (!this.gameover) {
+      this.startNextLevel();
+    }
   }
   // 开始下一关
   startNextLevel() {
