@@ -239,8 +239,9 @@ class Stack extends Starter {
   // 检测重叠部分
   detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
-    // 计算重叠距离：边长 - |移动距离|
-    const overlap = boxParams![moveEdge] - Math.abs(box.position[moveAxis]); // 第2个后不准
+    console.log({ boxParams: this.boxParams });
+    // 计算重叠距离：边长 - |移动距离| - 上一个方块的移动距离
+    const overlap = boxParams![moveEdge] - Math.abs(box.position[moveAxis]) - boxParams[moveAxis];
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -253,7 +254,6 @@ class Stack extends Starter {
     overlapBoxParams[moveAxis] = box.position[moveAxis] / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
-    console.log({ boxParams: this.boxParams });
     this.scene.remove(box);
     if (!this.gameover) {
       this.startNextLevel();
@@ -269,8 +269,6 @@ class Stack extends Starter {
     // 确定移动轴和移动边：奇数x；偶数z
     this.moveAxis = this.level % 2 ? "x" : "z";
     this.moveEdge = this.level % 2 ? "width" : "depth";
-    // 确定初始移动位置
-    this.boxParams[this.moveAxis] = this.moveLimit * -1;
     // 增加方块生成的高度
     this.currentY += this.boxParams.height;
     this.updateColor();
@@ -278,6 +276,8 @@ class Stack extends Starter {
     boxParams.y = this.currentY;
     const box = this.createBox(boxParams);
     this.box = box;
+    // 确定初始移动位置
+    this.box.position[this.moveAxis] = this.moveLimit * -1;
     this.state = "running";
     if (this.level > 1) {
       this.updateCamera();
