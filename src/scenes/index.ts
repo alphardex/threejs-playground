@@ -241,6 +241,7 @@ class Stack extends Starter {
     const { boxParams, moveEdge, box, moveAxis } = this;
     // 重叠距离 = 上一个方块的边长 - 上一个方块的移动距离 - |当前方块的移动距离|
     const overlap = boxParams![moveEdge] - boxParams[moveAxis] - Math.abs(box.position[moveAxis]);
+    console.log(overlap);
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
@@ -253,11 +254,11 @@ class Stack extends Starter {
     console.log(box.position[moveAxis]);
     console.log(boxParams[moveAxis]);
     if (box.position[moveAxis] < boxParams[moveAxis]) {
-      console.log("small");
-      // 如果当前方块的位置在上一个方块之后
       overlapBoxParams[moveAxis] = box.position[moveAxis] / 2 + boxParams[moveAxis] / 2;
     } else {
       console.log("large");
+      // TODO
+      overlapBoxParams[moveAxis] = box.position[moveAxis] / 2 + boxParams[moveAxis] / 2;
     }
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
