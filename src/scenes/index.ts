@@ -262,9 +262,7 @@ class Stack extends Starter {
     const slicedBoxParams = { ...boxParams };
     slicedBoxParams.y = box.position.y;
     slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
-    console.log(overlapPosition);
-    console.log(overlap);
-    slicedBoxParams[moveAxis] = 3;
+    slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 - prevPosition);
     const slicedBox = this.createBox(slicedBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
