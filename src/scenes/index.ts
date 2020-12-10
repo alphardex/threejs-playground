@@ -240,8 +240,9 @@ class Stack extends Starter {
   detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
     const direction = Math.sign(box.position[moveAxis] - boxParams[moveAxis]);
+    console.log(direction);
     // 重叠距离 = 上一个方块的边长 - 上一个方块的移动距离 - |当前方块的移动距离|
-    const overlap = boxParams![moveEdge] - direction * boxParams[moveAxis] - Math.abs(box.position[moveAxis]);
+    const overlap = boxParams![moveEdge] + direction * boxParams[moveAxis] - Math.abs(box.position[moveAxis]);
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
