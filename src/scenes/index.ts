@@ -264,6 +264,11 @@ class Stack extends Starter {
     slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
     slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 - prevPosition);
     const slicedBox = this.createBox(slicedBoxParams);
+    gsap.to(slicedBox.position, {
+      y: -4,
+      duration: 1,
+      ease: "power1.easeIn",
+    });
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
     if (!this.gameover) {
