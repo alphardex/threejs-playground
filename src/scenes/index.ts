@@ -243,12 +243,8 @@ class Stack extends Starter {
     const prevPosition = boxParams[moveAxis];
     const direction = Math.sign(currentPosition - prevPosition);
     const edge = boxParams![moveEdge];
-    // 重叠距离 = 上一个方块的边长 + 上一个方块的移动距离 - |当前方块的移动距离|
-    const overlap = edge + direction * prevPosition - Math.abs(currentPosition);
-    console.log(edge - overlap);
-    if (edge - overlap > 0.3) {
-      // overlap = boxParams![moveEdge] / 2;
-    }
+    // 重叠距离 = 上一个方块的边长 + 上一个方块的移动距离 - 当前方块的移动距离
+    const overlap = edge + direction * prevPosition - direction * currentPosition;
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
