@@ -254,8 +254,15 @@ class Stack extends Starter {
     const overlapBoxParams = { ...boxParams };
     overlapBoxParams.y = box.position.y;
     overlapBoxParams[moveEdge] = overlap;
-    overlapBoxParams[moveAxis] = currentPosition / 2 + prevPosition / 2;
+    const overlapPosition = currentPosition / 2 + prevPosition / 2;
+    overlapBoxParams[moveAxis] = overlapPosition;
     this.createBox(overlapBoxParams);
+    // 创建切掉部分的方块，并使其下落
+    const slicedBoxParams = { ...boxParams };
+    slicedBoxParams.y = box.position.y;
+    slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
+    slicedBoxParams[moveAxis] = currentPosition + overlapPosition;
+    this.createBox(slicedBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
     if (!this.gameover) {
