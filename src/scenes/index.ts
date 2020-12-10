@@ -244,8 +244,8 @@ class Stack extends Starter {
     const prevPosition = boxParams[moveAxis];
     const direction = Math.sign(currentPosition - prevPosition);
     const edge = boxParams![moveEdge];
-    // 重叠距离 = 上一个方块的边长 + 上一个方块的移动距离 - 当前方块的移动距离
-    const overlap = edge + direction * prevPosition - direction * currentPosition;
+    // 重叠距离 = 上一个方块的边长 + 方向 * (上一个方块位置 - 当前方块位置)
+    const overlap = edge + direction * (prevPosition - currentPosition);
     if (overlap <= 0) {
       alert("gameover");
       this.gameover = true;
