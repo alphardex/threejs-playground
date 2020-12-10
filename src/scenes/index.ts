@@ -217,7 +217,7 @@ class Stack extends Starter {
   }
   // 监听点击
   onClick() {
-    document.addEventListener("click", () => {
+    this.renderer.domElement.addEventListener("click", () => {
       this.detectOverlap();
     });
   }
