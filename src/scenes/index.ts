@@ -237,6 +237,7 @@ class Stack extends Starter {
     });
   }
   // 检测重叠部分
+  // 难点：1. 重叠距离计算 2. 重叠方块位置计算 3. 切掉方块位置计算
   detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
     const currentPosition = box.position[moveAxis];
@@ -257,11 +258,13 @@ class Stack extends Starter {
     const overlapPosition = currentPosition / 2 + prevPosition / 2;
     overlapBoxParams[moveAxis] = overlapPosition;
     this.createBox(overlapBoxParams);
-    // 创建切掉部分的方块，并使其下落
+    // 创建切掉部分的方块
     const slicedBoxParams = { ...boxParams };
     slicedBoxParams.y = box.position.y;
     slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
-    slicedBoxParams[moveAxis] = currentPosition + overlapPosition;
+    console.log(overlapPosition);
+    console.log(overlap);
+    slicedBoxParams[moveAxis] = 3;
     const slicedBox = this.createBox(slicedBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
