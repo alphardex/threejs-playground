@@ -240,7 +240,8 @@ class Stack extends Starter {
   detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
     // 重叠距离 = 上一个方块的边长 - 上一个方块的移动距离 - |当前方块的移动距离|
-    const overlap = boxParams![moveEdge] - boxParams[moveAxis] - Math.abs(box.position[moveAxis]);
+    const prevMove = box.position[moveAxis] < boxParams[moveAxis] ? boxParams[moveAxis] : -boxParams[moveAxis];
+    const overlap = boxParams![moveEdge] - prevMove - Math.abs(box.position[moveAxis]);
     console.log(overlap);
     if (overlap <= 0) {
       alert("gameover");
@@ -251,15 +252,7 @@ class Stack extends Starter {
     const overlapBoxParams = { ...boxParams };
     overlapBoxParams.y = box.position.y;
     overlapBoxParams[moveEdge] = overlap;
-    console.log(box.position[moveAxis]);
-    console.log(boxParams[moveAxis]);
-    if (box.position[moveAxis] < boxParams[moveAxis]) {
-      overlapBoxParams[moveAxis] = box.position[moveAxis] / 2 + boxParams[moveAxis] / 2;
-    } else {
-      console.log("large");
-      // TODO
-      overlapBoxParams[moveAxis] = box.position[moveAxis] / 2 + boxParams[moveAxis] / 2;
-    }
+    overlapBoxParams[moveAxis] = box.position[moveAxis] / 2 + boxParams[moveAxis] / 2;
     this.createBox(overlapBoxParams);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
