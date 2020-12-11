@@ -138,7 +138,7 @@ class Stack extends Starter {
     this.moveLimit = 1.2;
     this.moveAxis = "x";
     this.moveEdge = "width";
-    this.speed = 0.01;
+    this.speed = 0.02;
     this.speedInc = 0.0005;
     this.speedLimit = 0.05;
     this.state = "paused";
@@ -238,8 +238,7 @@ class Stack extends Starter {
   }
   // 检测重叠部分
   // 难点：1. 重叠距离计算 2. 重叠方块位置计算 3. 切掉方块位置计算
-  detectOverlap() {
-    const that = this;
+  async detectOverlap() {
     const { boxParams, moveEdge, box, moveAxis } = this;
     const currentPosition = box.position[moveAxis];
     const prevPosition = boxParams[moveAxis];
@@ -248,7 +247,9 @@ class Stack extends Starter {
     // 重叠距离 = 上一个方块的边长 + 方向 * (上一个方块位置 - 当前方块位置)
     const overlap = edge + direction * (prevPosition - currentPosition);
     if (overlap <= 0) {
-      alert("gameover");
+      this.dropBox(box);
+      await ky.sleep(1500);
+      alert(`Gameover, your score: ${this.level}`);
       this.gameover = true;
       return;
     }
@@ -265,27 +266,32 @@ class Stack extends Starter {
     slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
     slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
     const slicedBox = this.createBox(slicedBoxParams);
-    // 使切掉的方块旋转下落
-    gsap.to(slicedBox.position, {
-      y: "-=3.2",
-      ease: "power1.easeIn",
-      duration: 1,
-      onComplete() {
-        that.scene.remove(slicedBox);
-      },
-    });
-    gsap.to(slicedBox.rotation, {
-      delay: 0.1,
-      x: moveAxis === "z" ? ky.randomNumberInRange(4, 6) : 0.1,
-      y: 0.1,
-      z: moveAxis === "x" ? ky.randomNumberInRange(4, 6) : 0.1,
-      duration: 1.2,
-    });
+    this.dropBox(slicedBox);
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
     if (!this.gameover) {
       this.startNextLevel();
     }
+  }
+  dropBox(box: Mesh) {
+    // 使方块旋转下落
+    const { moveAxis } = this;
+    const that = this;
+    gsap.to(box.position, {
+      y: "-=3.2",
+      ease: "power1.easeIn",
+      duration: 1.5,
+      onComplete() {
+        that.scene.remove(box);
+      },
+    });
+    gsap.to(box.rotation, {
+      delay: 0.1,
+      x: moveAxis === "z" ? ky.randomNumberInRange(4, 6) : 0.1,
+      y: 0.1,
+      z: moveAxis === "x" ? ky.randomNumberInRange(4, 6) : 0.1,
+      duration: 1.5,
+    });
   }
   // 开始下一关
   startNextLevel() {
