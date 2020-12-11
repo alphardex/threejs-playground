@@ -1,31 +1,27 @@
 <template>
   <div class="relative w-screen h-screen">
     <div
-      class="title absolute h-center z-1 text-white shadow-in transition-all duration-300 whitespace-no-wrap"
+      class="status title h-center shadow-in"
       :class="{ 'opacity-0': status.gamestart }"
       v-if="status"
     >
       STACK
     </div>
     <div
-      class="start absolute h-center z-1 text-white fade-in transition-all duration-300 cursor-pointer whitespace-no-wrap"
-      style="animation-delay: 0.6s"
+      class="status start h-center fade-in pointer-events-none"
       :class="{ 'opacity-0': status.gamestart }"
-      v-if="status"
+      v-if="status && !status.gameover && !status.gamestart"
     >
       Tap to start
     </div>
     <div
-      class="retry absolute h-center z-1 text-white fade-in transition-all duration-300 cursor-pointer whitespace-no-wrap"
+      class="status retry h-center fade-in cursor-pointer"
       v-if="status && status.gameover"
       @click="restartGame"
     >
       Try Again
     </div>
-    <div
-      class="score absolute h-center z-1 text-white transition-all duration-300 whitespace-no-wrap"
-      v-if="status && status.gamestart"
-    >
+    <div class="status score h-center" v-if="status && status.gamestart">
       {{ status.level - 1 }}
     </div>
     <div class="stack"></div>
@@ -87,15 +83,23 @@ export default defineComponent({
   background: var(--blue-grad-1);
 }
 
+.status {
+  position: absolute;
+  z-index: 1;
+  color: white;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
 .title,
 .score {
-  font-size: 70px;
   top: 6vh;
+  font-size: 70px;
 }
 
 .start,
 .retry {
-  font-size: 32px;
   top: 20vh;
+  font-size: 32px;
 }
 </style>
