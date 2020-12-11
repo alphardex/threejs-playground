@@ -24,7 +24,6 @@ export default defineComponent({
 body {
   height: 100vh;
   margin: 0;
-  font-size: 4vw;
   background: white;
 }
 
@@ -74,5 +73,24 @@ select {
 #app {
   width: 100%;
   height: 100%;
+}
+
+// animations
+
+.shadow-in {
+  animation: shadow-in 1s linear;
+}
+
+@keyframes shadow-in {
+  from {
+    text-shadow: 0 0 1rem white, 2rem -2rem 1rem white, 2rem 2rem 1rem white,
+      -2rem 2rem 1rem white, -2rem -2rem 1rem white;
+    opacity: 0;
+  }
+
+  to {
+    text-shadow: 0 0 0 white;
+    opacity: 1;
+  }
 }
 </style>

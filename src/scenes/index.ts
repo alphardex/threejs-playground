@@ -165,7 +165,8 @@ class Stack extends Starter {
     this.createRenderer();
     this.updateColor();
     const baseParams = { ...this.boxParams };
-    baseParams.height = 0.1;
+    baseParams.height = 2;
+    baseParams.y -= 0.95;
     const base = this.createBox(baseParams);
     this.box = base;
     this.createLight();
@@ -218,7 +219,11 @@ class Stack extends Starter {
   // 监听点击
   onClick() {
     this.renderer.domElement.addEventListener("click", () => {
-      this.detectOverlap();
+      if (this.level === 0) {
+        this.start();
+      } else {
+        this.detectOverlap();
+      }
     });
   }
   // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
@@ -228,7 +233,11 @@ class Stack extends Starter {
       if (code === "KeyP") {
         this.state = this.state === "running" ? "paused" : "running";
       } else if (code === "Space") {
-        this.detectOverlap();
+        if (this.level === 0) {
+          this.start();
+        } else {
+          this.detectOverlap();
+        }
       } else if (code === "ArrowUp") {
         this.box.position[this.moveAxis] += this.speed / 2;
       } else if (code === "ArrowDown") {
