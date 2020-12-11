@@ -42,7 +42,7 @@ export default defineComponent({
       stack: null,
       status: null,
     });
-    onMounted(async () => {
+    const startGame = async () => {
       const stack = new Stack(".stack", false);
       stack.init();
       state.stack = stack;
@@ -51,6 +51,9 @@ export default defineComponent({
         state.status = state!.stack.status;
         await ky.sleep(100);
       }
+    };
+    onMounted(async () => {
+      await startGame();
     });
     return {
       ...toRefs(state),

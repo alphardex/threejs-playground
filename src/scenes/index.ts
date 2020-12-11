@@ -259,7 +259,6 @@ class Stack extends Base {
     // 重叠距离 = 上一个方块的边长 + 方向 * (上一个方块位置 - 当前方块位置)
     const overlap = edge + direction * (prevPosition - currentPosition);
     if (overlap <= 0) {
-      this.gameover = true;
       this.state = "paused";
       this.dropBox(box);
       gsap.to(camera, {
@@ -270,7 +269,7 @@ class Stack extends Base {
           camera.updateProjectionMatrix();
         },
         onComplete() {
-          Alert.fire(`Gameover, your score: ${that.level}`);
+          this.gameover = true;
         },
       });
     } else {
