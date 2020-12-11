@@ -186,10 +186,10 @@ class Stack extends Base {
   // 更新颜色
   updateColor() {
     const { level, colorOffset } = this;
-    const colorValue = level + colorOffset;
-    const r = (Math.sin(0.25 * colorValue) * 55 + 200) / 255;
-    const g = (Math.sin(0.25 * colorValue + 2) * 55 + 200) / 255;
-    const b = (Math.sin(0.25 * colorValue + 4) * 55 + 200) / 255;
+    const colorValue = (level + colorOffset) * 0.25;
+    const r = (Math.sin(colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
     this.boxParams.color = new Color(r, g, b);
   }
   // 事件监听
