@@ -76,7 +76,7 @@ select {
 }
 
 .fade-in {
-  animation: fade-in 1s both;
+  animation: fade-in 1s;
 }
 
 @keyframes fade-in {
