@@ -294,7 +294,7 @@ class Stack extends Base {
     }
   }
   // 使方块旋转下落
-  dropBox(box: Mesh, enableRotate = true) {
+  dropBox(box: Mesh) {
     const { moveAxis } = this;
     const that = this;
     gsap.to(box.position, {
