@@ -1,5 +1,4 @@
 import { ref } from "vue";
-import ky from "kyouka";
 
 export default () => {
   const showBackdrop = ref(false);
@@ -15,11 +14,10 @@ export default () => {
     fn();
   };
 
-  const openDialogCurry = ky.curry(openDialog);
-
   return {
     showBackdrop,
     isBackdropClosable,
     closeAllDialog,
+    openDialog,
   };
 };

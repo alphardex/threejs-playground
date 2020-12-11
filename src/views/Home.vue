@@ -20,29 +20,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent } from "vue";
 import useDialog from "@/hooks/useDialog";
-import useWx from "@/hooks/useWx";
-import { Info } from "@/types";
-import { getInfo } from "@/apis";
-
-interface State {
-  info: Info;
-}
 
 export default defineComponent({
   name: "Home",
   setup() {
     const dialog = useDialog();
-    const wx = useWx();
-    const state = reactive<State>({
-      info: {},
-    });
-    onMounted(async () => {
-      state.info = await getInfo();
-      await wx.wxShare(state.info);
-    });
-    return { dialog, wx, ...toRefs(state) };
+    return { dialog };
   },
 });
 </script>

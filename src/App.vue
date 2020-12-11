@@ -5,19 +5,8 @@
 <script lang="ts">
 import "@alphardex/aqua.css/dist/aqua.sp.min.css";
 import { defineComponent } from "vue";
-import MockServer from "@/mock/index";
-import VConsole from "vconsole";
-import { isDevMode } from "./consts";
 
-export default defineComponent({
-  setup() {
-    if (isDevMode) {
-      const mockServer = new MockServer();
-      mockServer.start();
-    }
-    new VConsole();
-  },
-});
+export default defineComponent({});
 </script>
 
 <style lang="scss">
