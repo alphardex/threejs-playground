@@ -308,9 +308,9 @@ class Stack extends Base {
     });
     gsap.to(box.rotation, {
       delay: 0.1,
-      x: moveAxis === "z" ? ky.randomNumberInRange(4, 6) : 0.1,
+      x: moveAxis === "z" ? ky.randomNumberInRange(4, 5) : 0.1,
       y: 0.1,
-      z: moveAxis === "x" ? ky.randomNumberInRange(4, 6) : 0.1,
+      z: moveAxis === "x" ? ky.randomNumberInRange(4, 5) : 0.1,
       duration: 1.5,
     });
   }
