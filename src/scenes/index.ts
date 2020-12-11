@@ -239,6 +239,7 @@ class Stack extends Starter {
   // 检测重叠部分
   // 难点：1. 重叠距离计算 2. 重叠方块位置计算 3. 切掉方块位置计算
   detectOverlap() {
+    const that = this;
     const { boxParams, moveEdge, box, moveAxis } = this;
     const currentPosition = box.position[moveAxis];
     const prevPosition = boxParams[moveAxis];
@@ -265,9 +266,19 @@ class Stack extends Starter {
     slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 - prevPosition);
     const slicedBox = this.createBox(slicedBoxParams);
     gsap.to(slicedBox.position, {
-      y: -4,
-      duration: 1,
+      y: "-=3.2",
       ease: "power1.easeIn",
+      duration: 1,
+      onComplete() {
+        that.scene.remove(slicedBox);
+      },
+    });
+    const random = 15;
+    gsap.to(slicedBox.rotation, {
+      x: moveAxis === "z" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
+      y: 0.1,
+      z: moveAxis === "x" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
+      duration: 1,
     });
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
