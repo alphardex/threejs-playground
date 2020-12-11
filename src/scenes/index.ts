@@ -275,10 +275,11 @@ class Stack extends Starter {
     });
     const random = 15;
     gsap.to(slicedBox.rotation, {
+      delay: 0.1,
       x: moveAxis === "z" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
       y: 0.1,
       z: moveAxis === "x" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
-      duration: 1,
+      duration: 1.2,
     });
     this.boxParams = overlapBoxParams;
     this.scene.remove(box);
