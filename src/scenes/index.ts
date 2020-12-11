@@ -147,7 +147,7 @@ class Stack extends Base {
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.cameraParams = {};
-    this.boxParams = { width: 1, height: 0.1, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
+    this.boxParams = { width: 1, height: 0.2, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
     this.gamestart = false;
     this.gameover = false;
@@ -166,8 +166,9 @@ class Stack extends Base {
     this.createRenderer();
     this.updateColor();
     const baseParams = { ...this.boxParams };
-    baseParams.height = 2.5;
-    baseParams.y -= 1.2;
+    const baseHeight = 2.5;
+    baseParams.height = baseHeight;
+    baseParams.y -= (baseHeight - this.boxParams.height) / 2;
     const base = this.createBox(baseParams);
     this.box = base;
     this.createLight();

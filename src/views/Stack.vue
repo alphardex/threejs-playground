@@ -99,7 +99,7 @@ export default defineComponent({
 
 .start,
 .retry {
-  top: 20vh;
-  font-size: 32px;
+  top: 25vh;
+  font-size: 28px;
 }
 </style>
