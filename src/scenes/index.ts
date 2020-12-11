@@ -269,7 +269,7 @@ class Stack extends Base {
           camera.updateProjectionMatrix();
         },
         onComplete() {
-          this.gameover = true;
+          that.gameover = true;
         },
       });
     } else {

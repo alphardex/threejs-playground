@@ -8,12 +8,19 @@
       STACK
     </div>
     <div
-      class="absolute h-center top-15 z-1 text text-white fade-in transition-all duration-300"
+      class="absolute h-center top-15 z-1 text-white fade-in transition-all duration-300 cursor-pointer"
       style="animation-delay: 0.6s"
       :class="{ 'opacity-0': status.gamestart }"
       v-if="status"
     >
       Tap to start
+    </div>
+    <div
+      class="absolute h-center top-15 z-1 text-xl text-white fade-in transition-all duration-300 cursor-pointer"
+      v-if="status && status.gameover"
+      @click="restartGame"
+    >
+      Try Again
     </div>
     <div
       class="absolute h-center top-6 z-1 text-2xl text-white transition-all duration-300"
@@ -52,11 +59,21 @@ export default defineComponent({
         await ky.sleep(100);
       }
     };
+    const restartGame = async () => {
+      const canvas = document.querySelector("canvas");
+      if (canvas) {
+        canvas.remove();
+      }
+      state.stack = null;
+      state.status = null;
+      await startGame();
+    };
     onMounted(async () => {
       await startGame();
     });
     return {
       ...toRefs(state),
+      restartGame,
     };
   },
 });
