@@ -250,7 +250,7 @@ class Stack extends Base {
   // 难点：1. 重叠距离计算 2. 重叠方块位置计算 3. 切掉方块位置计算
   async detectOverlap() {
     const that = this;
-    const { boxParams, moveEdge, box, moveAxis, camera } = this;
+    const { boxParams, moveEdge, box, moveAxis, currentY, camera } = this;
     const currentPosition = box.position[moveAxis];
     const prevPosition = boxParams[moveAxis];
     const direction = Math.sign(currentPosition - prevPosition);
@@ -274,16 +274,18 @@ class Stack extends Base {
     } else {
       // 创建重叠部分的方块
       const overlapBoxParams = { ...boxParams };
-      overlapBoxParams.y = box.position.y;
-      overlapBoxParams[moveEdge] = overlap;
       const overlapPosition = currentPosition / 2 + prevPosition / 2;
+      overlapBoxParams.y = currentY;
+      overlapBoxParams[moveEdge] = overlap;
       overlapBoxParams[moveAxis] = overlapPosition;
       this.createBox(overlapBoxParams);
       // 创建切掉部分的方块
       const slicedBoxParams = { ...boxParams };
-      slicedBoxParams.y = box.position.y;
-      slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
-      slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
+      const slicedBoxEdge = edge - overlap;
+      const slicedBoxPosition = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
+      slicedBoxParams.y = currentY;
+      slicedBoxParams[moveEdge] = slicedBoxEdge;
+      slicedBoxParams[moveAxis] = slicedBoxPosition;
       const slicedBox = this.createBox(slicedBoxParams);
       this.dropBox(slicedBox);
       this.boxParams = overlapBoxParams;
@@ -291,8 +293,8 @@ class Stack extends Base {
       this.startNextLevel();
     }
   }
+  // 使方块旋转下落
   dropBox(box: Mesh) {
-    // 使方块旋转下落
     const { moveAxis } = this;
     const that = this;
     gsap.to(box.position, {
