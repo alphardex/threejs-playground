@@ -274,10 +274,10 @@ class Stack extends Base {
     } else {
       // 创建重叠部分的方块
       const overlapBoxParams = { ...boxParams };
-      const overlapPosition = currentPosition / 2 + prevPosition / 2;
+      const overlapBoxPosition = currentPosition / 2 + prevPosition / 2;
       overlapBoxParams.y = currentY;
       overlapBoxParams[moveEdge] = overlap;
-      overlapBoxParams[moveAxis] = overlapPosition;
+      overlapBoxParams[moveAxis] = overlapBoxPosition;
       this.createBox(overlapBoxParams);
       // 创建切掉部分的方块
       const slicedBoxParams = { ...boxParams };
