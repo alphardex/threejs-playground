@@ -17,6 +17,7 @@ import {
 } from "three";
 import gsap from "gsap";
 import ky from "kyouka";
+import Alert from "@/utils/alert";
 
 class Base {
   debug: boolean;
@@ -259,6 +260,7 @@ class Stack extends Base {
     const overlap = edge + direction * (prevPosition - currentPosition);
     if (overlap <= 0) {
       this.gameover = true;
+      this.state = "paused";
       this.dropBox(box);
       gsap.to(camera, {
         zoom: 0.6,
@@ -268,7 +270,7 @@ class Stack extends Base {
           camera.updateProjectionMatrix();
         },
         onComplete() {
-          alert(`Gameover, your score: ${that.level}`);
+          Alert.fire(`Gameover, your score: ${that.level}`);
         },
       });
     } else {
@@ -294,7 +296,7 @@ class Stack extends Base {
     }
   }
   // 使方块旋转下落
-  dropBox(box: Mesh) {
+  dropBox(box: Mesh, enableRotate = true) {
     const { moveAxis } = this;
     const that = this;
     gsap.to(box.position, {
@@ -365,6 +367,15 @@ class Stack extends Base {
   start() {
     this.gamestart = true;
     this.startNextLevel();
+  }
+  // 状态
+  get status() {
+    const { level, gamestart, gameover } = this;
+    return {
+      level,
+      gamestart,
+      gameover,
+    };
   }
 }
 

@@ -43,19 +43,11 @@ select {
   appearance: none !important;
 }
 
-// sweetalert2
-
-.alert-title {
-  font-size: 3.8vw !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
-
-.alert-popup {
-  max-width: 72vw !important;
-}
-
 // utils
+
+.opacity-0 {
+  opacity: 0 !important;
+}
 
 // common
 
@@ -79,6 +71,20 @@ select {
 
   to {
     text-shadow: 0 0 0 white;
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.6s both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
     opacity: 1;
   }
 }
