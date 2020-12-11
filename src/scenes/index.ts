@@ -249,7 +249,8 @@ class Stack extends Base {
   // 检测重叠部分
   // 难点：1. 重叠距离计算 2. 重叠方块位置计算 3. 切掉方块位置计算
   async detectOverlap() {
-    const { boxParams, moveEdge, box, moveAxis } = this;
+    const that = this;
+    const { boxParams, moveEdge, box, moveAxis, camera } = this;
     const currentPosition = box.position[moveAxis];
     const prevPosition = boxParams[moveAxis];
     const direction = Math.sign(currentPosition - prevPosition);
@@ -257,29 +258,36 @@ class Stack extends Base {
     // 重叠距离 = 上一个方块的边长 + 方向 * (上一个方块位置 - 当前方块位置)
     const overlap = edge + direction * (prevPosition - currentPosition);
     if (overlap <= 0) {
-      this.dropBox(box);
-      await ky.sleep(1500);
-      alert(`Gameover, your score: ${this.level}`);
       this.gameover = true;
-      return;
-    }
-    // 创建重叠部分的方块
-    const overlapBoxParams = { ...boxParams };
-    overlapBoxParams.y = box.position.y;
-    overlapBoxParams[moveEdge] = overlap;
-    const overlapPosition = currentPosition / 2 + prevPosition / 2;
-    overlapBoxParams[moveAxis] = overlapPosition;
-    this.createBox(overlapBoxParams);
-    // 创建切掉部分的方块
-    const slicedBoxParams = { ...boxParams };
-    slicedBoxParams.y = box.position.y;
-    slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
-    slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
-    const slicedBox = this.createBox(slicedBoxParams);
-    this.dropBox(slicedBox);
-    this.boxParams = overlapBoxParams;
-    this.scene.remove(box);
-    if (!this.gameover) {
+      this.dropBox(box);
+      gsap.to(camera, {
+        zoom: 0.6,
+        duration: 1,
+        ease: "Power1.easeOut",
+        onUpdate() {
+          camera.updateProjectionMatrix();
+        },
+        onComplete() {
+          alert(`Gameover, your score: ${that.level}`);
+        },
+      });
+    } else {
+      // 创建重叠部分的方块
+      const overlapBoxParams = { ...boxParams };
+      overlapBoxParams.y = box.position.y;
+      overlapBoxParams[moveEdge] = overlap;
+      const overlapPosition = currentPosition / 2 + prevPosition / 2;
+      overlapBoxParams[moveAxis] = overlapPosition;
+      this.createBox(overlapBoxParams);
+      // 创建切掉部分的方块
+      const slicedBoxParams = { ...boxParams };
+      slicedBoxParams.y = box.position.y;
+      slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
+      slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
+      const slicedBox = this.createBox(slicedBoxParams);
+      this.dropBox(slicedBox);
+      this.boxParams = overlapBoxParams;
+      this.scene.remove(box);
       this.startNextLevel();
     }
   }

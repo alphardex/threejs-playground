@@ -2,14 +2,14 @@
   <div class="relative w-full h-full">
     <div
       class="absolute h-center top-6 z-1 text-2xl text-white shadow-in transition-all duration-300"
-      :class="{ 'opacity-0': stack.gamestart.value }"
+      :class="{ 'opacity-0': stack.gamestart }"
       v-if="stack"
     >
       STACK
     </div>
     <div
       class="absolute h-center top-6 z-1 text-2xl text-white transition-all duration-300"
-      v-if="stack && stack.gamestart.value"
+      v-if="stack && stack.gamestart"
     >
       {{ stack.level }}
     </div>
