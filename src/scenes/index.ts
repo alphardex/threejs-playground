@@ -165,8 +165,8 @@ class Stack extends Starter {
     this.createRenderer();
     this.updateColor();
     const baseParams = { ...this.boxParams };
-    baseParams.height = 2;
-    baseParams.y -= 0.95;
+    baseParams.height = 2.5;
+    baseParams.y -= 1.2;
     const base = this.createBox(baseParams);
     this.box = base;
     this.createLight();
