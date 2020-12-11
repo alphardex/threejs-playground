@@ -17,7 +17,6 @@ import {
 } from "three";
 import gsap from "gsap";
 import ky from "kyouka";
-import Alert from "@/utils/alert";
 
 class Base {
   debug: boolean;
