@@ -269,6 +269,11 @@ class Stack extends Base {
           camera.updateProjectionMatrix();
         },
         onComplete() {
+          const score = that.level - 1;
+          const prevHighScore = Number(localStorage.getItem('high-score')) || 0;
+          if (score > prevHighScore) {
+            localStorage.setItem('high-score', `${score}`)
+          }
           that.gameover = true;
         },
       });

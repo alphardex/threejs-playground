@@ -24,6 +24,9 @@
     <div class="status score h-center" v-if="status && status.gamestart">
       {{ status.level - 1 }}
     </div>
+    <div class="status high-score" v-if="highScore">
+      {{ highScore }}
+    </div>
     <div class="stack"></div>
   </div>
 </template>
@@ -36,6 +39,7 @@ import ky from "kyouka";
 interface State {
   stack: Stack | null;
   status: Record<string, any> | null;
+  highScore: number;
 }
 
 export default defineComponent({
@@ -44,12 +48,14 @@ export default defineComponent({
     const state = reactive<State>({
       stack: null,
       status: null,
+      highScore: 0
     });
     const startGame = async () => {
       const stack = new Stack(".stack", false);
       stack.init();
       state.stack = stack;
       state.status = stack.status;
+      state.highScore = Number(localStorage.getItem('high-score'));
       while (!state.status.gameover) {
         state.status = state!.stack.status;
         await ky.sleep(100);
@@ -101,5 +107,11 @@ export default defineComponent({
 .retry {
   top: 25vh;
   font-size: 28px;
+}
+
+.high-score {
+  top: 3vh;
+  right: 3vw;
+  font-size: 24px;
 }
 </style>
