@@ -263,8 +263,9 @@ class Stack extends Starter {
     const slicedBoxParams = { ...boxParams };
     slicedBoxParams.y = box.position.y;
     slicedBoxParams[moveEdge] = boxParams[moveEdge] - overlap;
-    slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 - prevPosition);
+    slicedBoxParams[moveAxis] = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
     const slicedBox = this.createBox(slicedBoxParams);
+    // 使切掉的方块旋转下落
     gsap.to(slicedBox.position, {
       y: "-=3.2",
       ease: "power1.easeIn",
@@ -273,12 +274,11 @@ class Stack extends Starter {
         that.scene.remove(slicedBox);
       },
     });
-    const random = 15;
     gsap.to(slicedBox.rotation, {
       delay: 0.1,
-      x: moveAxis === "z" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
+      x: moveAxis === "z" ? ky.randomNumberInRange(4, 6) : 0.1,
       y: 0.1,
-      z: moveAxis === "x" ? ky.randomNumberInRange(0, random) - random / 2 : 0.1,
+      z: moveAxis === "x" ? ky.randomNumberInRange(4, 6) : 0.1,
       duration: 1.2,
     });
     this.boxParams = overlapBoxParams;

@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Stack",
   setup() {
     onMounted(() => {
-      const stack = new Stack(".stack", true);
+      const stack = new Stack(".stack", false);
       stack.init();
       stack.start();
     });
