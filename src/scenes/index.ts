@@ -18,7 +18,7 @@ import {
 import gsap from "gsap";
 import ky from "kyouka";
 
-class Starter {
+class Base {
   debug: boolean;
   container: HTMLElement | null;
   scene!: Scene;
@@ -104,8 +104,7 @@ class Starter {
   }
   // 动画
   update() {
-    this.box.rotation.y += 0.01;
-    this.box.rotation.z += 0.006;
+    console.log("animation");
   }
   // 渲染
   setLoop() {
@@ -116,7 +115,7 @@ class Starter {
   }
 }
 
-class Stack extends Starter {
+class Stack extends Base {
   level: number; // 关卡
   moveLimit: number; // 移动上限
   moveAxis: "x" | "z"; // 移动所沿的轴
@@ -131,6 +130,7 @@ class Stack extends Starter {
   cameraPosition: Vector3; // 相机位置
   lookAtPosition: Vector3; // 视点
   cameraParams: Record<string, any>; // 相机参数
+  gamestart: boolean; // 游戏开始
   gameover: boolean; // 游戏结束
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -149,6 +149,7 @@ class Stack extends Starter {
     this.cameraParams = {};
     this.boxParams = { width: 1, height: 0.1, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.updateCameraParams();
+    this.gamestart = false;
     this.gameover = false;
   }
   // 更新相机参数
@@ -352,8 +353,9 @@ class Stack extends Starter {
   }
   // 开始游戏
   start() {
+    this.gamestart = true;
     this.startNextLevel();
   }
 }
 
-export { Starter, Stack };
+export { Base, Stack };

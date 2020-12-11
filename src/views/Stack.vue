@@ -1,10 +1,17 @@
 <template>
-  <div class="relative w-full h-full" @click="closeTitle">
+  <div class="relative w-full h-full">
     <div
       class="absolute h-center top-6 z-1 text-2xl text-white shadow-in transition-all duration-300"
-      :class="{ 'opacity-0': hideTitle }"
+      :class="{ 'opacity-0': stack.gamestart.value }"
+      v-if="stack"
     >
       STACK
+    </div>
+    <div
+      class="absolute h-center top-6 z-1 text-2xl text-white transition-all duration-300"
+      v-if="stack && stack.gamestart.value"
+    >
+      {{ stack.level }}
     </div>
     <div class="stack"></div>
   </div>
@@ -16,7 +23,6 @@ import { defineComponent, onMounted, reactive, toRefs } from "vue";
 
 interface State {
   stack: Stack | null;
-  hideTitle: boolean;
 }
 
 export default defineComponent({
@@ -24,19 +30,14 @@ export default defineComponent({
   setup() {
     const state = reactive<State>({
       stack: null,
-      hideTitle: false,
     });
-    const closeTitle = () => {
-      state.hideTitle = true;
-    };
-    onMounted(() => {
+    onMounted(async () => {
       const stack = new Stack(".stack", false);
       stack.init();
       state.stack = stack;
     });
     return {
       ...toRefs(state),
-      closeTitle,
     };
   },
 });

@@ -3,14 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Starter } from "@/scenes";
+import { Base } from "@/scenes";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   name: "Starter",
   setup() {
     onMounted(() => {
-      const starter = new Starter(".starter", true);
+      const starter = new Base(".starter", true);
       starter.init();
     });
   },
