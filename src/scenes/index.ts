@@ -184,14 +184,58 @@ class Stack extends Base {
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
   }
-  // 更新颜色
-  updateColor() {
-    const { level, colorOffset } = this;
-    const colorValue = (level + colorOffset) * 0.25;
-    const r = (Math.sin(colorValue) * 55 + 200) / 255;
-    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
-    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
-    this.boxParams.color = new Color(r, g, b);
+  // 开始游戏
+  start() {
+    this.gamestart = true;
+    this.startNextLevel();
+  }
+  // 开始下一关
+  startNextLevel() {
+    this.level += 1;
+    // 确定移动轴和移动边：奇数x；偶数z
+    this.moveAxis = this.level % 2 ? "x" : "z";
+    this.moveEdge = this.level % 2 ? "width" : "depth";
+    // 增加方块生成的高度
+    this.currentY += this.boxParams.height;
+    // 增加方块的速度
+    if (this.speed <= this.speedLimit) {
+      this.speed += this.speedInc;
+    }
+    this.updateColor();
+    const boxParams = { ...this.boxParams };
+    boxParams.y = this.currentY;
+    const box = this.createBox(boxParams);
+    this.box = box;
+    // 确定初始移动位置
+    this.box.position[this.moveAxis] = this.moveLimit * -1;
+    this.state = "running";
+    if (this.level > 1) {
+      this.updateCameraHeight();
+    }
+  }
+  // 更新相机高度
+  updateCameraHeight() {
+    this.cameraPosition.y += this.boxParams.height;
+    this.lookAtPosition.y += this.boxParams.height;
+    gsap.to(this.camera.position, {
+      y: this.cameraPosition.y,
+      duration: 0.4,
+    });
+    gsap.to(this.camera.lookAt, {
+      y: this.lookAtPosition.y,
+      duration: 0.4,
+    });
+  }
+  // 动画
+  update() {
+    if (this.state === "running") {
+      const { moveAxis } = this;
+      this.box.position[moveAxis] += this.speed;
+      // 移到末端就反转方向
+      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
+        this.speed = this.speed * -1;
+      }
+    }
   }
   // 事件监听
   addListeners() {
@@ -201,22 +245,6 @@ class Stack extends Base {
     } else {
       this.onClick();
     }
-  }
-  // 监听画面缩放
-  onResize() {
-    window.addEventListener("resize", (e) => {
-      this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
-      this.updateCameraParams();
-      const camera = this.camera as OrthographicCamera;
-      const { left, right, top, bottom, near, far } = this.cameraParams;
-      camera.left = left;
-      camera.right = right;
-      camera.top = top;
-      camera.bottom = bottom;
-      camera.near = near;
-      camera.far = far;
-      camera.updateProjectionMatrix();
-    });
   }
   // 监听点击
   onClick() {
@@ -319,58 +347,30 @@ class Stack extends Base {
       duration: 1.5,
     });
   }
-  // 开始下一关
-  startNextLevel() {
-    this.level += 1;
-    // 关卡数越大，速度越快
-    if (this.speed <= this.speedLimit) {
-      this.speed += this.speedInc;
-    }
-    // 确定移动轴和移动边：奇数x；偶数z
-    this.moveAxis = this.level % 2 ? "x" : "z";
-    this.moveEdge = this.level % 2 ? "width" : "depth";
-    // 增加方块生成的高度
-    this.currentY += this.boxParams.height;
-    this.updateColor();
-    const boxParams = { ...this.boxParams };
-    boxParams.y = this.currentY;
-    const box = this.createBox(boxParams);
-    this.box = box;
-    // 确定初始移动位置
-    this.box.position[this.moveAxis] = this.moveLimit * -1;
-    this.state = "running";
-    if (this.level > 1) {
-      this.updateCamera();
-    }
+  // 更新颜色
+  updateColor() {
+    const { level, colorOffset } = this;
+    const colorValue = (level + colorOffset) * 0.25;
+    const r = (Math.sin(colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
+    this.boxParams.color = new Color(r, g, b);
   }
-  // 更新相机
-  updateCamera() {
-    this.cameraPosition.y += this.boxParams.height;
-    this.lookAtPosition.y += this.boxParams.height;
-    gsap.to(this.camera.position, {
-      y: this.cameraPosition.y,
-      duration: 0.4,
+  // 监听画面缩放
+  onResize() {
+    window.addEventListener("resize", (e) => {
+      this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+      this.updateCameraParams();
+      const camera = this.camera as OrthographicCamera;
+      const { left, right, top, bottom, near, far } = this.cameraParams;
+      camera.left = left;
+      camera.right = right;
+      camera.top = top;
+      camera.bottom = bottom;
+      camera.near = near;
+      camera.far = far;
+      camera.updateProjectionMatrix();
     });
-    gsap.to(this.camera.lookAt, {
-      y: this.lookAtPosition.y,
-      duration: 0.4,
-    });
-  }
-  // 动画
-  update() {
-    if (this.state === "running") {
-      const { moveAxis } = this;
-      this.box.position[moveAxis] += this.speed;
-      // 移到末端就反转方向
-      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
-        this.speed = this.speed * -1;
-      }
-    }
-  }
-  // 开始游戏
-  start() {
-    this.gamestart = true;
-    this.startNextLevel();
   }
   // 状态
   get status() {
