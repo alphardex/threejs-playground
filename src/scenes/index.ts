@@ -116,39 +116,39 @@ class Base {
 }
 
 class Stack extends Base {
+  cameraParams: Record<string, any>; // 相机参数
+  cameraPosition: Vector3; // 相机位置
+  lookAtPosition: Vector3; // 视点
+  colorOffset: number; // 颜色偏移量
+  boxParams: Record<string, any>; // 方块属性参数
   level: number; // 关卡
   moveLimit: number; // 移动上限
   moveAxis: "x" | "z"; // 移动所沿的轴
   moveEdge: "width" | "depth"; // 移动的边
+  currentY: number; // 当前的y轴高度
+  state: string; // 状态：paused - 静止；running - 运动
   speed: number; // 移动速度
   speedInc: number; // 速度增量
   speedLimit: number; // 速度上限
-  state: string; // 状态：paused - 静止；running - 运动
-  currentY: number; // 当前的y轴高度
-  boxParams: Record<string, any>; // 方块属性参数
-  colorOffset: number; // 颜色偏移量
-  cameraPosition: Vector3; // 相机位置
-  lookAtPosition: Vector3; // 视点
-  cameraParams: Record<string, any>; // 相机参数
   gamestart: boolean; // 游戏开始
   gameover: boolean; // 游戏结束
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.cameraParams = {};
+    this.updateCameraParams();
+    this.cameraPosition = new Vector3(2, 2, 2);
+    this.lookAtPosition = new Vector3(0, 0, 0);
+    this.colorOffset = ky.randomIntegerInRange(0, 255);
+    this.boxParams = { width: 1, height: 0.2, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
     this.level = 0;
     this.moveLimit = 1.2;
     this.moveAxis = "x";
     this.moveEdge = "width";
+    this.currentY = 0;
+    this.state = "paused";
     this.speed = 0.02;
     this.speedInc = 0.0005;
     this.speedLimit = 0.05;
-    this.state = "paused";
-    this.currentY = 0;
-    this.cameraPosition = new Vector3(2, 2, 2);
-    this.lookAtPosition = new Vector3(0, 0, 0);
-    this.colorOffset = ky.randomIntegerInRange(0, 255);
-    this.cameraParams = {};
-    this.boxParams = { width: 1, height: 0.2, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
-    this.updateCameraParams();
     this.gamestart = false;
     this.gameover = false;
   }
@@ -158,6 +158,24 @@ class Stack extends Base {
     const aspect = calcAspect(container!);
     const zoom = 2;
     this.cameraParams = { left: -zoom * aspect, right: zoom * aspect, top: zoom, bottom: -zoom, near: -100, far: 1000 };
+  }
+  // 创建正交相机
+  createCamera() {
+    const { cameraParams, cameraPosition, lookAtPosition } = this;
+    const { left, right, top, bottom, near, far } = cameraParams;
+    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
+    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
+    this.camera = camera;
+  }
+  // 更新颜色
+  updateColor() {
+    const { level, colorOffset } = this;
+    const colorValue = (level + colorOffset) * 0.25;
+    const r = (Math.sin(colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
+    this.boxParams.color = new Color(r, g, b);
   }
   // 初始化
   init() {
@@ -175,14 +193,54 @@ class Stack extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 创建正交相机
-  createCamera() {
-    const { cameraParams, cameraPosition, lookAtPosition } = this;
-    const { left, right, top, bottom, near, far } = cameraParams;
-    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
-    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
-    this.camera = camera;
+  // 事件监听
+  addListeners() {
+    this.onResize();
+    if (this.debug) {
+      this.onKeyDown();
+    } else {
+      this.onClick();
+    }
+  }
+  // 监听点击
+  onClick() {
+    this.renderer.domElement.addEventListener("click", () => {
+      if (this.level === 0) {
+        this.start();
+      } else {
+        this.detectOverlap();
+      }
+    });
+  }
+  // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
+  onKeyDown() {
+    document.addEventListener("keydown", (e) => {
+      const code = e.code;
+      if (code === "KeyP") {
+        this.state = this.state === "running" ? "paused" : "running";
+      } else if (code === "Space") {
+        if (this.level === 0) {
+          this.start();
+        } else {
+          this.detectOverlap();
+        }
+      } else if (code === "ArrowUp") {
+        this.box.position[this.moveAxis] += this.speed / 2;
+      } else if (code === "ArrowDown") {
+        this.box.position[this.moveAxis] -= this.speed / 2;
+      }
+    });
+  }
+  // 动画
+  update() {
+    if (this.state === "running") {
+      const { moveAxis } = this;
+      this.box.position[moveAxis] += this.speed;
+      // 移到末端就反转方向
+      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
+        this.speed = this.speed * -1;
+      }
+    }
   }
   // 开始游戏
   start() {
@@ -224,55 +282,6 @@ class Stack extends Base {
     gsap.to(this.camera.lookAt, {
       y: this.lookAtPosition.y,
       duration: 0.4,
-    });
-  }
-  // 动画
-  update() {
-    if (this.state === "running") {
-      const { moveAxis } = this;
-      this.box.position[moveAxis] += this.speed;
-      // 移到末端就反转方向
-      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
-        this.speed = this.speed * -1;
-      }
-    }
-  }
-  // 事件监听
-  addListeners() {
-    this.onResize();
-    if (this.debug) {
-      this.onKeyDown();
-    } else {
-      this.onClick();
-    }
-  }
-  // 监听点击
-  onClick() {
-    this.renderer.domElement.addEventListener("click", () => {
-      if (this.level === 0) {
-        this.start();
-      } else {
-        this.detectOverlap();
-      }
-    });
-  }
-  // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
-  onKeyDown() {
-    document.addEventListener("keydown", (e) => {
-      const code = e.code;
-      if (code === "KeyP") {
-        this.state = this.state === "running" ? "paused" : "running";
-      } else if (code === "Space") {
-        if (this.level === 0) {
-          this.start();
-        } else {
-          this.detectOverlap();
-        }
-      } else if (code === "ArrowUp") {
-        this.box.position[this.moveAxis] += this.speed / 2;
-      } else if (code === "ArrowDown") {
-        this.box.position[this.moveAxis] -= this.speed / 2;
-      }
     });
   }
   // 检测重叠部分
@@ -346,15 +355,6 @@ class Stack extends Base {
       z: moveAxis === "x" ? ky.randomNumberInRange(4, 5) : 0.1,
       duration: 1.5,
     });
-  }
-  // 更新颜色
-  updateColor() {
-    const { level, colorOffset } = this;
-    const colorValue = (level + colorOffset) * 0.25;
-    const r = (Math.sin(colorValue) * 55 + 200) / 255;
-    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
-    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
-    this.boxParams.color = new Color(r, g, b);
   }
   // 监听画面缩放
   onResize() {
