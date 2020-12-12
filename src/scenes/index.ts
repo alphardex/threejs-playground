@@ -168,15 +168,6 @@ class Stack extends Base {
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
   }
-  // 更新颜色
-  updateColor() {
-    const { level, colorOffset } = this;
-    const colorValue = (level + colorOffset) * 0.25;
-    const r = (Math.sin(colorValue) * 55 + 200) / 255;
-    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
-    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
-    this.boxParams.color = new Color(r, g, b);
-  }
   // 初始化
   init() {
     this.createScene();
@@ -193,54 +184,14 @@ class Stack extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 事件监听
-  addListeners() {
-    this.onResize();
-    if (this.debug) {
-      this.onKeyDown();
-    } else {
-      this.onClick();
-    }
-  }
-  // 监听点击
-  onClick() {
-    this.renderer.domElement.addEventListener("click", () => {
-      if (this.level === 0) {
-        this.start();
-      } else {
-        this.detectOverlap();
-      }
-    });
-  }
-  // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
-  onKeyDown() {
-    document.addEventListener("keydown", (e) => {
-      const code = e.code;
-      if (code === "KeyP") {
-        this.state = this.state === "running" ? "paused" : "running";
-      } else if (code === "Space") {
-        if (this.level === 0) {
-          this.start();
-        } else {
-          this.detectOverlap();
-        }
-      } else if (code === "ArrowUp") {
-        this.box.position[this.moveAxis] += this.speed / 2;
-      } else if (code === "ArrowDown") {
-        this.box.position[this.moveAxis] -= this.speed / 2;
-      }
-    });
-  }
-  // 动画
-  update() {
-    if (this.state === "running") {
-      const { moveAxis } = this;
-      this.box.position[moveAxis] += this.speed;
-      // 移到末端就反转方向
-      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
-        this.speed = this.speed * -1;
-      }
-    }
+  // 更新颜色
+  updateColor() {
+    const { level, colorOffset } = this;
+    const colorValue = (level + colorOffset) * 0.25;
+    const r = (Math.sin(colorValue) * 55 + 200) / 255;
+    const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
+    const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
+    this.boxParams.color = new Color(r, g, b);
   }
   // 开始游戏
   start() {
@@ -282,6 +233,55 @@ class Stack extends Base {
     gsap.to(this.camera.lookAt, {
       y: this.lookAtPosition.y,
       duration: 0.4,
+    });
+  }
+  // 动画
+  update() {
+    if (this.state === "running") {
+      const { moveAxis } = this;
+      this.box.position[moveAxis] += this.speed;
+      // 移到末端就反转方向
+      if (Math.abs(this.box.position[moveAxis]) > this.moveLimit) {
+        this.speed = this.speed * -1;
+      }
+    }
+  }
+  // 事件监听
+  addListeners() {
+    this.onResize();
+    if (this.debug) {
+      this.onKeyDown();
+    } else {
+      this.onClick();
+    }
+  }
+  // 监听点击
+  onClick() {
+    this.renderer.domElement.addEventListener("click", () => {
+      if (this.level === 0) {
+        this.start();
+      } else {
+        this.detectOverlap();
+      }
+    });
+  }
+  // 监听键盘（调试时使用：空格下一关；P键暂停；上下键控制移动）
+  onKeyDown() {
+    document.addEventListener("keydown", (e) => {
+      const code = e.code;
+      if (code === "KeyP") {
+        this.state = this.state === "running" ? "paused" : "running";
+      } else if (code === "Space") {
+        if (this.level === 0) {
+          this.start();
+        } else {
+          // this.detectOverlap();
+        }
+      } else if (code === "ArrowUp") {
+        this.box.position[this.moveAxis] += this.speed / 2;
+      } else if (code === "ArrowDown") {
+        this.box.position[this.moveAxis] -= this.speed / 2;
+      }
     });
   }
   // 检测重叠部分
