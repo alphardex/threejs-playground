@@ -17,6 +17,7 @@ import {
 } from "three";
 import gsap from "gsap";
 import ky from "kyouka";
+import "pannellum";
 
 class Base {
   debug: boolean;
@@ -307,9 +308,9 @@ class Stack extends Base {
         },
         onComplete() {
           const score = that.level - 1;
-          const prevHighScore = Number(localStorage.getItem('high-score')) || 0;
+          const prevHighScore = Number(localStorage.getItem("high-score")) || 0;
           if (score > prevHighScore) {
-            localStorage.setItem('high-score', `${score}`)
+            localStorage.setItem("high-score", `${score}`);
           }
           that.gameover = true;
         },
@@ -383,4 +384,19 @@ class Stack extends Base {
   }
 }
 
-export { Base, Stack };
+class Panorama {
+  config: Record<string, any>;
+  viewer: any;
+  constructor(config: Record<string, any>) {
+    this.config = config;
+    this.viewer = null;
+  }
+  init() {
+    const { config } = this;
+    // @ts-ignore
+    const viewer = pannellum.viewer(config.id, config.data);
+    this.viewer = viewer;
+  }
+}
+
+export { Base, Stack, Panorama };

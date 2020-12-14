@@ -7,6 +7,9 @@
       <li>
         <router-link :to="{ name: 'Stack' }">Stack</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'Panorama' }">Panorama</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
