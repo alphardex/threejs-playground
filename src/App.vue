@@ -95,13 +95,17 @@ select {
 
   width: var(--arrow-width);
   height: var(--arrow-width);
+  backface-visibility: hidden;
 
   &::before {
     position: absolute;
     content: "";
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: var(--arrow-bg) 0 0 / 100% no-repeat;
+    transform: rotateZ(0);
     animation: hotspot-step 1s infinite steps(25);
   }
 

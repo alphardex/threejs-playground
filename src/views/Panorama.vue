@@ -43,6 +43,9 @@ export default defineComponent({
       const panorama = new Panorama(panoramaConfig);
       state.panorama = panorama;
       panorama.init();
+      state.panorama.viewer.on("scenechange", (scene: string) => {
+        router.push({ name: "Panorama", query: { scene } });
+      });
     };
     const onNavigate = (scene: string) => {
       const { panorama } = state;
@@ -50,7 +53,6 @@ export default defineComponent({
       const targetScene = config.data.scenes[scene];
       const { pitch, yaw, hfov } = targetScene;
       viewer.loadScene(scene, pitch, yaw, hfov);
-      router.push({ name: "Panorama", query: { scene } });
     };
     onMounted(() => {
       initPanorama();
