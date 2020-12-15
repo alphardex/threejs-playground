@@ -80,6 +80,12 @@ select {
   height: 100%;
 }
 
+.pnlm-tooltip {
+  span {
+    visibility: visible !important;
+  }
+}
+
 .hotspot-arrow {
   --arrow-width: 4rem;
 

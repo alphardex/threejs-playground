@@ -12,7 +12,8 @@ const panoramaConfig = {
       author: "常熟零距离房产",
       sceneFadeDuration: 1000,
       autoLoad: true,
-      hotSpotDebug: true,
+      hotSpotDebug: false,
+      autoRotate: -2,
     },
     scenes: {
       ruhu: {
