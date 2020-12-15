@@ -1,6 +1,6 @@
 <template>
   <div
-    class="nav-menu fixed z-1 w-full max-w-full flex items-center text-white bg-black-transparent-1"
+    class="nav-menu fixed z-2 w-full max-w-full flex items-center text-white bg-black-transparent-1"
     v-if="navItems && navItems.length"
   >
     <div
@@ -15,7 +15,7 @@
       >
         <img
           class="nav-menu-item-img"
-          :src="require(`../assets/thumbs/${item.img}.jpg`)"
+          :src="require(`../assets/panorama/thumbs/${item.img}.jpg`)"
           alt=""
         />
         <div

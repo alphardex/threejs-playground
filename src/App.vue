@@ -86,6 +86,10 @@ select {
   }
 }
 
+.pnlm-hot-spot-debug-indicator {
+  display: none !important;
+}
+
 .hotspot-arrow {
   --arrow-width: 4rem;
 
@@ -102,27 +106,27 @@ select {
   }
 
   &-down {
-    --arrow-bg: url("~@/assets/hotspot/down.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/down.png");
   }
 
   &-up {
-    --arrow-bg: url("~@/assets/hotspot/up.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/up.png");
   }
 
   &-left {
-    --arrow-bg: url("~@/assets/hotspot/left.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/left.png");
   }
 
   &-right {
-    --arrow-bg: url("~@/assets/hotspot/right.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/right.png");
   }
 
   &-right-2 {
-    --arrow-bg: url("~@/assets/hotspot/right-2.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/right-2.png");
   }
 
   &-point {
-    --arrow-bg: url("~@/assets/hotspot/point.png");
+    --arrow-bg: url("~@/assets/panorama/hotspot/point.png");
   }
 }
 
@@ -159,6 +163,7 @@ select {
 
     &-item {
       padding: 0.4rem;
+      font-size: 0.8rem;
 
       &-img {
         width: 5rem;
