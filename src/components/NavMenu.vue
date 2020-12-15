@@ -4,9 +4,11 @@
     v-if="navItems && navItems.length"
   >
     <div
-      class="nav-menu-item flex items-center justify-center"
+      class="nav-menu-item flex items-center justify-center cursor-pointer"
       v-for="(item, i) in navItems"
       :key="i"
+      @click="emitNavigate(item.img)"
+      :class="{ active: sceneId === item.img }"
     >
       <div
         class="nav-menu-item-wrapper relative border-2 border-solid border-white"
@@ -27,12 +29,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "NavMenu",
+  emits: ["navigate"],
   props: {
     navItems: Array,
+  },
+  setup(props, { emit }) {
+    const route = useRoute();
+    const sceneId = computed(() => route.query.scene || "ruhu");
+    const emitNavigate = (scene: string) => {
+      emit("navigate", scene);
+    };
+    return {
+      emitNavigate,
+      sceneId,
+    };
   },
 });
 </script>
