@@ -14,6 +14,7 @@ const panoramaConfig = {
       autoLoad: true,
       hotSpotDebug: true,
       autoRotate: -2,
+      compass: true,
     },
     scenes: {
       ruhu: {
