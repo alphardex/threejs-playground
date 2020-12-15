@@ -95,42 +95,31 @@ select {
 
   width: var(--arrow-width);
   height: var(--arrow-width);
-  backface-visibility: hidden;
-
-  &::before {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--arrow-bg) 0 0 / 100% no-repeat;
-    transform: rotateZ(0);
-    animation: hotspot-step 1s infinite steps(25);
-  }
+  animation: hotspot-step 1s infinite steps(25);
 
   &-down {
-    --arrow-bg: url("~@/assets/panorama/hotspot/down.png");
+    background: url("~@/assets/panorama/hotspot/down.png") 0 0 / 100% no-repeat;
   }
 
   &-up {
-    --arrow-bg: url("~@/assets/panorama/hotspot/up.png");
+    background: url("~@/assets/panorama/hotspot/up.png") 0 0 / 100% no-repeat;
   }
 
   &-left {
-    --arrow-bg: url("~@/assets/panorama/hotspot/left.png");
+    background: url("~@/assets/panorama/hotspot/left.png") 0 0 / 100% no-repeat;
   }
 
   &-right {
-    --arrow-bg: url("~@/assets/panorama/hotspot/right.png");
+    background: url("~@/assets/panorama/hotspot/right.png") 0 0 / 100% no-repeat;
   }
 
   &-right-2 {
-    --arrow-bg: url("~@/assets/panorama/hotspot/right-2.png");
+    background: url("~@/assets/panorama/hotspot/right-2.png") 0 0 / 100%
+      no-repeat;
   }
 
   &-point {
-    --arrow-bg: url("~@/assets/panorama/hotspot/point.png");
+    background: url("~@/assets/panorama/hotspot/point.png") 0 0 / 100% no-repeat;
   }
 }
 
