@@ -18,8 +18,8 @@ const panoramaConfig = {
       ruhu: {
         title: "入户",
         hfov: 110,
-        pitch: -3,
-        yaw: 117,
+        pitch: -2,
+        yaw: 145,
         type: "equirectangular",
         panorama: require("@/assets/textures/rh.jpg"),
         hotSpots: [
@@ -60,8 +60,8 @@ const panoramaConfig = {
       canting: {
         title: "餐厅",
         hfov: 110,
-        pitch: -3,
-        yaw: 117,
+        pitch: -27,
+        yaw: -91,
         type: "equirectangular",
         panorama: require("@/assets/textures/ct.jpg"),
         hotSpots: [
@@ -102,8 +102,8 @@ const panoramaConfig = {
       chufang: {
         title: "厨房",
         hfov: 110,
-        pitch: -3,
-        yaw: 117,
+        pitch: -27,
+        yaw: -123,
         type: "equirectangular",
         panorama: require("@/assets/textures/cf.jpg"),
         hotSpots: [
@@ -144,7 +144,8 @@ const panoramaConfig = {
       keting: {
         title: "客厅",
         hfov: 110,
-        yaw: 5,
+        pitch: -12,
+        yaw: 153,
         type: "equirectangular",
         panorama: require("@/assets/textures/kt.jpg"),
         hotSpots: [
@@ -193,8 +194,8 @@ const panoramaConfig = {
       ciwo: {
         title: "次卧",
         hfov: 110,
-        pitch: -3,
-        yaw: 117,
+        pitch: -1,
+        yaw: -130,
         type: "equirectangular",
         panorama: require("@/assets/textures/cw.jpg"),
         hotSpots: [
@@ -219,8 +220,8 @@ const panoramaConfig = {
       yangtai: {
         title: "阳台",
         hfov: 110,
-        pitch: -3,
-        yaw: 117,
+        pitch: -24,
+        yaw: -4,
         type: "equirectangular",
         panorama: require("@/assets/textures/yt.jpg"),
         hotSpots: [
