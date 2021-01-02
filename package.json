@@ -8,10 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@alphardex/aqua.css": "^1.6.0",
+    "@alphardex/aqua.css": "^1.6.2",
     "core-js": "^3.6.5",
     "gsap": "^3.5.1",
-    "kyouka": "^1.2.0",
+    "kyouka": "^1.2.2",
     "pannellum": "^2.5.6",
     "sweetalert2": "^10.3.6",
     "three": "^0.123.0",
