@@ -4,6 +4,7 @@ import NotFound from "../views/NotFound.vue";
 import Starter from "../views/Starter.vue";
 import Stack from "../views/Stack.vue";
 import Panorama from "../views/Panorama.vue";
+import Buildings from '../views/Buildings.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/panorama",
     name: "Panorama",
     component: Panorama,
+  },
+  {
+    path: '/buildings',
+    name: 'Buildings',
+    component: Buildings
   },
   {
     path: "/:pathMatch(.*)*",

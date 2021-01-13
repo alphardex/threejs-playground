@@ -10,6 +10,9 @@
       <li>
         <router-link :to="{ name: 'Panorama' }">Panorama</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'Buildings' }">Buildings</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

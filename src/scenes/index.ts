@@ -4,9 +4,12 @@ import {
   AmbientLight,
   AxesHelper,
   BoxBufferGeometry,
+  BoxGeometry,
   Color,
   DirectionalLight,
+  FogExp2,
   Mesh,
+  MeshLambertMaterial,
   MeshToonMaterial,
   OrthographicCamera,
   PerspectiveCamera,
@@ -54,7 +57,7 @@ class Base {
   createCamera() {
     const aspect = calcAspect(this.container!);
     const camera = new PerspectiveCamera(75, aspect, 0.1, 100);
-    camera.position.set(0, 1, 10);
+    camera.position.set(0, 3, 10);
     this.camera = camera;
   }
   // 创建渲染
@@ -69,15 +72,23 @@ class Base {
     this.renderer.setClearColor(0x000000, 0);
   }
   // 创建方块
-  createBox(cube: Cube) {
-    const { width = 1, height = 1, depth = 1, color = new Color("#d9dfc8"), x = 0, y = 0, z = 0 } = cube;
-    const geo = new BoxBufferGeometry(width, height, depth);
+  createBox(cube: Cube, container: Scene | Mesh = this.scene) {
+    const {
+      width = 1,
+      height = 1,
+      depth = 1,
+      color = new Color("#d9dfc8"),
+      x = 0,
+      y = 0,
+      z = 0,
+    } = cube;
+    const geo = new BoxGeometry(width, height, depth);
     const material = new MeshToonMaterial({ color, flatShading: true });
     const box = new Mesh(geo, material);
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
-    this.scene.add(box);
+    container.add(box);
     return box;
   }
   // 创建光源
@@ -100,7 +111,10 @@ class Base {
       const camera = this.camera as PerspectiveCamera;
       camera.aspect = aspect;
       camera.updateProjectionMatrix();
-      this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+      this.renderer.setSize(
+        this.container!.clientWidth,
+        this.container!.clientHeight
+      );
     });
   }
   // 动画
@@ -140,7 +154,15 @@ class Stack extends Base {
     this.cameraPosition = new Vector3(2, 2, 2);
     this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
-    this.boxParams = { width: 1, height: 0.2, depth: 1, x: 0, y: 0, z: 0, color: new Color("#d9dfc8") };
+    this.boxParams = {
+      width: 1,
+      height: 0.2,
+      depth: 1,
+      x: 0,
+      y: 0,
+      z: 0,
+      color: new Color("#d9dfc8"),
+    };
     this.level = 0;
     this.moveLimit = 1.2;
     this.moveAxis = "x";
@@ -158,7 +180,14 @@ class Stack extends Base {
     const { container } = this;
     const aspect = calcAspect(container!);
     const zoom = 2;
-    this.cameraParams = { left: -zoom * aspect, right: zoom * aspect, top: zoom, bottom: -zoom, near: -100, far: 1000 };
+    this.cameraParams = {
+      left: -zoom * aspect,
+      right: zoom * aspect,
+      top: zoom,
+      bottom: -zoom,
+      near: -100,
+      far: 1000,
+    };
   }
   // 创建正交相机
   createCamera() {
@@ -326,7 +355,9 @@ class Stack extends Base {
       // 创建切掉部分的方块
       const slicedBoxParams = { ...boxParams };
       const slicedBoxEdge = edge - overlap;
-      const slicedBoxPosition = direction * ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
+      const slicedBoxPosition =
+        direction *
+        ((edge - overlap) / 2 + edge / 2 + direction * prevPosition);
       slicedBoxParams.y = currentY;
       slicedBoxParams[moveEdge] = slicedBoxEdge;
       slicedBoxParams[moveAxis] = slicedBoxPosition;
@@ -360,7 +391,10 @@ class Stack extends Base {
   // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
-      this.renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+      this.renderer.setSize(
+        this.container!.clientWidth,
+        this.container!.clientHeight
+      );
       this.updateCameraParams();
       const camera = this.camera as OrthographicCamera;
       const { left, right, top, bottom, near, far } = this.cameraParams;
@@ -399,4 +433,76 @@ class Panorama {
   }
 }
 
-export { Base, Stack, Panorama };
+class Buildings extends Base {
+  ground!: Mesh;
+  constructor(sel: string, debug: boolean) {
+    super(sel, debug);
+  }
+  init() {
+    this.createScene();
+    this.createCamera();
+    this.createRenderer();
+    this.createGround();
+    this.createBuildingGroup();
+    this.createLight();
+    this.addListeners();
+    this.setLoop();
+  }
+  // 创建地面
+  createGround() {
+    const ground = this.createBox({
+      color: 0x204555,
+      width: 20,
+      height: 0.1,
+      depth: 20,
+    });
+    this.ground = ground;
+  }
+  // 创建楼层
+  createBuilding(cube: Cube) {
+    const { height, x, z } = cube;
+    this.createBox(
+      {
+        color: 0x59bfea,
+        width: 0.25,
+        depth: 0.25,
+        y: 0,
+        height,
+        x,
+        z,
+      },
+      this.ground
+    );
+  }
+  // 创建楼层群
+  createBuildingGroup(count = 500) {
+    for (let i = 0; i < count; i++) {
+      const height = ky.randomNumberInRange(0.25, 5);
+      const x = ky.randomNumberInRange(10, 20);
+      const z = ky.randomNumberInRange(10, 20);
+      this.createBuilding({ height, x, z });
+    }
+  }
+  // 创建光源
+  createLight() {
+    const light1 = new DirectionalLight(new Color("#ffffff"), 1);
+    light1.position.set(1.5, 2, 1);
+    this.scene.add(light1);
+    const light2 = new DirectionalLight(new Color("#ffffff"), 0.5);
+    light2.position.set(-1.5, 2, 1);
+    this.scene.add(light2);
+    this.light = light1;
+  }
+  // 动画
+  update() {
+    const x = 1 - this.ground.rotation.y;
+    const y = 1 - this.camera.position.z;
+    const d = ky.distance({ x, y }, { x: 0, y: 0 });
+    if (d > 0) {
+      this.ground.rotation.y += x * 0.001;
+      this.camera.position.z += y * 0.001;
+    }
+  }
+}
+
+export { Base, Stack, Panorama, Buildings };
