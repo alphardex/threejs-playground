@@ -27,7 +27,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
-import { menuFontUrl } from "@/consts";
+import { menuFontConfig, menuFontUrl } from "@/consts";
+import C from "cannon";
 
 class Base {
   debug: boolean;
@@ -546,12 +547,23 @@ class Buildings extends Base {
 }
 
 class Menu extends Base {
+  menuItems!: NodeListOf<Element>;
+  words!: Group[];
+  world!: C.World;
+  margin!: number;
+  offset!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new Vector3(-10, 10, 10);
     this.updateOrthographicCameraParams(15, -1, 100);
+    this.margin = 6;
+    const menuItems = document.querySelectorAll(".menu-list-item a");
+    this.menuItems = menuItems;
+    this.offset = menuItems.length * this.margin * 0.5;
+    this.words = [];
   }
   init() {
+    this.createPhysicsWorld();
     this.createScene();
     this.createOrthographicCamera();
     this.createRenderer();
@@ -575,36 +587,85 @@ class Menu extends Base {
     this.scene.add(foreLight);
     const backLight = new DirectionalLight(0xffffff, 1);
     backLight.position.set(-5, -5, -10);
-    this.scene.add(backLight)
+    this.scene.add(backLight);
   }
   // 创建菜单
   createMenu() {
-    const menuItems = document.querySelectorAll(".menu-list-item a");
     const loader = new FontLoader();
     loader.load(menuFontUrl, (font) => {
-      menuItems.forEach((item, i) => {
+      this.menuItems.forEach((item, i) => {
+        this.createGround(i);
         const word = new Group();
         const { textContent } = item;
-        const words = [];
+        const words: Group[] = [];
         Array.from(textContent!).forEach((letter) => {
           const mat = new MeshPhongMaterial({ color: 0x97df5e });
           const geo = new TextGeometry(letter, {
             font,
-            size: 3,
-            height: 0.4,
-            curveSegments: 24,
-            bevelEnabled: true,
-            bevelThickness: 0.9,
-            bevelSize: 0.3,
-            bevelSegments: 10
-          })
+            ...menuFontConfig,
+          });
+          geo.computeBoundingBox();
+          geo.computeBoundingSphere();
           const mesh = new Mesh(geo, mat);
+          const size = geo.boundingBox!.getSize(new Vector3());
+          let letterXOffset = 0;
+          letterXOffset += size.x;
+          (mesh as any).letterXOffset = letterXOffset;
+          const letterYOffset =
+            (this.menuItems.length - i - 1) * this.margin - this.offset;
+          const shape = new C.Box(
+            new C.Vec3().copy(size as any).scale(0.5)
+          );
+          const body = new C.Body({
+            mass: 1 / textContent!.length,
+            position: new C.Vec3(letterXOffset, letterYOffset, 0),
+          });
+          const { center } = mesh.geometry.boundingSphere!;
+          body.addShape(shape, new C.Vec3(center.x, center.y, center.z));
+          this.world.addBody(body);
+          (mesh as any).body = body;
+          (mesh as any).size = size;
           word.add(mesh);
+        });
+        words.forEach(word => {
+          (word as any).body.position.x -= (word as any).size.x + (word as any).letterXOffset * 0.5;
         })
-        words.push(word);
+        this.words.push(word);
         this.scene.add(word);
       });
     });
+  }
+  // 创建地面
+  createGround(i: number) {
+    const ground = new C.Body({
+      mass: 0,
+      shape: new C.Box(new C.Vec3(50, 0.1, 50)),
+      position: new C.Vec3(0, i * this.margin - this.offset, 0)
+    })
+    this.world.addBody(ground);
+  }
+  // 创建物理世界
+  createPhysicsWorld() {
+    const world = new C.World();
+    world.gravity.set(0, -100, 0);
+    this.world = world;
+  }
+  // 动画
+  update() {
+    this.updatePhysics();
+    this.world.step(1 / 60);
+  }
+  // 更新物理
+  updatePhysics() {
+    if (!this.words) {
+      return;
+    }
+    this.words.forEach((word, i) => {
+      word.children.forEach(letter => {
+        letter.position.copy((letter as any).body.position);
+        letter.quaternion.copy((letter as any).body.quaternion)
+      })
+    })
   }
 }
 

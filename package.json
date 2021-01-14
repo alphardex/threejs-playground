@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@alphardex/aqua.css": "^1.6.4",
+    "cannon": "^0.6.2",
     "core-js": "^3.6.5",
     "gsap": "^3.5.1",
     "kyouka": "^1.2.2",
@@ -19,6 +20,7 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/cannon": "^0.1.5",
     "@types/gsap": "^1.20.2",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
