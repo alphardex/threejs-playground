@@ -22,6 +22,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
+import { render } from "vue";
 
 class Base {
   debug: boolean;
@@ -466,7 +467,7 @@ class Buildings extends Base {
   // 创建地面
   createGround() {
     const ground = this.createBox({
-      color: 0x204555,
+      color: new Color('#1a3d4d'),
       width: 20,
       height: 0.1,
       depth: 20,
@@ -479,7 +480,7 @@ class Buildings extends Base {
     const { height, x, z } = cube;
     this.createBox(
       {
-        color: 0x59bfea,
+        color: new Color('#26c6da'),
         width: 0.25,
         depth: 0.25,
         y: 0,
