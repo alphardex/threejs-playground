@@ -492,4 +492,5 @@ const panoramaConfig = {
     },
   },
 };
-export { panoramaConfig };
+const menuFontUrl = './static/fonts/droid_sans_mono_regular.typeface.json'
+export { panoramaConfig, menuFontUrl };

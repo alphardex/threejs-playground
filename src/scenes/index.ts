@@ -8,14 +8,18 @@ import {
   DirectionalLight,
   Fog,
   FogExp2,
+  FontLoader,
+  Group,
   Mesh,
   MeshBasicMaterial,
   MeshLambertMaterial,
+  MeshPhongMaterial,
   MeshToonMaterial,
   OrthographicCamera,
   PerspectiveCamera,
   PointLight,
   Scene,
+  TextGeometry,
   Vector3,
   WebGLRenderer,
 } from "three";
@@ -23,6 +27,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
+import { menuFontUrl } from "@/consts";
 
 class Base {
   debug: boolean;
@@ -45,7 +50,6 @@ class Base {
       near: 0.1,
       far: 100,
     };
-    this.updateOrthographicCameraParams();
     this.cameraPosition = new Vector3(0, 3, 10);
     this.lookAtPosition = new Vector3(0, 0, 0);
   }
@@ -544,12 +548,15 @@ class Buildings extends Base {
 class Menu extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.cameraPosition = new Vector3(-10, 10, 10);
+    this.updateOrthographicCameraParams(15, -1, 100);
   }
   init() {
     this.createScene();
     this.createOrthographicCamera();
     this.createRenderer();
     this.createLight();
+    this.createMenu();
     this.createFog();
     this.addListeners();
     this.setLoop();
@@ -558,6 +565,35 @@ class Menu extends Base {
   createFog() {
     const fog = new Fog(0x202533, -1, 100);
     this.scene.fog = fog;
+  }
+  // 创建菜单
+  createMenu() {
+    const menuItems = document.querySelectorAll(".menu-list-item a");
+    const loader = new FontLoader();
+    loader.load(menuFontUrl, (font) => {
+      menuItems.forEach((item, i) => {
+        const word = new Group();
+        const { textContent } = item;
+        const words = [];
+        Array.from(textContent!).forEach((letter) => {
+          const mat = new MeshPhongMaterial({ color: 0x97df5e });
+          const geo = new TextGeometry(letter, {
+            font,
+            size: 3,
+            height: 0.4,
+            curveSegments: 24,
+            bevelEnabled: true,
+            bevelThickness: 0.9,
+            bevelSize: 0.3,
+            bevelSegments: 10
+          })
+          const mesh = new Mesh(geo, mat);
+          word.add(mesh);
+        })
+        words.push(word);
+        this.scene.add(word);
+      });
+    });
   }
 }
 
