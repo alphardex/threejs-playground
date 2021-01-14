@@ -5,6 +5,7 @@ import Starter from "../views/Starter.vue";
 import Stack from "../views/Stack.vue";
 import Panorama from "../views/Panorama.vue";
 import Buildings from '../views/Buildings.vue';
+import Menu from '../views/Menu.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/buildings',
     name: 'Buildings',
     component: Buildings
+  },
+  {
+    path: '/menu',
+    name: 'Menu',
+    component: Menu
   },
   {
     path: "/:pathMatch(.*)*",

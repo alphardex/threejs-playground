@@ -13,6 +13,9 @@
       <li>
         <router-link :to="{ name: 'Buildings' }">Buildings</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'Menu' }">Menu</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

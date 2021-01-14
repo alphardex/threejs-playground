@@ -448,9 +448,6 @@ class Panorama {
 
 class Buildings extends Base {
   ground!: Mesh;
-  constructor(sel: string, debug: boolean) {
-    super(sel, debug);
-  }
   init() {
     this.createScene();
     this.createCamera();
@@ -527,4 +524,8 @@ class Buildings extends Base {
   }
 }
 
-export { Base, Stack, Panorama, Buildings };
+class Menu extends Base {
+
+}
+
+export { Base, Stack, Panorama, Buildings, Menu };
