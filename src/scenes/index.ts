@@ -22,7 +22,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
-import { render } from "vue";
 
 class Base {
   debug: boolean;
