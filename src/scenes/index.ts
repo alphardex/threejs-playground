@@ -566,6 +566,17 @@ class Menu extends Base {
     const fog = new Fog(0x202533, -1, 100);
     this.scene.fog = fog;
   }
+  // 创建光
+  createLight() {
+    const ambientLight = new AmbientLight(0xcccccc);
+    this.scene.add(ambientLight);
+    const foreLight = new DirectionalLight(0xffffff, 0.5);
+    foreLight.position.set(5, 5, 20);
+    this.scene.add(foreLight);
+    const backLight = new DirectionalLight(0xffffff, 1);
+    backLight.position.set(-5, -5, -10);
+    this.scene.add(backLight)
+  }
   // 创建菜单
   createMenu() {
     const menuItems = document.querySelectorAll(".menu-list-item a");
