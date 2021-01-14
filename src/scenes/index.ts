@@ -483,10 +483,10 @@ class Buildings extends Base {
         width: 0.25,
         depth: 0.25,
         y: 0,
+        material: MeshLambertMaterial,
         height,
         x,
         z,
-        material: MeshLambertMaterial,
       },
       this.ground
     );
