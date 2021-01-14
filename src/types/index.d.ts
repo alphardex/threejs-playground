@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color, Material, MeshBasicMaterial } from "three";
 
 declare module "@alphardex/aqua.sp/dist/aqua.sp.min.css";
 
@@ -21,4 +21,5 @@ export interface Cube {
   y?: number;
   z?: number;
   color?: string | Color | number;
+  material?: any;
 }

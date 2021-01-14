@@ -3,12 +3,12 @@ import { calcAspect } from "@/utils/math";
 import {
   AmbientLight,
   AxesHelper,
-  BoxBufferGeometry,
   BoxGeometry,
   Color,
   DirectionalLight,
   FogExp2,
   Mesh,
+  MeshBasicMaterial,
   MeshLambertMaterial,
   MeshToonMaterial,
   OrthographicCamera,
@@ -18,6 +18,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
@@ -30,6 +31,7 @@ class Base {
   renderer!: WebGLRenderer;
   box!: Mesh;
   light!: PointLight | DirectionalLight;
+  controls!: OrbitControls;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -81,10 +83,11 @@ class Base {
       x = 0,
       y = 0,
       z = 0,
+      material = MeshBasicMaterial,
     } = cube;
     const geo = new BoxGeometry(width, height, depth);
-    const material = new MeshToonMaterial({ color, flatShading: true });
-    const box = new Mesh(geo, material);
+    const mat = new material({ color, flatShading: true });
+    const box = new Mesh(geo, mat);
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
@@ -99,6 +102,12 @@ class Base {
     const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
     this.scene.add(ambientLight);
     this.light = light;
+  }
+  // 创建轨道控制
+  createOrbitControls() {
+    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    controls.update();
+    this.controls = controls;
   }
   // 监听事件
   addListeners() {
@@ -125,6 +134,9 @@ class Base {
   setLoop() {
     this.renderer.setAnimationLoop(() => {
       this.update();
+      if (this.controls) {
+        this.controls.update();
+      }
       this.renderer.render(this.scene, this.camera);
     });
   }
@@ -162,6 +174,7 @@ class Stack extends Base {
       y: 0,
       z: 0,
       color: new Color("#d9dfc8"),
+      material: MeshToonMaterial,
     };
     this.level = 0;
     this.moveLimit = 1.2;
@@ -442,9 +455,11 @@ class Buildings extends Base {
     this.createScene();
     this.createCamera();
     this.createRenderer();
+    this.createOrbitControls();
     this.createGround();
     this.createBuildingGroup();
     this.createLight();
+    this.createFog();
     this.addListeners();
     this.setLoop();
   }
@@ -455,6 +470,7 @@ class Buildings extends Base {
       width: 20,
       height: 0.1,
       depth: 20,
+      material: MeshLambertMaterial,
     });
     this.ground = ground;
   }
@@ -470,16 +486,17 @@ class Buildings extends Base {
         height,
         x,
         z,
+        material: MeshLambertMaterial,
       },
       this.ground
     );
   }
   // 创建楼层群
-  createBuildingGroup(count = 500) {
+  createBuildingGroup(count = 1000) {
     for (let i = 0; i < count; i++) {
       const height = ky.randomNumberInRange(0.25, 5);
-      const x = ky.randomNumberInRange(10, 20);
-      const z = ky.randomNumberInRange(10, 20);
+      const x = Number(ky.randomNumberInRange(-10, 10).toFixed(2));
+      const z = Number(ky.randomNumberInRange(-10, 10).toFixed(2));
       this.createBuilding({ height, x, z });
     }
   }
@@ -492,6 +509,11 @@ class Buildings extends Base {
     light2.position.set(-1.5, 2, 1);
     this.scene.add(light2);
     this.light = light1;
+  }
+  // 创建雾
+  createFog() {
+    const fog = new FogExp2("#ffffff", 0.1);
+    this.scene.fog = fog;
   }
   // 动画
   update() {
