@@ -1,5 +1,12 @@
 <template>
-  <div class="menu"></div>
+  <nav class="menu fixed hv-center z-5">
+    <ul class="menu-list text-center space-y-12 text-9xl opacity-0">
+      <li class="menu-list-item"><a href="#">Home</a></li>
+      <li class="menu-list-item"><a href="#">About</a></li>
+      <li class="menu-list-item"><a href="#">Archive</a></li>
+    </ul>
+  </nav>
+  <div class="stage w-full h-full bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">
@@ -10,7 +17,7 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const start = () => {
-      const menu = new Menu(".menu", true);
+      const menu = new Menu(".stage", true);
       menu.init();
     };
     onMounted(() => {
@@ -24,9 +31,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.menu {
-  width: 100%;
-  height: 100%;
-  background: var(--blue-grad-1);
-}
 </style>

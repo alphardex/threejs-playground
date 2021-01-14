@@ -27,7 +27,7 @@
     <div class="status high-score" v-if="highScore">
       {{ highScore }}
     </div>
-    <div class="stack"></div>
+    <div class="stack absolute w-full h-full bg-blue-grad-1"></div>
   </div>
 </template>
 
@@ -82,13 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.stack {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: var(--blue-grad-1);
-}
-
 .status {
   position: absolute;
   z-index: 1;

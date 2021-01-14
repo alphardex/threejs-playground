@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import "@alphardex/aqua.css/dist/aqua.sp.min.css";
+import "@alphardex/aqua.css/dist/aqua.min.css";
 import "pannellum/build/pannellum.css";
 import { defineComponent } from "vue";
 
@@ -45,7 +45,15 @@ body {
 
 // reset
 
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
 a {
+  text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -71,6 +79,10 @@ select {
 
 .bg-black-transparent-2 {
   background: var(--black-color-transparent-2);
+}
+
+.bg-blue-grad-1 {
+  background: var(--blue-grad-1);
 }
 
 // common

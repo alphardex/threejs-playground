@@ -1,5 +1,5 @@
 <template>
-  <div class="buildings"></div>
+  <div class="buildings w-full h-full bg-white"></div>
 </template>
 
 <script lang="ts">
@@ -24,9 +24,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.buildings {
-  width: 100%;
-  height: 100%;
-  background: white;
-}
 </style>
