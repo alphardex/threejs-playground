@@ -6,6 +6,7 @@ import {
   BoxGeometry,
   Color,
   DirectionalLight,
+  Fog,
   FogExp2,
   Mesh,
   MeshBasicMaterial,
@@ -28,6 +29,10 @@ class Base {
   container: HTMLElement | null;
   scene!: Scene;
   camera!: PerspectiveCamera | OrthographicCamera;
+  perspectiveCameraParams!: Record<string, any>;
+  orthographicCameraParams!: Record<string, any>;
+  cameraPosition!: Vector3;
+  lookAtPosition!: Vector3;
   renderer!: WebGLRenderer;
   box!: Mesh;
   light!: PointLight | DirectionalLight;
@@ -35,14 +40,21 @@ class Base {
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
+    this.perspectiveCameraParams = {
+      fov: 75,
+      near: 0.1,
+      far: 100,
+    };
+    this.updateOrthographicCameraParams();
+    this.cameraPosition = new Vector3(0, 3, 10);
+    this.lookAtPosition = new Vector3(0, 0, 0);
   }
   // 初始化
   init() {
     this.createScene();
-    this.createCamera();
+    this.createPerspectiveCamera();
     this.createRenderer();
-    const box = this.createBox({});
-    this.box = box;
+    this.createBox({});
     this.createLight();
     this.addListeners();
     this.setLoop();
@@ -56,11 +68,35 @@ class Base {
     this.scene = scene;
   }
   // 创建透视相机
-  createCamera() {
+  createPerspectiveCamera() {
+    const { perspectiveCameraParams, cameraPosition } = this;
+    const { fov, near, far } = perspectiveCameraParams;
     const aspect = calcAspect(this.container!);
-    const camera = new PerspectiveCamera(75, aspect, 0.1, 100);
-    camera.position.set(0, 3, 10);
+    const camera = new PerspectiveCamera(fov, aspect, near, far);
+    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     this.camera = camera;
+  }
+  // 创建正交相机
+  createOrthographicCamera() {
+    const { orthographicCameraParams, cameraPosition, lookAtPosition } = this;
+    const { left, right, top, bottom, near, far } = orthographicCameraParams;
+    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
+    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
+    this.camera = camera;
+  }
+  // 更新正交相机参数
+  updateOrthographicCameraParams(zoom = 2, near = -100, far = 1000) {
+    const { container } = this;
+    const aspect = calcAspect(container!);
+    this.orthographicCameraParams = {
+      left: -zoom * aspect,
+      right: zoom * aspect,
+      top: zoom,
+      bottom: -zoom,
+      near,
+      far,
+    };
   }
   // 创建渲染
   createRenderer() {
@@ -116,14 +152,38 @@ class Base {
   // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
-      const aspect = calcAspect(this.container!);
-      const camera = this.camera as PerspectiveCamera;
-      camera.aspect = aspect;
-      camera.updateProjectionMatrix();
-      this.renderer.setSize(
-        this.container!.clientWidth,
-        this.container!.clientHeight
-      );
+      if (this.camera instanceof PerspectiveCamera) {
+        const aspect = calcAspect(this.container!);
+        const camera = this.camera as PerspectiveCamera;
+        camera.aspect = aspect;
+        camera.updateProjectionMatrix();
+        this.renderer.setSize(
+          this.container!.clientWidth,
+          this.container!.clientHeight
+        );
+      } else if (this.camera instanceof OrthographicCamera) {
+        this.renderer.setSize(
+          this.container!.clientWidth,
+          this.container!.clientHeight
+        );
+        this.updateOrthographicCameraParams();
+        const camera = this.camera as OrthographicCamera;
+        const {
+          left,
+          right,
+          top,
+          bottom,
+          near,
+          far,
+        } = this.orthographicCameraParams;
+        camera.left = left;
+        camera.right = right;
+        camera.top = top;
+        camera.bottom = bottom;
+        camera.near = near;
+        camera.far = far;
+        camera.updateProjectionMatrix();
+      }
     });
   }
   // 动画
@@ -143,9 +203,6 @@ class Base {
 }
 
 class Stack extends Base {
-  cameraParams: Record<string, any>; // 相机参数
-  cameraPosition: Vector3; // 相机位置
-  lookAtPosition: Vector3; // 视点
   colorOffset: number; // 颜色偏移量
   boxParams: Record<string, any>; // 方块属性参数
   level: number; // 关卡
@@ -161,10 +218,6 @@ class Stack extends Base {
   gameover: boolean; // 游戏结束
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
-    this.cameraParams = {};
-    this.updateCameraParams();
-    this.cameraPosition = new Vector3(2, 2, 2);
-    this.lookAtPosition = new Vector3(0, 0, 0);
     this.colorOffset = ky.randomIntegerInRange(0, 255);
     this.boxParams = {
       width: 1,
@@ -176,6 +229,8 @@ class Stack extends Base {
       color: new Color("#d9dfc8"),
       material: MeshToonMaterial,
     };
+    this.cameraPosition = new Vector3(2, 2, 2);
+    this.updateOrthographicCameraParams();
     this.level = 0;
     this.moveLimit = 1.2;
     this.moveAxis = "x";
@@ -188,44 +243,25 @@ class Stack extends Base {
     this.gamestart = false;
     this.gameover = false;
   }
-  // 更新相机参数
-  updateCameraParams() {
-    const { container } = this;
-    const aspect = calcAspect(container!);
-    const zoom = 2;
-    this.cameraParams = {
-      left: -zoom * aspect,
-      right: zoom * aspect,
-      top: zoom,
-      bottom: -zoom,
-      near: -100,
-      far: 1000,
-    };
-  }
-  // 创建正交相机
-  createCamera() {
-    const { cameraParams, cameraPosition, lookAtPosition } = this;
-    const { left, right, top, bottom, near, far } = cameraParams;
-    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
-    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
-    this.camera = camera;
-  }
   // 初始化
   init() {
     this.createScene();
-    this.createCamera();
+    this.createOrthographicCamera();
     this.createRenderer();
     this.updateColor();
+    this.createBase();
+    this.createLight();
+    this.addListeners();
+    this.setLoop();
+  }
+  // 创建底座
+  createBase() {
     const baseParams = { ...this.boxParams };
     const baseHeight = 2.5;
     baseParams.height = baseHeight;
     baseParams.y -= (baseHeight - this.boxParams.height) / 2;
     const base = this.createBox(baseParams);
     this.box = base;
-    this.createLight();
-    this.addListeners();
-    this.setLoop();
   }
   // 更新颜色
   updateColor() {
@@ -245,8 +281,8 @@ class Stack extends Base {
   startNextLevel() {
     this.level += 1;
     // 确定移动轴和移动边：奇数x；偶数z
-    this.moveAxis = this.level % 2 ? "x" : "z";
-    this.moveEdge = this.level % 2 ? "width" : "depth";
+    this.moveAxis = ky.isOdd(this.level) ? "x" : "z";
+    this.moveEdge = ky.isOdd(this.level) ? "width" : "depth";
     // 增加方块生成的高度
     this.currentY += this.boxParams.height;
     // 增加方块的速度
@@ -401,25 +437,6 @@ class Stack extends Base {
       duration: 1.5,
     });
   }
-  // 监听画面缩放
-  onResize() {
-    window.addEventListener("resize", (e) => {
-      this.renderer.setSize(
-        this.container!.clientWidth,
-        this.container!.clientHeight
-      );
-      this.updateCameraParams();
-      const camera = this.camera as OrthographicCamera;
-      const { left, right, top, bottom, near, far } = this.cameraParams;
-      camera.left = left;
-      camera.right = right;
-      camera.top = top;
-      camera.bottom = bottom;
-      camera.near = near;
-      camera.far = far;
-      camera.updateProjectionMatrix();
-    });
-  }
   // 状态
   get status() {
     const { level, gamestart, gameover } = this;
@@ -450,7 +467,7 @@ class Buildings extends Base {
   ground!: Mesh;
   init() {
     this.createScene();
-    this.createCamera();
+    this.createPerspectiveCamera();
     this.createRenderer();
     this.createOrbitControls();
     this.createGround();
@@ -463,7 +480,7 @@ class Buildings extends Base {
   // 创建地面
   createGround() {
     const ground = this.createBox({
-      color: new Color('#1a3d4d'),
+      color: new Color("#1a3d4d"),
       width: 20,
       height: 0.1,
       depth: 20,
@@ -476,7 +493,7 @@ class Buildings extends Base {
     const { height, x, z } = cube;
     this.createBox(
       {
-        color: new Color('#26c6da'),
+        color: new Color("#26c6da"),
         width: 0.25,
         depth: 0.25,
         y: 0,
@@ -525,7 +542,23 @@ class Buildings extends Base {
 }
 
 class Menu extends Base {
-
+  constructor(sel: string, debug: boolean) {
+    super(sel, debug);
+  }
+  init() {
+    this.createScene();
+    this.createOrthographicCamera();
+    this.createRenderer();
+    this.createLight();
+    this.createFog();
+    this.addListeners();
+    this.setLoop();
+  }
+  // 创建雾
+  createFog() {
+    const fog = new Fog(0x202533, -1, 100);
+    this.scene.fog = fog;
+  }
 }
 
 export { Base, Stack, Panorama, Buildings, Menu };
