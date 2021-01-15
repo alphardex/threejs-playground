@@ -29,6 +29,7 @@ import ky from "kyouka";
 import "pannellum";
 import { menuFontConfig, menuFontUrl } from "@/consts";
 import C from "cannon";
+import { MeshPhysicsObject } from "@/utils/physics";
 
 class Base {
   debug: boolean;
@@ -546,12 +547,20 @@ class Buildings extends Base {
   }
 }
 
+class LetterObject extends MeshPhysicsObject {
+  xOffset!: number;
+  constructor(body: C.Body, mesh: Mesh, xOffset: number) {
+    super(body, mesh);
+    this.xOffset = xOffset;
+  }
+}
+
 class Menu extends Base {
   menuItems!: NodeListOf<Element>;
-  words!: Group[];
   world!: C.World;
   margin!: number;
   offset!: number;
+  letterObjs!: LetterObject[];
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new Vector3(-10, 10, 10);
@@ -560,7 +569,7 @@ class Menu extends Base {
     const menuItems = document.querySelectorAll(".menu-list-item a");
     this.menuItems = menuItems;
     this.offset = menuItems.length * this.margin * 0.5;
-    this.words = [];
+    this.letterObjs = [];
   }
   init() {
     this.createPhysicsWorld();
@@ -589,6 +598,18 @@ class Menu extends Base {
     backLight.position.set(-5, -5, -10);
     this.scene.add(backLight);
   }
+  // 创建物理盒子
+  createPhysicsBox(
+    halfExtents: C.Vec3,
+    bodyOptions: C.IBodyOptions,
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
+  ) {
+    const shape = new C.Box(halfExtents);
+    const body = new C.Body(bodyOptions);
+    body.addShape(shape, bodyOffset);
+    this.world.addBody(body);
+    return body;
+  }
   // 创建菜单
   createMenu() {
     const loader = new FontLoader();
@@ -597,7 +618,6 @@ class Menu extends Base {
         this.createGround(i);
         const word = new Group();
         const { textContent } = item;
-        const words: Group[] = [];
         Array.from(textContent!).forEach((letter) => {
           const mat = new MeshPhongMaterial({ color: 0x97df5e });
           const geo = new TextGeometry(letter, {
@@ -610,39 +630,33 @@ class Menu extends Base {
           const size = geo.boundingBox!.getSize(new Vector3());
           let letterXOffset = 0;
           letterXOffset += size.x;
-          (mesh as any).letterXOffset = letterXOffset;
           const letterYOffset =
             (this.menuItems.length - i - 1) * this.margin - this.offset;
-          const shape = new C.Box(
-            new C.Vec3().copy(size as any).scale(0.5)
+          const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
+          const mass = 1 / textContent!.length;
+          const position = new C.Vec3(letterXOffset, letterYOffset, 0);
+          const bodyOptions = { mass, position };
+          const bodyOffset = mesh.geometry.boundingSphere!.center as any;
+          const body = this.createPhysicsBox(
+            halfExtents,
+            bodyOptions,
+            bodyOffset
           );
-          const body = new C.Body({
-            mass: 1 / textContent!.length,
-            position: new C.Vec3(letterXOffset, letterYOffset, 0),
-          });
-          const { center } = mesh.geometry.boundingSphere!;
-          body.addShape(shape, new C.Vec3(center.x, center.y, center.z));
-          this.world.addBody(body);
-          (mesh as any).body = body;
-          (mesh as any).size = size;
+          const letterObj = new LetterObject(body, mesh, letterXOffset);
+          this.letterObjs.push(letterObj);
           word.add(mesh);
         });
-        words.forEach(word => {
-          (word as any).body.position.x -= (word as any).size.x + (word as any).letterXOffset * 0.5;
-        })
-        this.words.push(word);
         this.scene.add(word);
       });
     });
   }
   // 创建地面
   createGround(i: number) {
-    const ground = new C.Body({
-      mass: 0,
-      shape: new C.Box(new C.Vec3(50, 0.1, 50)),
-      position: new C.Vec3(0, i * this.margin - this.offset, 0)
-    })
-    this.world.addBody(ground);
+    const halfExtents = new C.Vec3(50, 0.1, 50);
+    const mass = 0;
+    const position = new C.Vec3(0, i * this.margin - this.offset, 0);
+    const bodyOptions = { mass, position };
+    this.createPhysicsBox(halfExtents, bodyOptions);
   }
   // 创建物理世界
   createPhysicsWorld() {
@@ -657,15 +671,11 @@ class Menu extends Base {
   }
   // 更新物理
   updatePhysics() {
-    if (!this.words) {
-      return;
-    }
-    this.words.forEach((word, i) => {
-      word.children.forEach(letter => {
-        letter.position.copy((letter as any).body.position);
-        letter.quaternion.copy((letter as any).body.quaternion)
-      })
-    })
+    this.letterObjs.forEach((letterObj) => {
+      const { mesh, body } = letterObj;
+      mesh.position.copy(body.position as any);
+      mesh.quaternion.copy(body.quaternion as any);
+    });
   }
 }
 
