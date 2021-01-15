@@ -6,8 +6,9 @@ import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
 import { menuFontConfig, menuFontUrl } from "@/consts";
-import C, { Material } from "cannon";
+import C from "cannon";
 import { MeshPhysicsObject } from "@/utils/physics";
+import { Vector3 } from "three";
 
 class Base {
   debug: boolean;
@@ -29,6 +30,11 @@ class Base {
       fov: 75,
       near: 0.1,
       far: 100,
+    };
+    this.orthographicCameraParams = {
+      zoom: 2,
+      near: -100,
+      far: 1000,
     };
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
@@ -77,8 +83,9 @@ class Base {
     this.camera = camera;
   }
   // 更新正交相机参数
-  updateOrthographicCameraParams(zoom = 2, near = -100, far = 1000) {
+  updateOrthographicCameraParams() {
     const { container } = this;
+    const { zoom, near, far } = this.orthographicCameraParams;
     const aspect = calcAspect(container!);
     this.orthographicCameraParams = {
       left: -zoom * aspect,
@@ -87,6 +94,7 @@ class Base {
       bottom: -zoom,
       near,
       far,
+      zoom
     };
   }
   // 创建渲染
@@ -156,10 +164,6 @@ class Base {
           this.container!.clientHeight
         );
       } else if (this.camera instanceof THREE.OrthographicCamera) {
-        this.renderer.setSize(
-          this.container!.clientWidth,
-          this.container!.clientHeight
-        );
         this.updateOrthographicCameraParams();
         const camera = this.camera as THREE.OrthographicCamera;
         const {
@@ -177,6 +181,10 @@ class Base {
         camera.near = near;
         camera.far = far;
         camera.updateProjectionMatrix();
+        this.renderer.setSize(
+          this.container!.clientWidth,
+          this.container!.clientHeight
+        );
       }
     });
   }
@@ -537,9 +545,11 @@ class Buildings extends Base {
 
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
-  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number) {
+  size!: Vector3;
+  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number, size: Vector3) {
     super(body, mesh);
     this.xOffset = xOffset;
+    this.size = size;
   }
 }
 
@@ -552,7 +562,12 @@ class Menu extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
-    this.updateOrthographicCameraParams(15, -1, 100);
+    this.orthographicCameraParams = {
+      zoom: 15,
+      near: -1,
+      far: 100,
+    };
+    this.updateOrthographicCameraParams();
     this.margin = 6;
     const menuItems = document.querySelectorAll(".menu-list-item a");
     this.menuItems = menuItems;
@@ -617,40 +632,46 @@ class Menu extends Base {
   createMenu() {
     const loader = new THREE.FontLoader();
     loader.load(menuFontUrl, (font) => {
-      Array.from(this.menuItems).reverse().forEach((item, i) => {
-        this.createGround(i);
-        const word = new THREE.Group();
-        const { textContent } = item;
-        let letterXOffset = 0;
-        Array.from(textContent!).forEach((letter) => {
-          const config = {
-            font,
-            ...menuFontConfig,
-          };
-          const { mesh, size } = this.createText(
-            letter,
-            config,
-            THREE.MeshPhongMaterial
-          );
-          letterXOffset += size.x;
-          const letterYOffset =
-            (this.menuItems.length - i - 1) * this.margin - this.offset;
-          const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
-          const mass = 1 / textContent!.length;
-          const position = new C.Vec3(letterXOffset, letterYOffset, 0);
-          const bodyOptions = { mass, position };
-          const bodyOffset = mesh.geometry.boundingSphere!.center as any;
-          const body = this.createPhysicsBox(
-            halfExtents,
-            bodyOptions,
-            bodyOffset
-          );
-          const letterObj = new LetterObject(body, mesh, letterXOffset);
-          this.letterObjs.push(letterObj);
-          word.add(mesh);
+      Array.from(this.menuItems)
+        .reverse()
+        .forEach((item, i) => {
+          this.createGround(i);
+          const word = new THREE.Group();
+          const { textContent } = item;
+          let letterXOffset = 0;
+          Array.from(textContent!).forEach((letter) => {
+            const config = {
+              font,
+              ...menuFontConfig,
+            };
+            const { mesh, size } = this.createText(
+              letter,
+              config,
+              THREE.MeshPhongMaterial
+            );
+            letterXOffset += size.x;
+            const letterYOffset =
+              (this.menuItems.length - i - 1) * this.margin - this.offset;
+            const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
+            const mass = 1 / textContent!.length;
+            const position = new C.Vec3(letterXOffset, letterYOffset, 0);
+            const bodyOptions = { mass, position };
+            const bodyOffset = mesh.geometry.boundingSphere!.center as any;
+            const body = this.createPhysicsBox(
+              halfExtents,
+              bodyOptions,
+              bodyOffset
+            );
+            const letterObj = new LetterObject(body, mesh, letterXOffset, size);
+            this.letterObjs.push(letterObj);
+            word.add(mesh);
+          });
+          // this.letterObjs.forEach(letterObj => {
+          //   letterObj.body.position.x -= letterObj.size.x;
+          //   console.log(letterObj.body.position.x);
+          // })
+          this.scene.add(word);
         });
-        this.scene.add(word);
-      });
     });
   }
   // 创建地面
