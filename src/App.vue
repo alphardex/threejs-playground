@@ -41,6 +41,7 @@ body {
   --black-color-transparent-1: #{transparentize(black, 0.7)};
   --black-color-transparent-2: #{transparentize(black, 0.5)};
   --orange-color-1: #f6b64c;
+  --blue-color-1: #2c3e50;
 }
 
 // reset
@@ -83,6 +84,10 @@ select {
 
 .bg-blue-grad-1 {
   background: var(--blue-grad-1);
+}
+
+.bg-blue-1 {
+  background: var(--blue-color-1);
 }
 
 // common

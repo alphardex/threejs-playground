@@ -140,7 +140,7 @@ class Base {
     text = "",
     config: THREE.TextGeometryParameters,
     material: any,
-    color = 0x97df5e
+    color: number | THREE.Color = 0x97df5e
   ) {
     const mat = new material({ color });
     const geo = new THREE.TextGeometry(text, config);
@@ -630,7 +630,7 @@ class Menu extends Base {
       far: 100,
     };
     this.updateOrthographicCameraParams();
-    this.gravity = new C.Vec3(0, -200, 0);
+    this.gravity = new C.Vec3(0, -50, 0);
     this.margin = 6;
     const menuItems = document.querySelectorAll(".menu-list-item a");
     this.menuItems = menuItems;
@@ -685,7 +685,8 @@ class Menu extends Base {
             const { mesh, size } = this.createText(
               letter,
               config,
-              THREE.MeshPhongMaterial
+              THREE.MeshPhongMaterial,
+              new THREE.Color('#31C9BB')
             );
             letterXOffset += size.x;
             const letterYOffset =
