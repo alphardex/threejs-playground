@@ -9,6 +9,7 @@ import { menuFontConfig, menuFontUrl } from "@/consts";
 import C from "cannon";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { Vector3 } from "three";
+import { getNormalizedMousePos } from "@/utils/dom";
 
 class Base {
   debug: boolean;
@@ -94,7 +95,7 @@ class Base {
       bottom: -zoom,
       near,
       far,
-      zoom
+      zoom,
     };
   }
   // 创建渲染
@@ -559,6 +560,8 @@ class Menu extends Base {
   margin!: number;
   offset!: number;
   letterObjs!: LetterObject[];
+  mousePos!: THREE.Vector2;
+  raycaster!: THREE.Raycaster;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
@@ -582,6 +585,7 @@ class Menu extends Base {
     this.createLight();
     this.createMenu();
     this.createFog();
+    this.createRaycaster();
     this.addListeners();
     this.setLoop();
   }
@@ -670,7 +674,7 @@ class Menu extends Base {
           });
           word.children.forEach((letter: any) => {
             letter.body.position.x -= letter.size.x + letterXOffset * 0.5;
-          })
+          });
           this.scene.add(word);
         });
     });
@@ -700,6 +704,53 @@ class Menu extends Base {
       const { mesh, body } = letterObj;
       mesh.position.copy(body.position as any);
       mesh.quaternion.copy(body.quaternion as any);
+    });
+  }
+  // 创建点选模型
+  createRaycaster() {
+    this.mousePos = new THREE.Vector2(0, 0);
+    this.raycaster = new THREE.Raycaster();
+  }
+  // 监听事件
+  addListeners() {
+    this.onResize();
+    this.onMousemove();
+    this.onClick();
+  }
+  // 监听移动
+  onMousemove() {
+    window.addEventListener("mousemove", (e: MouseEvent) => {
+      const { x, y } = getNormalizedMousePos(e);
+      this.mousePos.x = x;
+      this.mousePos.y = y;
+    });
+  }
+  // 监听点击
+  onClick() {
+    document.addEventListener("click", () => {
+      this.raycaster.setFromCamera(this.mousePos, this.camera);
+      const intersects = this.raycaster.intersectObjects(
+        this.scene.children,
+        true
+      );
+      if (!ky.isEmpty(intersects)) {
+        const obj = intersects[0];
+        const { object, face } = obj;
+        if (!object.isObject3D) {
+          return;
+        }
+        const impulse = new THREE.Vector3()
+          .copy(face!.normal)
+          .negate()
+          .multiplyScalar(25);
+        this.letterObjs.forEach((letterObj) => {
+          const { mesh, body } = letterObj;
+          if (mesh !== object) {
+            return;
+          }
+          body.applyLocalImpulse(impulse as any, new C.Vec3());
+        });
+      }
     });
   }
 }
