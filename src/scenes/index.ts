@@ -548,7 +548,13 @@ class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
   size!: Vector3;
   text!: string;
-  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number, size: Vector3, text = "") {
+  constructor(
+    body: C.Body,
+    mesh: THREE.Mesh,
+    xOffset: number,
+    size: Vector3,
+    text = ""
+  ) {
     super(body, mesh);
     this.xOffset = xOffset;
     this.size = size;
@@ -668,7 +674,13 @@ class Menu extends Base {
               bodyOptions,
               bodyOffset
             );
-            const letterObj = new LetterObject(body, mesh, letterXOffset, size, letter);
+            const letterObj = new LetterObject(
+              body,
+              mesh,
+              letterXOffset,
+              size,
+              letter
+            );
             this.letterObjs.push(letterObj);
             (mesh as any).body = body;
             (mesh as any).size = size;
@@ -766,21 +778,26 @@ class Menu extends Base {
       prevWordLength += prevWord.length;
       for (let i = 0; i < word.length; i++) {
         const letterIdx = prevWordLength + i;
-        const nextLetterIdx = i === word.length - 1 ? null : prevWordLength + i + 1;
-        if(!nextLetterIdx) {
+        const nextLetterIdx =
+          i === word.length - 1 ? null : prevWordLength + i + 1;
+        if (!nextLetterIdx) {
           continue;
         }
         const letterObj = this.letterObjs[letterIdx];
         const nextLetterObj = this.letterObjs[nextLetterIdx];
         // 支点A为第二个字母的原点
-        const c = new C.ConeTwistConstraint(letterObj.body, nextLetterObj.body, {
-          pivotA: new C.Vec3(letterObj.size.x, 0, 0),
-          pivotB: new C.Vec3(0,0,0)
-        })
+        const c = new C.ConeTwistConstraint(
+          letterObj.body,
+          nextLetterObj.body,
+          {
+            pivotA: new C.Vec3(letterObj.size.x, 0, 0),
+            pivotB: new C.Vec3(0, 0, 0),
+          }
+        );
         c.collideConnected = true;
         this.world.addConstraint(c);
       }
-    })
+    });
   }
 }
 
