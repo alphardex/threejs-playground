@@ -587,7 +587,7 @@ class Menu extends Base {
   }
   // 创建雾
   createFog() {
-    const fog = new THREE.Fog(0x202533, -1, 100);
+    const fog = new THREE.Fog(0x202533, -1, 200);
     this.scene.fog = fog;
   }
   // 创建光
@@ -664,12 +664,13 @@ class Menu extends Base {
             );
             const letterObj = new LetterObject(body, mesh, letterXOffset, size);
             this.letterObjs.push(letterObj);
+            (mesh as any).body = body;
+            (mesh as any).size = size;
             word.add(mesh);
           });
-          // this.letterObjs.forEach(letterObj => {
-          //   letterObj.body.position.x -= letterObj.size.x;
-          //   console.log(letterObj.body.position.x);
-          // })
+          word.children.forEach((letter: any) => {
+            letter.body.position.x -= letter.size.x + letterXOffset * 0.5;
+          })
           this.scene.add(word);
         });
     });
@@ -685,7 +686,7 @@ class Menu extends Base {
   // 创建物理世界
   createPhysicsWorld() {
     const world = new C.World();
-    world.gravity.set(0, -50, 0);
+    world.gravity.set(0, -150, 0);
     this.world = world;
   }
   // 动画

@@ -2,8 +2,8 @@
   <nav class="menu fixed hv-center z-5">
     <ul class="menu-list text-center space-y-12 text-9xl opacity-0">
       <li class="menu-list-item"><a href="#">Home</a></li>
+      <li class="menu-list-item"><a href="#">Archives</a></li>
       <li class="menu-list-item"><a href="#">About</a></li>
-      <li class="menu-list-item"><a href="#">Archive</a></li>
     </ul>
   </nav>
   <div class="stage w-full h-full bg-blue-grad-1"></div>
