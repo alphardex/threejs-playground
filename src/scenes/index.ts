@@ -24,6 +24,9 @@ class Base {
   box!: THREE.Mesh;
   light!: THREE.PointLight | THREE.DirectionalLight;
   controls!: OrbitControls;
+  mousePos!: THREE.Vector2;
+  raycaster!: THREE.Raycaster;
+  world!: C.World;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -130,6 +133,21 @@ class Base {
     container.add(box);
     return box;
   }
+  // 创建文本
+  createText(
+    text = "",
+    config: THREE.TextGeometryParameters,
+    material: any,
+    color = 0x97df5e
+  ) {
+    const mat = new material({ color });
+    const geo = new THREE.TextGeometry(text, config);
+    geo.computeBoundingBox();
+    geo.computeBoundingSphere();
+    const size = geo.boundingBox!.getSize(new THREE.Vector3());
+    const mesh = new THREE.Mesh(geo, mat);
+    return { mesh, size };
+  }
   // 创建光源
   createLight() {
     const light = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
@@ -142,11 +160,34 @@ class Base {
     this.scene.add(ambientLight);
     this.light = light;
   }
+  // 创建点选模型
+  createRaycaster() {
+    this.mousePos = new THREE.Vector2(0, 0);
+    this.raycaster = new THREE.Raycaster();
+  }
   // 创建轨道控制
   createOrbitControls() {
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
     controls.update();
     this.controls = controls;
+  }
+  // 创建物理世界
+  createPhysicsWorld() {
+    const world = new C.World();
+    world.gravity.set(0, -50, 0);
+    this.world = world;
+  }
+  // 创建物理盒子
+  createPhysicsBox(
+    halfExtents: C.Vec3,
+    bodyOptions: C.IBodyOptions,
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
+  ) {
+    const shape = new C.Box(halfExtents);
+    const body = new C.Body(bodyOptions);
+    body.addShape(shape, bodyOffset);
+    this.world.addBody(body);
+    return body;
   }
   // 监听事件
   addListeners() {
@@ -187,6 +228,14 @@ class Base {
           this.container!.clientHeight
         );
       }
+    });
+  }
+  // 监听移动
+  onMousemove() {
+    window.addEventListener("mousemove", (e: MouseEvent) => {
+      const { x, y } = getNormalizedMousePos(e);
+      this.mousePos.x = x;
+      this.mousePos.y = y;
     });
   }
   // 动画
@@ -564,12 +613,9 @@ class LetterObject extends MeshPhysicsObject {
 
 class Menu extends Base {
   menuItems!: NodeListOf<Element>;
-  world!: C.World;
   margin!: number;
   offset!: number;
   letterObjs!: LetterObject[];
-  mousePos!: THREE.Vector2;
-  raycaster!: THREE.Raycaster;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
@@ -612,33 +658,6 @@ class Menu extends Base {
     const backLight = new THREE.DirectionalLight(0xffffff, 1);
     backLight.position.set(-5, -5, -10);
     this.scene.add(backLight);
-  }
-  // 创建物理盒子
-  createPhysicsBox(
-    halfExtents: C.Vec3,
-    bodyOptions: C.IBodyOptions,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
-  ) {
-    const shape = new C.Box(halfExtents);
-    const body = new C.Body(bodyOptions);
-    body.addShape(shape, bodyOffset);
-    this.world.addBody(body);
-    return body;
-  }
-  // 创建文本
-  createText(
-    text = "",
-    config: THREE.TextGeometryParameters,
-    material: any,
-    color = 0x97df5e
-  ) {
-    const mat = new material({ color });
-    const geo = new THREE.TextGeometry(text, config);
-    geo.computeBoundingBox();
-    geo.computeBoundingSphere();
-    const size = geo.boundingBox!.getSize(new THREE.Vector3());
-    const mesh = new THREE.Mesh(geo, mat);
-    return { mesh, size };
   }
   // 创建菜单
   createMenu() {
@@ -702,43 +721,24 @@ class Menu extends Base {
     const bodyOptions = { mass, position };
     this.createPhysicsBox(halfExtents, bodyOptions);
   }
-  // 创建物理世界
-  createPhysicsWorld() {
-    const world = new C.World();
-    world.gravity.set(0, -50, 0);
-    this.world = world;
-  }
   // 动画
   update() {
-    this.updatePhysics();
+    this.sync();
     this.world.step(1 / 60);
   }
-  // 更新物理
-  updatePhysics() {
+  // 同步物理和渲染
+  sync() {
     this.letterObjs.forEach((letterObj) => {
       const { mesh, body } = letterObj;
       mesh.position.copy(body.position as any);
       mesh.quaternion.copy(body.quaternion as any);
     });
   }
-  // 创建点选模型
-  createRaycaster() {
-    this.mousePos = new THREE.Vector2(0, 0);
-    this.raycaster = new THREE.Raycaster();
-  }
   // 监听事件
   addListeners() {
     this.onResize();
     this.onMousemove();
     this.onClick();
-  }
-  // 监听移动
-  onMousemove() {
-    window.addEventListener("mousemove", (e: MouseEvent) => {
-      const { x, y } = getNormalizedMousePos(e);
-      this.mousePos.x = x;
-      this.mousePos.y = y;
-    });
   }
   // 监听点击
   onClick() {
