@@ -253,7 +253,7 @@ class PhysicsBase extends Base {
   createPhysicsBox(
     halfExtents: C.Vec3,
     bodyOptions: C.IBodyOptions,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
   ) {
     const shape = new C.Box(halfExtents);
     const body = new C.Body(bodyOptions);
@@ -638,7 +638,9 @@ class Menu extends PhysicsBase {
     this.updateOrthographicCameraParams();
     this.gravity = new C.Vec3(0, -50, 0);
     this.margin = 6;
-    const menuItems = Array.from(document.querySelectorAll(".menu-list-item a")).reverse();
+    const menuItems = Array.from(
+      document.querySelectorAll(".menu-list-item a")
+    ).reverse();
     this.menuItems = menuItems;
     this.offset = menuItems.length * this.margin * 0.5;
     this.letterObjs = [];
@@ -676,53 +678,53 @@ class Menu extends PhysicsBase {
   createMenu() {
     const loader = new THREE.FontLoader();
     loader.load(menuFontUrl, (font) => {
-        this.menuItems.forEach((item, i) => {
-          this.createGround(i);
-          const word = new THREE.Group();
-          const { textContent } = item;
-          let letterXOffset = 0;
-          Array.from(textContent!).forEach((letter) => {
-            const config = {
-              font,
-              ...menuFontConfig,
-            };
-            const { mesh, size } = this.createText(
-              letter,
-              config,
-              THREE.MeshPhongMaterial,
-              new THREE.Color('#31C9BB')
-            );
-            letterXOffset += size.x;
-            const letterYOffset =
-              (this.menuItems.length - i - 1) * this.margin - this.offset;
-            const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
-            const mass = 1 / textContent!.length;
-            const position = new C.Vec3(letterXOffset, letterYOffset, 0);
-            const material = this.letterMat;
-            const bodyOptions = { mass, position, material };
-            const bodyOffset = mesh.geometry.boundingSphere!.center as any;
-            const body = this.createPhysicsBox(
-              halfExtents,
-              bodyOptions,
-              bodyOffset
-            );
-            const letterObj = new LetterObject(
-              body,
-              mesh,
-              letterXOffset,
-              size,
-              letter
-            );
-            this.letterObjs.push(letterObj);
-            (mesh as any).body = body;
-            (mesh as any).size = size;
-            word.add(mesh);
-          });
-          word.children.forEach((letter: any) => {
-            letter.body.position.x -= letter.size.x + letterXOffset * 0.5;
-          });
-          this.scene.add(word);
+      this.menuItems.forEach((item, i) => {
+        this.createGround(i);
+        const word = new THREE.Group();
+        const { textContent } = item;
+        let letterXOffset = 0;
+        Array.from(textContent!).forEach((letter) => {
+          const config = {
+            font,
+            ...menuFontConfig,
+          };
+          const { mesh, size } = this.createText(
+            letter,
+            config,
+            THREE.MeshPhongMaterial,
+            new THREE.Color("#31C9BB")
+          );
+          letterXOffset += size.x;
+          const letterYOffset =
+            (this.menuItems.length - i - 1) * this.margin - this.offset;
+          const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
+          const mass = 1 / textContent!.length;
+          const position = new C.Vec3(letterXOffset, letterYOffset, 0);
+          const material = this.letterMat;
+          const bodyOptions = { mass, position, material };
+          const bodyOffset = mesh.geometry.boundingSphere!.center as any;
+          const body = this.createPhysicsBox(
+            halfExtents,
+            bodyOptions,
+            bodyOffset
+          );
+          const letterObj = new LetterObject(
+            body,
+            mesh,
+            letterXOffset,
+            size,
+            letter
+          );
+          this.letterObjs.push(letterObj);
+          (mesh as any).body = body;
+          (mesh as any).size = size;
+          word.add(mesh);
         });
+        word.children.forEach((letter: any) => {
+          letter.body.position.x -= letter.size.x + letterXOffset * 0.5;
+        });
+        this.scene.add(word);
+      });
       this.createConstraints();
     });
   }
@@ -764,10 +766,10 @@ class Menu extends PhysicsBase {
       );
       if (!ky.isEmpty(intersects)) {
         const obj = intersects[0];
-        const { object, face } = obj;
-        if (!object.isObject3D) {
+        if (!obj.face) {
           return;
         }
+        const { object, face } = obj;
         const impulse = new THREE.Vector3()
           .copy(face!.normal)
           .negate()
@@ -814,10 +816,10 @@ class Menu extends PhysicsBase {
   }
   // 创建联系材质
   createContactMaterial() {
-    const groundMat = new C.Material('ground');
-    const letterMat = new C.Material('letter');
+    const groundMat = new C.Material("ground");
+    const letterMat = new C.Material("letter");
     const contactMat = new C.ContactMaterial(groundMat, letterMat, {
-      friction: 0.01
+      friction: 0.01,
     });
     this.world.addContactMaterial(contactMat);
     this.groundMat = groundMat;
