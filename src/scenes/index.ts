@@ -27,6 +27,7 @@ class Base {
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
   world!: C.World;
+  gravity!: C.Vec3;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -42,6 +43,7 @@ class Base {
     };
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
+    this.gravity = new C.Vec3(0, 0, 0);
   }
   // 初始化
   init() {
@@ -173,15 +175,16 @@ class Base {
   }
   // 创建物理世界
   createPhysicsWorld() {
+    const { gravity } = this;
     const world = new C.World();
-    world.gravity.set(0, -50, 0);
+    world.gravity.set(gravity.x, gravity.y, gravity.z);
     this.world = world;
   }
   // 创建物理盒子
   createPhysicsBox(
     halfExtents: C.Vec3,
     bodyOptions: C.IBodyOptions,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
   ) {
     const shape = new C.Box(halfExtents);
     const body = new C.Body(bodyOptions);
@@ -616,6 +619,8 @@ class Menu extends Base {
   margin!: number;
   offset!: number;
   letterObjs!: LetterObject[];
+  groundMat!: C.Material;
+  letterMat!: C.Material;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
@@ -625,6 +630,7 @@ class Menu extends Base {
       far: 100,
     };
     this.updateOrthographicCameraParams();
+    this.gravity = new C.Vec3(0, -200, 0);
     this.margin = 6;
     const menuItems = document.querySelectorAll(".menu-list-item a");
     this.menuItems = menuItems;
@@ -637,6 +643,7 @@ class Menu extends Base {
     this.createOrthographicCamera();
     this.createRenderer();
     this.createLight();
+    this.createContactMaterial();
     this.createMenu();
     this.createFog();
     this.createRaycaster();
@@ -686,7 +693,8 @@ class Menu extends Base {
             const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
             const mass = 1 / textContent!.length;
             const position = new C.Vec3(letterXOffset, letterYOffset, 0);
-            const bodyOptions = { mass, position };
+            const material = this.letterMat;
+            const bodyOptions = { mass, position, material };
             const bodyOffset = mesh.geometry.boundingSphere!.center as any;
             const body = this.createPhysicsBox(
               halfExtents,
@@ -718,7 +726,8 @@ class Menu extends Base {
     const halfExtents = new C.Vec3(50, 0.1, 50);
     const mass = 0;
     const position = new C.Vec3(0, i * this.margin - this.offset, 0);
-    const bodyOptions = { mass, position };
+    const material = this.groundMat;
+    const bodyOptions = { mass, position, material };
     this.createPhysicsBox(halfExtents, bodyOptions);
   }
   // 动画
@@ -798,6 +807,17 @@ class Menu extends Base {
         this.world.addConstraint(c);
       }
     });
+  }
+  // 创建联系材质
+  createContactMaterial() {
+    const groundMat = new C.Material('ground');
+    const letterMat = new C.Material('letter');
+    const contactMat = new C.ContactMaterial(groundMat, letterMat, {
+      friction: 0.01
+    });
+    this.world.addContactMaterial(contactMat);
+    this.groundMat = groundMat;
+    this.letterMat = letterMat;
   }
 }
 

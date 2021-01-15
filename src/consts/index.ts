@@ -492,13 +492,13 @@ const panoramaConfig = {
     },
   },
 };
-const menuFontUrl = "./static/fonts/droid_sans_mono_regular.typeface.json";
+const menuFontUrl = "./static/fonts/zhfyh.json";
 const menuFontConfig = {
   size: 3,
   height: 0.4,
   curveSegments: 24,
   bevelEnabled: true,
-  bevelThickness: 0.9,
+  bevelThickness: 0.5,
   bevelSize: 0.1,
   bevelSegments: 10,
 };
