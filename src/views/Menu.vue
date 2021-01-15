@@ -17,11 +17,24 @@ export default defineComponent({
   name: "Menu",
   setup() {
     const start = () => {
+      const canvas = document.querySelector("canvas");
+      if (canvas) {
+        canvas.remove();
+      }
       const menu = new Menu(".stage", true);
       menu.init();
     };
+    const onKeyDown = () => {
+      document.addEventListener("keydown", (e) => {
+        const code = e.code;
+        if (code === "KeyR") {
+          start();
+        }
+      });
+    };
     onMounted(() => {
       start();
+      onKeyDown();
     });
     return {
       start,
