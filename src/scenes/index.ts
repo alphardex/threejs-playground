@@ -617,10 +617,11 @@ class Menu extends Base {
   createMenu() {
     const loader = new THREE.FontLoader();
     loader.load(menuFontUrl, (font) => {
-      this.menuItems.forEach((item, i) => {
+      Array.from(this.menuItems).reverse().forEach((item, i) => {
         this.createGround(i);
         const word = new THREE.Group();
         const { textContent } = item;
+        let letterXOffset = 0;
         Array.from(textContent!).forEach((letter) => {
           const config = {
             font,
@@ -631,7 +632,6 @@ class Menu extends Base {
             config,
             THREE.MeshPhongMaterial
           );
-          let letterXOffset = 0;
           letterXOffset += size.x;
           const letterYOffset =
             (this.menuItems.length - i - 1) * this.margin - this.offset;
