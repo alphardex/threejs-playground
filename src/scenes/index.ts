@@ -6,7 +6,7 @@ import gsap from "gsap";
 import ky from "kyouka";
 import "pannellum";
 import { menuFontConfig, menuFontUrl } from "@/consts";
-import C from "cannon";
+import C, { Material } from "cannon";
 import { MeshPhysicsObject } from "@/utils/physics";
 
 class Base {
@@ -598,6 +598,21 @@ class Menu extends Base {
     this.world.addBody(body);
     return body;
   }
+  // 创建文本
+  createText(
+    text = "",
+    config: THREE.TextGeometryParameters,
+    material: any,
+    color = 0x97df5e
+  ) {
+    const mat = new material({ color });
+    const geo = new THREE.TextGeometry(text, config);
+    geo.computeBoundingBox();
+    geo.computeBoundingSphere();
+    const size = geo.boundingBox!.getSize(new THREE.Vector3());
+    const mesh = new THREE.Mesh(geo, mat);
+    return { mesh, size };
+  }
   // 创建菜单
   createMenu() {
     const loader = new THREE.FontLoader();
@@ -607,15 +622,15 @@ class Menu extends Base {
         const word = new THREE.Group();
         const { textContent } = item;
         Array.from(textContent!).forEach((letter) => {
-          const mat = new THREE.MeshPhongMaterial({ color: 0x97df5e });
-          const geo = new THREE.TextGeometry(letter, {
+          const config = {
             font,
             ...menuFontConfig,
-          });
-          geo.computeBoundingBox();
-          geo.computeBoundingSphere();
-          const mesh = new THREE.Mesh(geo, mat);
-          const size = geo.boundingBox!.getSize(new THREE.Vector3());
+          };
+          const { mesh, size } = this.createText(
+            letter,
+            config,
+            THREE.MeshPhongMaterial
+          );
           let letterXOffset = 0;
           letterXOffset += size.x;
           const letterYOffset =
