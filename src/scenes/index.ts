@@ -621,7 +621,7 @@ class LetterObject extends MeshPhysicsObject {
 }
 
 class Menu extends PhysicsBase {
-  menuItems!: NodeListOf<Element>;
+  menuItems!: Element[];
   margin!: number;
   offset!: number;
   letterObjs!: LetterObject[];
@@ -638,7 +638,7 @@ class Menu extends PhysicsBase {
     this.updateOrthographicCameraParams();
     this.gravity = new C.Vec3(0, -50, 0);
     this.margin = 6;
-    const menuItems = document.querySelectorAll(".menu-list-item a");
+    const menuItems = Array.from(document.querySelectorAll(".menu-list-item a")).reverse();
     this.menuItems = menuItems;
     this.offset = menuItems.length * this.margin * 0.5;
     this.letterObjs = [];
@@ -676,9 +676,7 @@ class Menu extends PhysicsBase {
   createMenu() {
     const loader = new THREE.FontLoader();
     loader.load(menuFontUrl, (font) => {
-      Array.from(this.menuItems)
-        .reverse()
-        .forEach((item, i) => {
+        this.menuItems.forEach((item, i) => {
           this.createGround(i);
           const word = new THREE.Group();
           const { textContent } = item;
@@ -786,11 +784,10 @@ class Menu extends PhysicsBase {
   }
   // 添加约束条件
   createConstraints() {
-    const menuItems = Array.from(this.menuItems).reverse();
     let prevWordLength = 0;
-    menuItems.forEach((menuItem, j) => {
+    this.menuItems.forEach((menuItem, j) => {
       const word = menuItem.textContent!;
-      const prevWord = j >= 1 ? menuItems[j - 1].textContent! : "";
+      const prevWord = j >= 1 ? this.menuItems[j - 1].textContent! : "";
       prevWordLength += prevWord.length;
       for (let i = 0; i < word.length; i++) {
         const letterIdx = prevWordLength + i;
