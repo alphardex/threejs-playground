@@ -686,7 +686,7 @@ class Menu extends Base {
   // 创建物理世界
   createPhysicsWorld() {
     const world = new C.World();
-    world.gravity.set(0, -150, 0);
+    world.gravity.set(0, -200, 0);
     this.world = world;
   }
   // 动画
