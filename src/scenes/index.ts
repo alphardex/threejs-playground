@@ -26,8 +26,6 @@ class Base {
   controls!: OrbitControls;
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
-  world!: C.World;
-  gravity!: C.Vec3;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -43,7 +41,6 @@ class Base {
     };
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
-    this.gravity = new C.Vec3(0, 0, 0);
   }
   // 初始化
   init() {
@@ -140,7 +137,7 @@ class Base {
     text = "",
     config: THREE.TextGeometryParameters,
     material: any,
-    color: number | THREE.Color = 0x97df5e
+    color: number | THREE.Color
   ) {
     const mat = new material({ color });
     const geo = new THREE.TextGeometry(text, config);
@@ -172,25 +169,6 @@ class Base {
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
     controls.update();
     this.controls = controls;
-  }
-  // 创建物理世界
-  createPhysicsWorld() {
-    const { gravity } = this;
-    const world = new C.World();
-    world.gravity.set(gravity.x, gravity.y, gravity.z);
-    this.world = world;
-  }
-  // 创建物理盒子
-  createPhysicsBox(
-    halfExtents: C.Vec3,
-    bodyOptions: C.IBodyOptions,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
-  ) {
-    const shape = new C.Box(halfExtents);
-    const body = new C.Body(bodyOptions);
-    body.addShape(shape, bodyOffset);
-    this.world.addBody(body);
-    return body;
   }
   // 监听事件
   addListeners() {
@@ -254,6 +232,34 @@ class Base {
       }
       this.renderer.render(this.scene, this.camera);
     });
+  }
+}
+
+class PhysicsBase extends Base {
+  world!: C.World;
+  gravity!: C.Vec3;
+  constructor(sel: string, debug = false) {
+    super(sel, debug);
+    this.gravity = new C.Vec3(0, 0, 0);
+  }
+  // 创建物理世界
+  createPhysicsWorld() {
+    const { gravity } = this;
+    const world = new C.World();
+    world.gravity.set(gravity.x, gravity.y, gravity.z);
+    this.world = world;
+  }
+  // 创建物理盒子
+  createPhysicsBox(
+    halfExtents: C.Vec3,
+    bodyOptions: C.IBodyOptions,
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
+  ) {
+    const shape = new C.Box(halfExtents);
+    const body = new C.Body(bodyOptions);
+    body.addShape(shape, bodyOffset);
+    this.world.addBody(body);
+    return body;
   }
 }
 
@@ -614,7 +620,7 @@ class LetterObject extends MeshPhysicsObject {
   }
 }
 
-class Menu extends Base {
+class Menu extends PhysicsBase {
   menuItems!: NodeListOf<Element>;
   margin!: number;
   offset!: number;

@@ -1,5 +1,5 @@
 <template>
-  <div class="starter"></div>
+  <div class="starter w-full h-full bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">
@@ -9,18 +9,15 @@ import { defineComponent, onMounted } from "vue";
 export default defineComponent({
   name: "Starter",
   setup() {
-    onMounted(() => {
+    const start = () => {
       const starter = new Base(".starter", true);
       starter.init();
+    };
+    onMounted(() => {
+      start();
     });
   },
 });
 </script>
 
-<style lang="scss" scoped>
-.starter {
-  width: 100%;
-  height: 100%;
-  background: var(--blue-grad-1);
-}
-</style>
+<style lang="scss" scoped></style>
