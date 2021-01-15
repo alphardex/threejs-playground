@@ -547,10 +547,12 @@ class Buildings extends Base {
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
   size!: Vector3;
-  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number, size: Vector3) {
+  text!: string;
+  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number, size: Vector3, text = "") {
     super(body, mesh);
     this.xOffset = xOffset;
     this.size = size;
+    this.text = text;
   }
 }
 
@@ -666,7 +668,7 @@ class Menu extends Base {
               bodyOptions,
               bodyOffset
             );
-            const letterObj = new LetterObject(body, mesh, letterXOffset, size);
+            const letterObj = new LetterObject(body, mesh, letterXOffset, size, letter);
             this.letterObjs.push(letterObj);
             (mesh as any).body = body;
             (mesh as any).size = size;
@@ -677,6 +679,7 @@ class Menu extends Base {
           });
           this.scene.add(word);
         });
+      this.createConstraints();
     });
   }
   // 创建地面
@@ -690,7 +693,7 @@ class Menu extends Base {
   // 创建物理世界
   createPhysicsWorld() {
     const world = new C.World();
-    world.gravity.set(0, -200, 0);
+    world.gravity.set(0, -50, 0);
     this.world = world;
   }
   // 动画
@@ -752,6 +755,32 @@ class Menu extends Base {
         });
       }
     });
+  }
+  // 添加约束条件
+  createConstraints() {
+    const menuItems = Array.from(this.menuItems).reverse();
+    let prevWordLength = 0;
+    menuItems.forEach((menuItem, j) => {
+      const word = menuItem.textContent!;
+      const prevWord = j >= 1 ? menuItems[j - 1].textContent! : "";
+      prevWordLength += prevWord.length;
+      for (let i = 0; i < word.length; i++) {
+        const letterIdx = prevWordLength + i;
+        const nextLetterIdx = i === word.length - 1 ? null : prevWordLength + i + 1;
+        if(!nextLetterIdx) {
+          continue;
+        }
+        const letterObj = this.letterObjs[letterIdx];
+        const nextLetterObj = this.letterObjs[nextLetterIdx];
+        // 支点A为第二个字母的原点
+        const c = new C.ConeTwistConstraint(letterObj.body, nextLetterObj.body, {
+          pivotA: new C.Vec3(letterObj.size.x, 0, 0),
+          pivotB: new C.Vec3(0,0,0)
+        })
+        c.collideConnected = true;
+        this.world.addConstraint(c);
+      }
+    })
   }
 }
 
