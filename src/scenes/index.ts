@@ -1,28 +1,6 @@
 import { Cube } from "@/types";
 import { calcAspect } from "@/utils/math";
-import {
-  AmbientLight,
-  AxesHelper,
-  BoxGeometry,
-  Color,
-  DirectionalLight,
-  Fog,
-  FogExp2,
-  FontLoader,
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  MeshLambertMaterial,
-  MeshPhongMaterial,
-  MeshToonMaterial,
-  OrthographicCamera,
-  PerspectiveCamera,
-  PointLight,
-  Scene,
-  TextGeometry,
-  Vector3,
-  WebGLRenderer,
-} from "three";
+import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import gsap from "gsap";
 import ky from "kyouka";
@@ -34,15 +12,15 @@ import { MeshPhysicsObject } from "@/utils/physics";
 class Base {
   debug: boolean;
   container: HTMLElement | null;
-  scene!: Scene;
-  camera!: PerspectiveCamera | OrthographicCamera;
+  scene!: THREE.Scene;
+  camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   perspectiveCameraParams!: Record<string, any>;
   orthographicCameraParams!: Record<string, any>;
-  cameraPosition!: Vector3;
-  lookAtPosition!: Vector3;
-  renderer!: WebGLRenderer;
-  box!: Mesh;
-  light!: PointLight | DirectionalLight;
+  cameraPosition!: THREE.Vector3;
+  lookAtPosition!: THREE.Vector3;
+  renderer!: THREE.WebGLRenderer;
+  box!: THREE.Mesh;
+  light!: THREE.PointLight | THREE.DirectionalLight;
   controls!: OrbitControls;
   constructor(sel: string, debug = false) {
     this.debug = debug;
@@ -52,8 +30,8 @@ class Base {
       near: 0.1,
       far: 100,
     };
-    this.cameraPosition = new Vector3(0, 3, 10);
-    this.lookAtPosition = new Vector3(0, 0, 0);
+    this.cameraPosition = new THREE.Vector3(0, 3, 10);
+    this.lookAtPosition = new THREE.Vector3(0, 0, 0);
   }
   // 初始化
   init() {
@@ -67,9 +45,9 @@ class Base {
   }
   // 创建场景
   createScene() {
-    const scene = new Scene();
+    const scene = new THREE.Scene();
     if (this.debug) {
-      scene.add(new AxesHelper());
+      scene.add(new THREE.AxesHelper());
     }
     this.scene = scene;
   }
@@ -78,7 +56,7 @@ class Base {
     const { perspectiveCameraParams, cameraPosition } = this;
     const { fov, near, far } = perspectiveCameraParams;
     const aspect = calcAspect(this.container!);
-    const camera = new PerspectiveCamera(fov, aspect, near, far);
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     this.camera = camera;
   }
@@ -86,7 +64,14 @@ class Base {
   createOrthographicCamera() {
     const { orthographicCameraParams, cameraPosition, lookAtPosition } = this;
     const { left, right, top, bottom, near, far } = orthographicCameraParams;
-    const camera = new OrthographicCamera(left, right, top, bottom, near, far);
+    const camera = new THREE.OrthographicCamera(
+      left,
+      right,
+      top,
+      bottom,
+      near,
+      far
+    );
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
     camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
@@ -106,7 +91,7 @@ class Base {
   }
   // 创建渲染
   createRenderer() {
-    const renderer = new WebGLRenderer({
+    const renderer = new THREE.WebGLRenderer({
       alpha: true,
       antialias: true,
     });
@@ -116,20 +101,20 @@ class Base {
     this.renderer.setClearColor(0x000000, 0);
   }
   // 创建方块
-  createBox(cube: Cube, container: Scene | Mesh = this.scene) {
+  createBox(cube: Cube, container: THREE.Scene | THREE.Mesh = this.scene) {
     const {
       width = 1,
       height = 1,
       depth = 1,
-      color = new Color("#d9dfc8"),
+      color = new THREE.Color("#d9dfc8"),
       x = 0,
       y = 0,
       z = 0,
-      material = MeshBasicMaterial,
+      material = THREE.MeshBasicMaterial,
     } = cube;
-    const geo = new BoxGeometry(width, height, depth);
+    const geo = new THREE.BoxGeometry(width, height, depth);
     const mat = new material({ color, flatShading: true });
-    const box = new Mesh(geo, mat);
+    const box = new THREE.Mesh(geo, mat);
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;
@@ -138,10 +123,13 @@ class Base {
   }
   // 创建光源
   createLight() {
-    const light = new DirectionalLight(new Color("#ffffff"), 0.5);
+    const light = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
     light.position.set(0, 50, 0);
     this.scene.add(light);
-    const ambientLight = new AmbientLight(new Color("#ffffff"), 0.4);
+    const ambientLight = new THREE.AmbientLight(
+      new THREE.Color("#ffffff"),
+      0.4
+    );
     this.scene.add(ambientLight);
     this.light = light;
   }
@@ -158,22 +146,22 @@ class Base {
   // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
-      if (this.camera instanceof PerspectiveCamera) {
+      if (this.camera instanceof THREE.PerspectiveCamera) {
         const aspect = calcAspect(this.container!);
-        const camera = this.camera as PerspectiveCamera;
+        const camera = this.camera as THREE.PerspectiveCamera;
         camera.aspect = aspect;
         camera.updateProjectionMatrix();
         this.renderer.setSize(
           this.container!.clientWidth,
           this.container!.clientHeight
         );
-      } else if (this.camera instanceof OrthographicCamera) {
+      } else if (this.camera instanceof THREE.OrthographicCamera) {
         this.renderer.setSize(
           this.container!.clientWidth,
           this.container!.clientHeight
         );
         this.updateOrthographicCameraParams();
-        const camera = this.camera as OrthographicCamera;
+        const camera = this.camera as THREE.OrthographicCamera;
         const {
           left,
           right,
@@ -232,10 +220,10 @@ class Stack extends Base {
       x: 0,
       y: 0,
       z: 0,
-      color: new Color("#d9dfc8"),
-      material: MeshToonMaterial,
+      color: new THREE.Color("#d9dfc8"),
+      material: THREE.MeshToonMaterial,
     };
-    this.cameraPosition = new Vector3(2, 2, 2);
+    this.cameraPosition = new THREE.Vector3(2, 2, 2);
     this.updateOrthographicCameraParams();
     this.level = 0;
     this.moveLimit = 1.2;
@@ -276,7 +264,7 @@ class Stack extends Base {
     const r = (Math.sin(colorValue) * 55 + 200) / 255;
     const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
     const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
-    this.boxParams.color = new Color(r, g, b);
+    this.boxParams.color = new THREE.Color(r, g, b);
   }
   // 开始游戏
   start() {
@@ -424,7 +412,7 @@ class Stack extends Base {
     }
   }
   // 使方块旋转下落
-  dropBox(box: Mesh) {
+  dropBox(box: THREE.Mesh) {
     const { moveAxis } = this;
     const that = this;
     gsap.to(box.position, {
@@ -470,7 +458,7 @@ class Panorama {
 }
 
 class Buildings extends Base {
-  ground!: Mesh;
+  ground!: THREE.Mesh;
   init() {
     this.createScene();
     this.createPerspectiveCamera();
@@ -486,11 +474,11 @@ class Buildings extends Base {
   // 创建地面
   createGround() {
     const ground = this.createBox({
-      color: new Color("#1a3d4d"),
+      color: new THREE.Color("#1a3d4d"),
       width: 20,
       height: 0.1,
       depth: 20,
-      material: MeshLambertMaterial,
+      material: THREE.MeshLambertMaterial,
     });
     this.ground = ground;
   }
@@ -499,11 +487,11 @@ class Buildings extends Base {
     const { height, x, z } = cube;
     this.createBox(
       {
-        color: new Color("#26c6da"),
+        color: new THREE.Color("#26c6da"),
         width: 0.25,
         depth: 0.25,
         y: 0,
-        material: MeshLambertMaterial,
+        material: THREE.MeshLambertMaterial,
         height,
         x,
         z,
@@ -522,17 +510,17 @@ class Buildings extends Base {
   }
   // 创建光源
   createLight() {
-    const light1 = new DirectionalLight(new Color("#ffffff"), 1);
+    const light1 = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 1);
     light1.position.set(1.5, 2, 1);
     this.scene.add(light1);
-    const light2 = new DirectionalLight(new Color("#ffffff"), 0.5);
+    const light2 = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
     light2.position.set(-1.5, 2, 1);
     this.scene.add(light2);
     this.light = light1;
   }
   // 创建雾
   createFog() {
-    const fog = new FogExp2("#ffffff", 0.1);
+    const fog = new THREE.FogExp2("#ffffff", 0.1);
     this.scene.fog = fog;
   }
   // 动画
@@ -549,7 +537,7 @@ class Buildings extends Base {
 
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
-  constructor(body: C.Body, mesh: Mesh, xOffset: number) {
+  constructor(body: C.Body, mesh: THREE.Mesh, xOffset: number) {
     super(body, mesh);
     this.xOffset = xOffset;
   }
@@ -563,7 +551,7 @@ class Menu extends Base {
   letterObjs!: LetterObject[];
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
-    this.cameraPosition = new Vector3(-10, 10, 10);
+    this.cameraPosition = new THREE.Vector3(-10, 10, 10);
     this.updateOrthographicCameraParams(15, -1, 100);
     this.margin = 6;
     const menuItems = document.querySelectorAll(".menu-list-item a");
@@ -584,17 +572,17 @@ class Menu extends Base {
   }
   // 创建雾
   createFog() {
-    const fog = new Fog(0x202533, -1, 100);
+    const fog = new THREE.Fog(0x202533, -1, 100);
     this.scene.fog = fog;
   }
   // 创建光
   createLight() {
-    const ambientLight = new AmbientLight(0xcccccc);
+    const ambientLight = new THREE.AmbientLight(0xcccccc);
     this.scene.add(ambientLight);
-    const foreLight = new DirectionalLight(0xffffff, 0.5);
+    const foreLight = new THREE.DirectionalLight(0xffffff, 0.5);
     foreLight.position.set(5, 5, 20);
     this.scene.add(foreLight);
-    const backLight = new DirectionalLight(0xffffff, 1);
+    const backLight = new THREE.DirectionalLight(0xffffff, 1);
     backLight.position.set(-5, -5, -10);
     this.scene.add(backLight);
   }
@@ -612,22 +600,22 @@ class Menu extends Base {
   }
   // 创建菜单
   createMenu() {
-    const loader = new FontLoader();
+    const loader = new THREE.FontLoader();
     loader.load(menuFontUrl, (font) => {
       this.menuItems.forEach((item, i) => {
         this.createGround(i);
-        const word = new Group();
+        const word = new THREE.Group();
         const { textContent } = item;
         Array.from(textContent!).forEach((letter) => {
-          const mat = new MeshPhongMaterial({ color: 0x97df5e });
-          const geo = new TextGeometry(letter, {
+          const mat = new THREE.MeshPhongMaterial({ color: 0x97df5e });
+          const geo = new THREE.TextGeometry(letter, {
             font,
             ...menuFontConfig,
           });
           geo.computeBoundingBox();
           geo.computeBoundingSphere();
-          const mesh = new Mesh(geo, mat);
-          const size = geo.boundingBox!.getSize(new Vector3());
+          const mesh = new THREE.Mesh(geo, mat);
+          const size = geo.boundingBox!.getSize(new THREE.Vector3());
           let letterXOffset = 0;
           letterXOffset += size.x;
           const letterYOffset =

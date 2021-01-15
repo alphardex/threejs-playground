@@ -1,10 +1,10 @@
 import C from "cannon";
-import { Mesh, Vector3 } from "three";
+import * as THREE from "three";
 
 class MeshPhysicsObject {
   body!: C.Body;
-  mesh!: Mesh;
-  constructor(body: C.Body, mesh: Mesh) {
+  mesh!: THREE.Mesh;
+  constructor(body: C.Body, mesh: THREE.Mesh) {
     this.body = body;
     this.mesh = mesh;
   }
