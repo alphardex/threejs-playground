@@ -10,6 +10,7 @@ import C from "cannon";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { Vector3 } from "three";
 import { getNormalizedMousePos } from "@/utils/dom";
+import { render } from "vue";
 
 class Base {
   debug: boolean;
@@ -107,9 +108,24 @@ class Base {
       antialias: true,
     });
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+    this.resizeRendererToDisplaySize();
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
+  }
+  // 调整渲染器尺寸
+  resizeRendererToDisplaySize() {
+    const { renderer } = this;
+    const canvas = renderer.domElement;
+    const pixelRatio = window.devicePixelRatio;
+    const { clientWidth, clientHeight } = canvas;
+    const width = (clientWidth * pixelRatio) | 0;
+    const height = (clientHeight * pixelRatio) | 0;
+    const isResizeNeeded = canvas.width !== width || canvas.height !== height;
+    if (isResizeNeeded) {
+      renderer.setSize(width, height, false);
+    }
+    return isResizeNeeded;
   }
   // 创建方块
   createBox(cube: Cube, container: THREE.Scene | THREE.Mesh = this.scene) {
@@ -226,6 +242,7 @@ class Base {
   // 渲染
   setLoop() {
     this.renderer.setAnimationLoop(() => {
+      this.resizeRendererToDisplaySize();
       this.update();
       if (this.controls) {
         this.controls.update();
