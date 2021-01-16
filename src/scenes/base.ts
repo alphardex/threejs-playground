@@ -12,6 +12,7 @@ class Base {
   container: HTMLElement | null;
   scene!: THREE.Scene;
   camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+  rendererParams!: Record<string, any>;
   perspectiveCameraParams!: Record<string, any>;
   orthographicCameraParams!: Record<string, any>;
   cameraPosition!: THREE.Vector3;
@@ -25,6 +26,13 @@ class Base {
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
+    this.rendererParams = {
+      outputEncoding: THREE.LinearEncoding,
+      config: {
+        alpha: true,
+        antialias: true,
+      },
+    };
     this.perspectiveCameraParams = {
       fov: 75,
       near: 0.1,
@@ -100,11 +108,11 @@ class Base {
   }
   // 创建渲染
   createRenderer() {
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-    });
+    const { rendererParams } = this;
+    const { outputEncoding, config } = rendererParams;
+    const renderer = new THREE.WebGLRenderer(config);
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
+    renderer.outputEncoding = outputEncoding;
     this.resizeRendererToDisplaySize();
     this.container?.appendChild(renderer.domElement);
     this.renderer = renderer;
