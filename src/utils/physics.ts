@@ -3,8 +3,8 @@ import * as THREE from "three";
 
 class MeshPhysicsObject {
   body!: C.Body;
-  mesh!: THREE.Mesh;
-  constructor(body: C.Body, mesh: THREE.Mesh) {
+  mesh!: THREE.Mesh | THREE.Object3D;
+  constructor(body: C.Body, mesh: THREE.Mesh | THREE.Object3D) {
     this.body = body;
     this.mesh = mesh;
   }
