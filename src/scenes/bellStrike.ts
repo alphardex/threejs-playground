@@ -74,7 +74,6 @@ class BellStrike extends PhysicsBase {
       width: 50,
       height: 10,
       depth: 10,
-      color: new Color("#e15f41"),
       material
     });
     const halfExtents = new C.Vec3(25, 5, 5);
