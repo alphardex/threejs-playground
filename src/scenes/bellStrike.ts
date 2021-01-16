@@ -3,9 +3,10 @@ import C from "cannon";
 import { bellModelUrl } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
+import { Color } from "three";
 
 class BellStrike extends PhysicsBase {
-  bellObj!: MeshPhysicsObject;
+  meshPhysicsObjs!: MeshPhysicsObject[];
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -21,7 +22,9 @@ class BellStrike extends PhysicsBase {
       far: 1000,
     };
     this.cameraPosition = new THREE.Vector3(-180, 50, -300);
-    this.lookAtPosition = new THREE.Vector3(0, -36, 0);
+    this.lookAtPosition = new THREE.Vector3(0, 0, 0);
+    this.gravity = new C.Vec3(0, -10, 0);
+    this.meshPhysicsObjs = [];
   }
   async init() {
     this.createScene();
@@ -29,7 +32,9 @@ class BellStrike extends PhysicsBase {
     this.createRenderer();
     this.createLight();
     this.createPhysicsWorld();
+    this.createGround();
     await this.createBell();
+    this.createStick();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -48,13 +53,38 @@ class BellStrike extends PhysicsBase {
     const model = await this.loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
     this.scene.add(mesh);
-    const halfExtents = new C.Vec3(50, 50, 50);
+    const halfExtents = new C.Vec3(25, 50, 25);
     const mass = 1;
     const position = new C.Vec3(0, 0, 0);
     const bodyOptions = { mass, position };
     const body = this.createPhysicsBox(halfExtents, bodyOptions);
     const bellObj = new MeshPhysicsObject(body, mesh);
-    this.bellObj = bellObj;
+    this.meshPhysicsObjs.push(bellObj);
+  }
+  // 创建木棍
+  createStick() {
+    const mesh = this.createBox({
+      width: 50,
+      height: 10,
+      depth: 10,
+      color: new Color("#e15f41"),
+      material: THREE.MeshPhongMaterial
+    });
+    const halfExtents = new C.Vec3(25, 5, 5);
+    const mass = 0;
+    const position = new C.Vec3(-80, 0, 0);
+    const bodyOptions = { mass, position };
+    const body = this.createPhysicsBox(halfExtents, bodyOptions);
+    const stickObj = new MeshPhysicsObject(body, mesh);
+    this.meshPhysicsObjs.push(stickObj);
+  }
+  // 创建地面
+  createGround() {
+    const halfExtents = new C.Vec3(50, 0.1, 50);
+    const mass = 0;
+    const position = new C.Vec3(0, -50, 0);
+    const bodyOptions = { mass, position };
+    this.createPhysicsBox(halfExtents, bodyOptions);
   }
   // 动画
   update() {
@@ -63,12 +93,11 @@ class BellStrike extends PhysicsBase {
   }
   // 同步物理和渲染
   sync() {
-    const { bellObj } = this;
-    if (bellObj) {
-      const { mesh, body } = bellObj;
+    this.meshPhysicsObjs.forEach((obj) => {
+      const { mesh, body } = obj;
       mesh.position.copy(body.position as any);
       mesh.quaternion.copy(body.quaternion as any);
-    }
+    });
   }
 }
 
