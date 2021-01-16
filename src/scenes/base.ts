@@ -140,15 +140,16 @@ class Base {
       width = 1,
       height = 1,
       depth = 1,
-      color = new THREE.Color("#d9dfc8"),
       x = 0,
       y = 0,
       z = 0,
-      material = THREE.MeshBasicMaterial,
+      material = new THREE.MeshBasicMaterial({
+        color: new THREE.Color("#d9dfc8"),
+        flatShading: true,
+      }),
     } = cube;
-    const geo = new THREE.BoxGeometry(width, height, depth);
-    const mat = new material({ color, flatShading: true });
-    const box = new THREE.Mesh(geo, mat);
+    const geometry = new THREE.BoxGeometry(width, height, depth);
+    const box = new THREE.Mesh(geometry, material);
     box.position.x = x;
     box.position.y = y;
     box.position.z = z;

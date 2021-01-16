@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import C from "cannon";
-import { bellModelUrl } from "@/consts/bellStrike";
+import { bellModelUrl, woodTextureUrl } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { Color } from "three";
@@ -66,12 +66,16 @@ class BellStrike extends PhysicsBase {
   }
   // 创建木棍
   createStick() {
+    const loader = new THREE.TextureLoader();
+    const material = new THREE.MeshBasicMaterial({
+      map: loader.load(woodTextureUrl)
+    })
     const mesh = this.createBox({
       width: 50,
       height: 10,
       depth: 10,
       color: new Color("#e15f41"),
-      material: THREE.MeshPhongMaterial
+      material
     });
     const halfExtents = new C.Vec3(25, 5, 5);
     const mass = 0;

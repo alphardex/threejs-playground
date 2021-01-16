@@ -20,11 +20,12 @@ class Buildings extends Base {
   // 创建地面
   createGround() {
     const ground = this.createBox({
-      color: new THREE.Color("#1a3d4d"),
       width: 20,
       height: 0.1,
       depth: 20,
-      material: THREE.MeshLambertMaterial,
+      material: new THREE.MeshLambertMaterial({
+        color: new THREE.Color("#1a3d4d"),
+      }),
     });
     this.ground = ground;
   }
@@ -33,11 +34,12 @@ class Buildings extends Base {
     const { height, x, z } = cube;
     this.createBox(
       {
-        color: new THREE.Color("#26c6da"),
         width: 0.25,
         depth: 0.25,
         y: 0,
-        material: THREE.MeshLambertMaterial,
+        material: new THREE.MeshLambertMaterial({
+          color: new THREE.Color("#26c6da"),
+        }),
         height,
         x,
         z,

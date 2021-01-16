@@ -27,8 +27,10 @@ class Stack extends Base {
       x: 0,
       y: 0,
       z: 0,
-      color: new THREE.Color("#d9dfc8"),
-      material: THREE.MeshToonMaterial,
+      material: new THREE.MeshToonMaterial({
+        color: new THREE.Color("#d9dfc8"),
+        flatShading: true,
+      }),
     };
     this.cameraPosition = new THREE.Vector3(2, 2, 2);
     this.updateOrthographicCameraParams();
@@ -71,7 +73,10 @@ class Stack extends Base {
     const r = (Math.sin(colorValue) * 55 + 200) / 255;
     const g = (Math.sin(colorValue + 2) * 55 + 200) / 255;
     const b = (Math.sin(colorValue + 4) * 55 + 200) / 255;
-    this.boxParams.color = new THREE.Color(r, g, b);
+    this.boxParams.material = new THREE.MeshToonMaterial({
+      color: new THREE.Color(r, g, b),
+      flatShading: true,
+    });
   }
   // 开始游戏
   start() {

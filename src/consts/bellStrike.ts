@@ -1,2 +1,3 @@
 const bellModelUrl = "./static/models/bell.gltf";
-export { bellModelUrl };
+const woodTextureUrl = './static/textures/wood.jpg';
+export { bellModelUrl, woodTextureUrl };
