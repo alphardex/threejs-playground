@@ -2,11 +2,11 @@ import C from "cannon";
 import * as THREE from "three";
 
 class MeshPhysicsObject {
-  body!: C.Body;
   mesh!: THREE.Mesh | THREE.Object3D;
-  constructor(body: C.Body, mesh: THREE.Mesh | THREE.Object3D) {
-    this.body = body;
+  body!: C.Body;
+  constructor(mesh: THREE.Mesh | THREE.Object3D, body: C.Body) {
     this.mesh = mesh;
+    this.body = body;
   }
 }
 

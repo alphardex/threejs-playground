@@ -5,7 +5,6 @@ import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Object3D } from "three";
 
 class Base {
   debug: boolean;
@@ -172,7 +171,7 @@ class Base {
     return { mesh, size };
   }
   // 加载模型
-  loadModel(url: string): Promise<Object3D> {
+  loadModel(url: string): Promise<THREE.Object3D> {
     const loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
       loader.load(
@@ -187,6 +186,15 @@ class Base {
           reject();
         }
       );
+    });
+  }
+  // 加载字体
+  loadFont(url: string): Promise<THREE.Font> {
+    const loader = new THREE.FontLoader();
+    return new Promise((resolve) => {
+      loader.load(url, (font) => {
+        resolve(font);
+      });
     });
   }
   // 创建光源

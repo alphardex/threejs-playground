@@ -7,6 +7,8 @@ import { Color } from "three";
 
 class BellStrike extends PhysicsBase {
   meshPhysicsObjs!: MeshPhysicsObject[];
+  bellObj!: MeshPhysicsObject;
+  stickObj!: MeshPhysicsObject;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -58,7 +60,8 @@ class BellStrike extends PhysicsBase {
     const position = new C.Vec3(0, 0, 0);
     const bodyOptions = { mass, position };
     const body = this.createPhysicsBox(halfExtents, bodyOptions);
-    const bellObj = new MeshPhysicsObject(body, mesh);
+    const bellObj = new MeshPhysicsObject(mesh, body);
+    this.bellObj = bellObj;
     this.meshPhysicsObjs.push(bellObj);
   }
   // 创建木棍
@@ -75,7 +78,8 @@ class BellStrike extends PhysicsBase {
     const position = new C.Vec3(-80, 0, 0);
     const bodyOptions = { mass, position };
     const body = this.createPhysicsBox(halfExtents, bodyOptions);
-    const stickObj = new MeshPhysicsObject(body, mesh);
+    const stickObj = new MeshPhysicsObject(mesh, body);
+    this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
   }
   // 创建地面
