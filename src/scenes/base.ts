@@ -4,6 +4,8 @@ import { Cube } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Object3D } from "three";
 
 class Base {
   debug: boolean;
@@ -43,6 +45,7 @@ class Base {
     this.createRenderer();
     this.createBox({});
     this.createLight();
+    this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
@@ -56,11 +59,12 @@ class Base {
   }
   // 创建透视相机
   createPerspectiveCamera() {
-    const { perspectiveCameraParams, cameraPosition } = this;
+    const { perspectiveCameraParams, cameraPosition, lookAtPosition } = this;
     const { fov, near, far } = perspectiveCameraParams;
     const aspect = calcAspect(this.container!);
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     this.camera = camera;
   }
   // 创建正交相机
@@ -159,6 +163,25 @@ class Base {
     const mesh = new THREE.Mesh(geo, mat);
     return { mesh, size };
   }
+  // 加载模型
+  loadModel(url: string): Promise<Object3D> {
+    const loader = new GLTFLoader();
+    return new Promise((resolve, reject) => {
+      loader.load(
+        url,
+        (gltf) => {
+          const model = gltf.scene;
+          this.scene.add(model);
+          resolve(model);
+        },
+        undefined,
+        (err) => {
+          console.log(err);
+          reject();
+        }
+      );
+    });
+  }
   // 创建光源
   createLight() {
     const light = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
@@ -179,6 +202,8 @@ class Base {
   // 创建轨道控制
   createOrbitControls() {
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    const { lookAtPosition } = this;
+    controls.target.set(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
     controls.update();
     this.controls = controls;
   }
