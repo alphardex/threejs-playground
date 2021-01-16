@@ -1,17 +1,17 @@
 <template>
-  <div class="starter w-full h-full bg-blue-grad-1"></div>
+  <div class="base w-full h-full bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">
-import { Base } from "@/scenes";
+import { Base } from "@/scenes/base";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  name: "Starter",
+  name: "Base",
   setup() {
     const start = () => {
-      const starter = new Base(".starter", true);
-      starter.init();
+      const base = new Base(".base", true);
+      base.init();
     };
     onMounted(() => {
       start();

@@ -62,12 +62,6 @@ a {
   border-width: 0;
 }
 
-input,
-select {
-  outline: none !important;
-  appearance: none !important;
-}
-
 // utils
 
 .opacity-0 {

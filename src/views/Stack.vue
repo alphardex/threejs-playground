@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { Stack } from "@/scenes";
+import Stack from "@/scenes/stack";
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import ky from "kyouka";
 
@@ -48,14 +48,14 @@ export default defineComponent({
     const state = reactive<State>({
       stack: null,
       status: null,
-      highScore: 0
+      highScore: 0,
     });
     const startGame = async () => {
       const stack = new Stack(".stack", false);
       stack.init();
       state.stack = stack;
       state.status = stack.status;
-      state.highScore = Number(localStorage.getItem('high-score'));
+      state.highScore = Number(localStorage.getItem("high-score"));
       while (!state.status.gameover) {
         state.status = state!.stack.status;
         await ky.sleep(100);

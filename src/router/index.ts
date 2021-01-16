@@ -1,11 +1,12 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import NotFound from "../views/NotFound.vue";
-import Starter from "../views/Starter.vue";
+import Base from "../views/Base.vue";
 import Stack from "../views/Stack.vue";
 import Panorama from "../views/Panorama.vue";
 import Buildings from '../views/Buildings.vue';
 import Menu from '../views/Menu.vue';
+import BellStrike from '../views/BellStrike.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,9 +15,9 @@ const routes: Array<RouteRecordRaw> = [
     component: Home,
   },
   {
-    path: "/starter",
-    name: "Starter",
-    component: Starter,
+    path: "/base",
+    name: "Base",
+    component: Base,
   },
   {
     path: "/stack",
@@ -37,6 +38,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/menu',
     name: 'Menu',
     component: Menu
+  },
+  {
+    path: '/bell-strike',
+    name: 'BellStrike',
+    component: BellStrike
   },
   {
     path: "/:pathMatch(.*)*",

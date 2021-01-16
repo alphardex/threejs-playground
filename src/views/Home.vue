@@ -2,7 +2,7 @@
   <div class="home min-h-screen">
     <ul class="flex flex-col">
       <li>
-        <router-link :to="{ name: 'Starter' }">Starter</router-link>
+        <router-link :to="{ name: 'Base' }">Base</router-link>
       </li>
       <li>
         <router-link :to="{ name: 'Stack' }">Stack</router-link>
@@ -15,6 +15,9 @@
       </li>
       <li>
         <router-link :to="{ name: 'Menu' }">Menu</router-link>
+      </li>
+      <li>
+        <router-link :to="{ name: 'BellStrike' }">BellStrike</router-link>
       </li>
     </ul>
     <teleport to="#dialogs">

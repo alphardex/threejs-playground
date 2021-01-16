@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts">
-import { Panorama } from "@/scenes";
+import Panorama from "@/scenes/panorama";
 import { computed, defineComponent, onMounted, reactive, toRefs } from "vue";
-import { panoramaConfig } from "@/consts/index";
+import { panoramaConfig } from "@/consts/panorama";
 import NavMenu from "@/components/NavMenu.vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
@@ -67,5 +67,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

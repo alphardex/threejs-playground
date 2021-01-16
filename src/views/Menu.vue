@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Menu } from "@/scenes";
+import Menu from "@/scenes/menu";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({

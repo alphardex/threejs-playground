@@ -1,17 +1,17 @@
 <template>
-  <div class="buildings w-full h-full bg-white"></div>
+  <div class="bell-strike w-full h-full bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">
-import Buildings from "@/scenes/buildings";
+import BellStrike from "@/scenes/bellStrike";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  name: "Buildings",
+  name: "BellStrike",
   setup() {
     const start = () => {
-      const buildings = new Buildings(".buildings", true);
-      buildings.init();
+      const bellStrike = new BellStrike(".bell-strike", true);
+      bellStrike.init();
     };
     onMounted(() => {
       start();
@@ -23,4 +23,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped></style>s
