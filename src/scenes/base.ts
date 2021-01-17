@@ -305,9 +305,10 @@ class PhysicsBase extends Base {
   createBody(
     shape: C.Shape,
     body: C.Body,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
+    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
+    orientation: C.Quaternion = new C.Quaternion(0, 0, 0)
   ) {
-    body.addShape(shape, bodyOffset);
+    body.addShape(shape, bodyOffset, orientation);
     this.world.addBody(body);
     return body;
   }

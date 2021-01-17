@@ -67,7 +67,7 @@ class BellStrike extends PhysicsBase {
   // 创建木棍
   createStick() {
     const loader = new THREE.TextureLoader();
-    const geometry = new THREE.CylinderGeometry(5, 5, 50);
+    const geometry = new THREE.BoxGeometry(50, 10, 10);
     const material = new THREE.MeshBasicMaterial({
       map: loader.load(woodTextureUrl),
     });
