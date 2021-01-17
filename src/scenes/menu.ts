@@ -147,29 +147,23 @@ class Menu extends PhysicsBase {
   // 监听点击
   onClick() {
     document.addEventListener("click", () => {
-      this.raycaster.setFromCamera(this.mousePos, this.camera);
-      const intersects = this.raycaster.intersectObjects(
-        this.scene.children,
-        true
-      );
-      if (!ky.isEmpty(intersects)) {
-        const obj = intersects[0];
-        if (!obj.face) {
+      const intersects = this.getInterSects();
+      const intersect = intersects[0];
+      if (!intersect || !intersect.face) {
+        return;
+      }
+      const { object, face } = intersect;
+      const impulse = new THREE.Vector3()
+        .copy(face!.normal)
+        .negate()
+        .multiplyScalar(25);
+      this.meshPhysicsObjs.forEach((obj) => {
+        const { mesh, body } = obj;
+        if (mesh !== object) {
           return;
         }
-        const { object, face } = obj;
-        const impulse = new THREE.Vector3()
-          .copy(face!.normal)
-          .negate()
-          .multiplyScalar(25);
-        this.meshPhysicsObjs.forEach((letterObj) => {
-          const { mesh, body } = letterObj;
-          if (mesh !== object) {
-            return;
-          }
-          body.applyLocalImpulse(impulse as any, new C.Vec3());
-        });
-      }
+        body.applyLocalImpulse(impulse as any, new C.Vec3());
+      });
     });
   }
   // 添加约束条件

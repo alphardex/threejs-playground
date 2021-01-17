@@ -7,6 +7,8 @@ import { MeshPhysicsObject } from "@/utils/physics";
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
   stickObj!: MeshPhysicsObject;
+  groundMat!: C.Material;
+  stickMat!: C.Material;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -31,9 +33,24 @@ class BellStrike extends PhysicsBase {
     this.createRenderer();
     this.createLight();
     this.createWorld();
-    this.createGround();
+    this.createContactMaterial();
+    this.createGround(new C.Vec3(100, 0.1, 100), new C.Vec3(0, -50, 0));
+    this.createMesh({
+      geometry: new THREE.BoxGeometry(100, 0.1, 100),
+      position: new THREE.Vector3(0, -50, 0),
+    });
     await this.createBell();
+    this.createGround(
+      new C.Vec3(24, 0.1, 25),
+      new C.Vec3(-60, -5.5, 0),
+      this.groundMat
+    );
+    this.createMesh({
+      geometry: new THREE.BoxGeometry(48, 0.1, 50),
+      position: new THREE.Vector3(-60, -5, 0),
+    });
     this.createStick();
+    this.createRaycaster();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -76,9 +93,9 @@ class BellStrike extends PhysicsBase {
       material,
     });
     const halfExtents = new C.Vec3(25, 5, 5);
-    const mass = 0;
-    const position = new C.Vec3(-80, 0, 0);
-    const bodyOptions = { mass, position };
+    const mass = 1;
+    const position = new C.Vec3(-60, 0, 0);
+    const bodyOptions = { mass, position, material: this.stickMat };
     const body = this.createBody(
       new C.Box(halfExtents),
       new C.Body(bodyOptions)
@@ -88,12 +105,49 @@ class BellStrike extends PhysicsBase {
     this.meshPhysicsObjs.push(stickObj);
   }
   // 创建地面
-  createGround() {
-    const halfExtents = new C.Vec3(50, 0.1, 50);
+  createGround(
+    halfExtents: C.Vec3,
+    position: C.Vec3,
+    material: C.Material | undefined = undefined
+  ) {
     const mass = 0;
-    const position = new C.Vec3(0, -50, 0);
-    const bodyOptions = { mass, position };
+    const bodyOptions = { mass, position, material };
     this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
+  }
+  // 监听事件
+  addListeners() {
+    this.onResize();
+    this.onMousemove();
+    this.onClick();
+  }
+  // 监听点击
+  onClick() {
+    document.addEventListener("click", () => {
+      const intersects = this.getInterSects();
+      const intersect = intersects[0];
+      if (!intersect || !intersect.face) {
+        return;
+      }
+      const { object, face } = intersect;
+      const impulse = new C.Vec3(25, 0, 0);
+      const { stickObj } = this;
+      const { mesh, body } = stickObj;
+      if (mesh !== object) {
+        return;
+      }
+      body.applyLocalImpulse(impulse, new C.Vec3());
+    });
+  }
+  // 创建联系材质
+  createContactMaterial() {
+    const groundMat = new C.Material("ground");
+    const stickMat = new C.Material("stick");
+    const contactMat = new C.ContactMaterial(groundMat, stickMat, {
+      friction: 0,
+    });
+    this.world.addContactMaterial(contactMat);
+    this.groundMat = groundMat;
+    this.stickMat = stickMat;
   }
 }
 

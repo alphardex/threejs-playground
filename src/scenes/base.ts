@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import C from "cannon";
+import ky from "kyouka";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -210,6 +211,15 @@ class Base {
   createRaycaster() {
     this.mousePos = new THREE.Vector2(0, 0);
     this.raycaster = new THREE.Raycaster();
+  }
+  // 获取点击物
+  getInterSects(): THREE.Intersection[] {
+    this.raycaster.setFromCamera(this.mousePos, this.camera);
+    const intersects = this.raycaster.intersectObjects(
+      this.scene.children,
+      true
+    );
+    return intersects;
   }
   // 创建轨道控制
   createOrbitControls() {
