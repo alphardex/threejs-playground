@@ -24,10 +24,10 @@ class LetterObject extends MeshPhysicsObject {
 }
 
 class Menu extends PhysicsBase {
+  meshPhysicsObjs!: LetterObject[];
   menuItems!: Element[];
   margin!: number;
   offset!: number;
-  letterObjs!: LetterObject[];
   groundMat!: C.Material;
   letterMat!: C.Material;
   constructor(sel: string, debug: boolean) {
@@ -46,10 +46,10 @@ class Menu extends PhysicsBase {
     ).reverse();
     this.menuItems = menuItems;
     this.offset = menuItems.length * this.margin * 0.5;
-    this.letterObjs = [];
+    this.meshPhysicsObjs = [];
   }
   async init() {
-    this.createPhysicsWorld();
+    this.createWorld();
     this.createScene();
     this.createOrthographicCamera();
     this.createRenderer();
@@ -105,9 +105,9 @@ class Menu extends PhysicsBase {
         const material = this.letterMat;
         const bodyOptions = { mass, position, material };
         const bodyOffset = mesh.geometry.boundingSphere!.center as any;
-        const body = this.createPhysicsBox(
-          halfExtents,
-          bodyOptions,
+        const body = this.createBody(
+          new C.Box(halfExtents),
+          new C.Body(bodyOptions),
           bodyOffset
         );
         const letterObj = new LetterObject(
@@ -117,7 +117,7 @@ class Menu extends PhysicsBase {
           size,
           letter
         );
-        this.letterObjs.push(letterObj);
+        this.meshPhysicsObjs.push(letterObj);
         (mesh as any).body = body;
         (mesh as any).size = size;
         word.add(mesh);
@@ -136,20 +136,7 @@ class Menu extends PhysicsBase {
     const position = new C.Vec3(0, i * this.margin - this.offset, 0);
     const material = this.groundMat;
     const bodyOptions = { mass, position, material };
-    this.createPhysicsBox(halfExtents, bodyOptions);
-  }
-  // 动画
-  update() {
-    this.sync();
-    this.world.step(1 / 60);
-  }
-  // 同步物理和渲染
-  sync() {
-    this.letterObjs.forEach((letterObj) => {
-      const { mesh, body } = letterObj;
-      mesh.position.copy(body.position as any);
-      mesh.quaternion.copy(body.quaternion as any);
-    });
+    this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
   }
   // 监听事件
   addListeners() {
@@ -175,7 +162,7 @@ class Menu extends PhysicsBase {
           .copy(face!.normal)
           .negate()
           .multiplyScalar(25);
-        this.letterObjs.forEach((letterObj) => {
+        this.meshPhysicsObjs.forEach((letterObj) => {
           const { mesh, body } = letterObj;
           if (mesh !== object) {
             return;
@@ -199,8 +186,8 @@ class Menu extends PhysicsBase {
         if (!nextLetterIdx) {
           continue;
         }
-        const letterObj = this.letterObjs[letterIdx];
-        const nextLetterObj = this.letterObjs[nextLetterIdx];
+        const letterObj = this.meshPhysicsObjs[letterIdx];
+        const nextLetterObj = this.meshPhysicsObjs[nextLetterIdx];
         // 支点A为第二个字母的原点
         const c = new C.ConeTwistConstraint(
           letterObj.body,

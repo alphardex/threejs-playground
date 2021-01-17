@@ -1,4 +1,4 @@
-import { Color, Material, MeshBasicMaterial } from "three";
+import * as THREE from "three";
 
 declare module "@alphardex/aqua.sp/dist/aqua.sp.min.css";
 
@@ -13,13 +13,8 @@ export interface Path {
   query?: Record<string, any>;
 }
 
-export interface Cube {
-  width?: number;
-  height?: number;
-  depth?: number;
-  x?: number;
-  y?: number;
-  z?: number;
-  color?: string | Color | number;
-  material?: any;
+export interface MeshObject {
+  geometry?: THREE.Geometry;
+  material?: THREE.Material;
+  position?: THREE.Vector3;
 }

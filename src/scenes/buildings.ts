@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import ky from "kyouka";
-import { Cube } from "@/types";
 import { Base } from "./base";
 
 class Buildings extends Base {
@@ -19,30 +18,29 @@ class Buildings extends Base {
   }
   // 创建地面
   createGround() {
-    const ground = this.createBox({
-      width: 20,
-      height: 0.1,
-      depth: 20,
-      material: new THREE.MeshLambertMaterial({
-        color: new THREE.Color("#1a3d4d"),
-      }),
+    const geometry = new THREE.BoxGeometry(20, 0.1, 20);
+    const material = new THREE.MeshLambertMaterial({
+      color: new THREE.Color("#1a3d4d"),
+    });
+    const ground = this.createMesh({
+      geometry,
+      material,
     });
     this.ground = ground;
   }
   // 创建楼层
-  createBuilding(cube: Cube) {
+  createBuilding(cube: any) {
     const { height, x, z } = cube;
-    this.createBox(
+    const geometry = new THREE.BoxGeometry(0.25, height, 0.25);
+    const material = new THREE.MeshLambertMaterial({
+      color: new THREE.Color("#26c6da"),
+    });
+    const position = new THREE.Vector3(x, 0, z);
+    this.createMesh(
       {
-        width: 0.25,
-        depth: 0.25,
-        y: 0,
-        material: new THREE.MeshLambertMaterial({
-          color: new THREE.Color("#26c6da"),
-        }),
-        height,
-        x,
-        z,
+        geometry,
+        material,
+        position,
       },
       this.ground
     );

@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import C from "cannon";
-import { Cube } from "@/types";
+import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { MeshPhysicsObject } from "@/utils/physics";
 
 class Base {
   debug: boolean;
@@ -50,7 +51,7 @@ class Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createBox({});
+    this.createMesh({});
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
@@ -134,27 +135,22 @@ class Base {
     }
     return isResizeNeeded;
   }
-  // 创建方块
-  createBox(cube: Cube, container: THREE.Scene | THREE.Mesh = this.scene) {
+  // 创建网格
+  createMesh(
+    meshObject: MeshObject,
+    container: THREE.Scene | THREE.Mesh = this.scene
+  ) {
     const {
-      width = 1,
-      height = 1,
-      depth = 1,
-      x = 0,
-      y = 0,
-      z = 0,
+      geometry = new THREE.BoxGeometry(1, 1, 1),
       material = new THREE.MeshBasicMaterial({
         color: new THREE.Color("#d9dfc8"),
-        flatShading: true,
       }),
-    } = cube;
-    const geometry = new THREE.BoxGeometry(width, height, depth);
-    const box = new THREE.Mesh(geometry, material);
-    box.position.x = x;
-    box.position.y = y;
-    box.position.z = z;
-    container.add(box);
-    return box;
+      position = new THREE.Vector3(0, 0, 0),
+    } = meshObject;
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.copy(position);
+    container.add(mesh);
+    return mesh;
   }
   // 创建文本
   createText(
@@ -292,28 +288,41 @@ class Base {
 class PhysicsBase extends Base {
   world!: C.World;
   gravity!: C.Vec3;
+  meshPhysicsObjs!: MeshPhysicsObject[];
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.gravity = new C.Vec3(0, 0, 0);
+    this.meshPhysicsObjs = [];
   }
   // 创建物理世界
-  createPhysicsWorld() {
+  createWorld() {
     const { gravity } = this;
     const world = new C.World();
     world.gravity.set(gravity.x, gravity.y, gravity.z);
     this.world = world;
   }
-  // 创建物理盒子
-  createPhysicsBox(
-    halfExtents: C.Vec3,
-    bodyOptions: C.IBodyOptions,
+  // 创建物理物体
+  createBody(
+    shape: C.Shape,
+    body: C.Body,
     bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0)
   ) {
-    const shape = new C.Box(halfExtents);
-    const body = new C.Body(bodyOptions);
     body.addShape(shape, bodyOffset);
     this.world.addBody(body);
     return body;
+  }
+  // 动画
+  update() {
+    this.sync();
+    this.world.step(1 / 60);
+  }
+  // 同步物理和渲染
+  sync() {
+    this.meshPhysicsObjs.forEach((obj) => {
+      const { mesh, body } = obj;
+      mesh.position.copy(body.position as any);
+      mesh.quaternion.copy(body.quaternion as any);
+    });
   }
 }
 

@@ -3,10 +3,8 @@ import C from "cannon";
 import { bellModelUrl, woodTextureUrl } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
-import { Color } from "three";
 
 class BellStrike extends PhysicsBase {
-  meshPhysicsObjs!: MeshPhysicsObject[];
   bellObj!: MeshPhysicsObject;
   stickObj!: MeshPhysicsObject;
   constructor(sel: string, debug = false) {
@@ -26,14 +24,13 @@ class BellStrike extends PhysicsBase {
     this.cameraPosition = new THREE.Vector3(-180, 50, -300);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
     this.gravity = new C.Vec3(0, -10, 0);
-    this.meshPhysicsObjs = [];
   }
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createLight();
-    this.createPhysicsWorld();
+    this.createWorld();
     this.createGround();
     await this.createBell();
     this.createStick();
@@ -59,7 +56,10 @@ class BellStrike extends PhysicsBase {
     const mass = 1;
     const position = new C.Vec3(0, 0, 0);
     const bodyOptions = { mass, position };
-    const body = this.createPhysicsBox(halfExtents, bodyOptions);
+    const body = this.createBody(
+      new C.Box(halfExtents),
+      new C.Body(bodyOptions)
+    );
     const bellObj = new MeshPhysicsObject(mesh, body);
     this.bellObj = bellObj;
     this.meshPhysicsObjs.push(bellObj);
@@ -67,20 +67,22 @@ class BellStrike extends PhysicsBase {
   // 创建木棍
   createStick() {
     const loader = new THREE.TextureLoader();
+    const geometry = new THREE.CylinderGeometry(5, 5, 50);
     const material = new THREE.MeshBasicMaterial({
-      map: loader.load(woodTextureUrl)
-    })
-    const mesh = this.createBox({
-      width: 50,
-      height: 10,
-      depth: 10,
-      material
+      map: loader.load(woodTextureUrl),
+    });
+    const mesh = this.createMesh({
+      geometry,
+      material,
     });
     const halfExtents = new C.Vec3(25, 5, 5);
     const mass = 0;
     const position = new C.Vec3(-80, 0, 0);
     const bodyOptions = { mass, position };
-    const body = this.createPhysicsBox(halfExtents, bodyOptions);
+    const body = this.createBody(
+      new C.Box(halfExtents),
+      new C.Body(bodyOptions)
+    );
     const stickObj = new MeshPhysicsObject(mesh, body);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
@@ -91,20 +93,7 @@ class BellStrike extends PhysicsBase {
     const mass = 0;
     const position = new C.Vec3(0, -50, 0);
     const bodyOptions = { mass, position };
-    this.createPhysicsBox(halfExtents, bodyOptions);
-  }
-  // 动画
-  update() {
-    this.sync();
-    this.world.step(1 / 60);
-  }
-  // 同步物理和渲染
-  sync() {
-    this.meshPhysicsObjs.forEach((obj) => {
-      const { mesh, body } = obj;
-      mesh.position.copy(body.position as any);
-      mesh.quaternion.copy(body.quaternion as any);
-    });
+    this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
   }
 }
 
