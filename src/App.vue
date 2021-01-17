@@ -6,8 +6,13 @@
 import "@alphardex/aqua.css/dist/aqua.min.css";
 import "pannellum/build/pannellum.css";
 import { defineComponent } from "vue";
+import VConsole from "vconsole";
 
-export default defineComponent({});
+export default defineComponent({
+  setup() {
+    new VConsole();
+  },
+});
 </script>
 
 <style lang="scss">

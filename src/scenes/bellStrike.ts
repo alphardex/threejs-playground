@@ -155,10 +155,12 @@ class BellStrike extends PhysicsBase {
   detectCollision() {
     const stick = this.stickObj.body;
     stick.addEventListener("collide", (e: any) => {
+      console.log(this.sound.isPlaying);
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
         if (!this.sound.isPlaying) {
+          console.log(this.sound.play);
           this.sound.play();
         }
       }
