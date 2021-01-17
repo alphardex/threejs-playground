@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import C from "cannon";
-import { bellModelUrl, woodTextureUrl } from "@/consts/bellStrike";
+import {
+  bellAudioUrl,
+  bellModelUrl,
+  woodTextureUrl,
+} from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
 
@@ -36,8 +40,11 @@ class BellStrike extends PhysicsBase {
     this.createContactMaterial();
     await this.createBell();
     this.createStick();
+    this.createAudioSource();
+    await this.loadAudio(bellAudioUrl);
+    this.detectCollision();
     this.createRaycaster();
-    this.createOrbitControls();
+    // this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
@@ -145,6 +152,19 @@ class BellStrike extends PhysicsBase {
     const { body } = stickObj;
     const impulse = new C.Vec3(25, 0, 0);
     body.applyLocalImpulse(impulse, new C.Vec3());
+  }
+  // 碰撞检测
+  detectCollision() {
+    const stick = this.stickObj.body;
+    stick.addEventListener("collide", (e: any) => {
+      const target = e.body;
+      const bell = this.bellObj.body;
+      if (target === bell) {
+        if (!this.sound.isPlaying) {
+          this.sound.play();
+        }
+      }
+    });
   }
   // 创建联系材质
   createContactMaterial() {

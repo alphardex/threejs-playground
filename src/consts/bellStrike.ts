@@ -1,3 +1,4 @@
 const bellModelUrl = "./static/models/bell.gltf";
 const woodTextureUrl = './static/textures/wood.jpg';
-export { bellModelUrl, woodTextureUrl };
+const bellAudioUrl = './static/audios/bell.mp3';
+export { bellModelUrl, woodTextureUrl, bellAudioUrl };

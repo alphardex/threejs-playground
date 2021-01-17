@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import C from "cannon";
-import ky from "kyouka";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -24,6 +23,7 @@ class Base {
   controls!: OrbitControls;
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
+  sound!: THREE.Audio;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -167,6 +167,23 @@ class Base {
     const size = geo.boundingBox!.getSize(new THREE.Vector3());
     const mesh = new THREE.Mesh(geo, mat);
     return { mesh, size };
+  }
+  // 创建音效源
+  createAudioSource() {
+    const listener = new THREE.AudioListener();
+    this.camera.add(listener);
+    const sound = new THREE.Audio(listener);
+    this.sound = sound;
+  }
+  // 加载音效
+  loadAudio(url: string): Promise<AudioBuffer> {
+    const loader = new THREE.AudioLoader();
+    return new Promise((resolve) => {
+      loader.load(url, (buffer) => {
+        this.sound.setBuffer(buffer);
+        resolve(buffer);
+      });
+    });
   }
   // 加载模型
   loadModel(url: string): Promise<THREE.Object3D> {
