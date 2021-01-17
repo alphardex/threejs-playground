@@ -44,7 +44,7 @@ class BellStrike extends PhysicsBase {
     await this.loadAudio(bellAudioUrl);
     this.detectCollision();
     this.createRaycaster();
-    // this.createOrbitControls();
+    this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
@@ -126,25 +126,23 @@ class BellStrike extends PhysicsBase {
   // 监听事件
   addListeners() {
     this.onResize();
-    this.onMousemove();
     this.onClick();
   }
   // 监听点击
   onClick() {
-    document.addEventListener("click", () => {
-      const intersects = this.getInterSects();
-      const intersect = intersects[0];
-      if (!intersect || !intersect.face) {
-        return;
-      }
-      const { object } = intersect;
-      const { stickObj } = this;
-      const { mesh } = stickObj;
-      if (mesh !== object) {
-        return;
-      }
-      this.strikeBell();
+    window.addEventListener("click", () => {
+      this.onClickStick();
     });
+    window.addEventListener("touchstart", () => {
+      this.onClickStick();
+    });
+  }
+  // 点击木棍时
+  onClickStick() {
+    const intersect = this.onChooseIntersect(this.stickObj.mesh);
+    if (intersect) {
+      this.strikeBell();
+    }
   }
   // 撞钟
   strikeBell() {

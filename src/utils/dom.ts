@@ -1,4 +1,4 @@
-const getNormalizedMousePos = (e: MouseEvent) => {
+const getNormalizedMousePos = (e: MouseEvent | Touch) => {
   return {
     x: (e.clientX / window.innerWidth) * 2 - 1,
     y: -(e.clientY / window.innerHeight) * 2 + 1,

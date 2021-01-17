@@ -46,6 +46,7 @@ class Base {
     };
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
+    this.mousePos = new THREE.Vector2(0, 0);
   }
   // 初始化
   init() {
@@ -226,8 +227,45 @@ class Base {
   }
   // 创建点选模型
   createRaycaster() {
-    this.mousePos = new THREE.Vector2(0, 0);
     this.raycaster = new THREE.Raycaster();
+    this.trackMousePos();
+  }
+  // 追踪鼠标位置
+  trackMousePos() {
+    window.addEventListener("mousemove", (e) => {
+      this.setMousePos(e);
+    });
+    window.addEventListener("mouseout", () => {
+      this.clearMousePos();
+    });
+    window.addEventListener("mouseleave", () => {
+      this.clearMousePos();
+    });
+    window.addEventListener(
+      "touchstart",
+      (e: TouchEvent) => {
+        e.preventDefault();
+        this.setMousePos(e.touches[0]);
+      },
+      { passive: false }
+    );
+    window.addEventListener("touchmove", (e: TouchEvent) => {
+      this.setMousePos(e.touches[0]);
+    });
+    window.addEventListener("touchend", () => {
+      this.clearMousePos();
+    });
+  }
+  // 设置鼠标位置
+  setMousePos(e: MouseEvent | Touch) {
+    const { x, y } = getNormalizedMousePos(e);
+    this.mousePos.x = x;
+    this.mousePos.y = y;
+  }
+  // 清空鼠标位置
+  clearMousePos() {
+    this.mousePos.x = -100000;
+    this.mousePos.y = -100000;
   }
   // 获取点击物
   getInterSects(): THREE.Intersection[] {
@@ -237,6 +275,16 @@ class Base {
       true
     );
     return intersects;
+  }
+  // 选中点击物时
+  onChooseIntersect(target: THREE.Object3D) {
+    const intersects = this.getInterSects();
+    const intersect = intersects[0];
+    if (!intersect || !intersect.face) {
+      return null;
+    }
+    const { object } = intersect;
+    return target === object ? intersect : null;
   }
   // 创建轨道控制
   createOrbitControls() {
@@ -285,14 +333,6 @@ class Base {
           this.container!.clientHeight
         );
       }
-    });
-  }
-  // 监听移动
-  onMousemove() {
-    window.addEventListener("mousemove", (e: MouseEvent) => {
-      const { x, y } = getNormalizedMousePos(e);
-      this.mousePos.x = x;
-      this.mousePos.y = y;
     });
   }
   // 动画

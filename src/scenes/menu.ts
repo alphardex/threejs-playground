@@ -141,29 +141,30 @@ class Menu extends PhysicsBase {
   // 监听事件
   addListeners() {
     this.onResize();
-    this.onMousemove();
     this.onClick();
   }
   // 监听点击
   onClick() {
-    document.addEventListener("click", () => {
-      const intersects = this.getInterSects();
-      const intersect = intersects[0];
-      if (!intersect || !intersect.face) {
-        return;
-      }
-      const { object, face } = intersect;
-      const impulse = new THREE.Vector3()
-        .copy(face!.normal)
-        .negate()
-        .multiplyScalar(25);
-      this.meshPhysicsObjs.forEach((obj) => {
-        const { mesh, body } = obj;
-        if (mesh !== object) {
-          return;
-        }
+    window.addEventListener("click", () => {
+      this.onClickLetter();
+    });
+    window.addEventListener("touchstart", () => {
+      this.onClickLetter();
+    });
+  }
+  // 点击字母时
+  onClickLetter() {
+    this.meshPhysicsObjs.forEach((obj) => {
+      const { mesh, body } = obj;
+      const intersect = this.onChooseIntersect(mesh);
+      if (intersect) {
+        const { face } = intersect;
+        const impulse = new THREE.Vector3()
+          .copy(face!.normal)
+          .negate()
+          .multiplyScalar(25);
         body.applyLocalImpulse(impulse as any, new C.Vec3());
-      });
+      }
     });
   }
   // 添加约束条件
