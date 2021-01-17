@@ -34,21 +34,7 @@ class BellStrike extends PhysicsBase {
     this.createLight();
     this.createWorld();
     this.createContactMaterial();
-    this.createGround(new C.Vec3(100, 0.1, 100), new C.Vec3(0, -50, 0));
-    this.createMesh({
-      geometry: new THREE.BoxGeometry(100, 0.1, 100),
-      position: new THREE.Vector3(0, -50, 0),
-    });
     await this.createBell();
-    this.createGround(
-      new C.Vec3(24, 0.1, 25),
-      new C.Vec3(-60, -5.5, 0),
-      this.groundMat
-    );
-    this.createMesh({
-      geometry: new THREE.BoxGeometry(48, 0.1, 50),
-      position: new THREE.Vector3(-60, -5, 0),
-    });
     this.createStick();
     this.createRaycaster();
     this.createOrbitControls();
@@ -80,6 +66,7 @@ class BellStrike extends PhysicsBase {
     const bellObj = new MeshPhysicsObject(mesh, body);
     this.bellObj = bellObj;
     this.meshPhysicsObjs.push(bellObj);
+    this.createGround(new C.Vec3(100, 0.1, 100), new C.Vec3(0, -50, 0));
   }
   // 创建木棍
   createStick() {
@@ -103,6 +90,11 @@ class BellStrike extends PhysicsBase {
     const stickObj = new MeshPhysicsObject(mesh, body);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
+    this.createGround(
+      new C.Vec3(24, 0.1, 25),
+      new C.Vec3(-60, -5.5, 0),
+      this.groundMat
+    );
   }
   // 创建地面
   createGround(
@@ -113,6 +105,16 @@ class BellStrike extends PhysicsBase {
     const mass = 0;
     const bodyOptions = { mass, position, material };
     this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
+    if (this.debug) {
+      this.createMesh({
+        geometry: new THREE.BoxGeometry(
+          halfExtents.x * 2,
+          halfExtents.y * 2,
+          halfExtents.z * 2
+        ),
+        position: new THREE.Vector3(position.x, position.y, position.z),
+      });
+    }
   }
   // 监听事件
   addListeners() {
@@ -128,15 +130,21 @@ class BellStrike extends PhysicsBase {
       if (!intersect || !intersect.face) {
         return;
       }
-      const { object, face } = intersect;
-      const impulse = new C.Vec3(25, 0, 0);
+      const { object } = intersect;
       const { stickObj } = this;
-      const { mesh, body } = stickObj;
+      const { mesh } = stickObj;
       if (mesh !== object) {
         return;
       }
-      body.applyLocalImpulse(impulse, new C.Vec3());
+      this.strikeBell();
     });
+  }
+  // 撞钟
+  strikeBell() {
+    const { stickObj } = this;
+    const { body } = stickObj;
+    const impulse = new C.Vec3(25, 0, 0);
+    body.applyLocalImpulse(impulse, new C.Vec3());
   }
   // 创建联系材质
   createContactMaterial() {
