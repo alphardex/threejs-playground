@@ -62,7 +62,7 @@ class BellStrike extends PhysicsBase {
     const model = await this.loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
     this.scene.add(mesh);
-    const halfExtents = new C.Vec3(25, 50, 25);
+    const halfExtents = new C.Vec3(27.5, 50, 25);
     const mass = 1;
     const position = new C.Vec3(0, 0, 0);
     const bodyOptions = { mass, position };
