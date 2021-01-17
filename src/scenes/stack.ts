@@ -170,7 +170,7 @@ class Stack extends Base {
         if (this.level === 0) {
           this.start();
         } else {
-          // this.detectOverlap();
+          this.detectOverlap();
         }
       } else if (code === "ArrowUp") {
         this.box.position[this.moveAxis] += this.speed / 2;
