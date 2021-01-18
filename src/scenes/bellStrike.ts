@@ -39,16 +39,14 @@ class BellStrike extends PhysicsBase {
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
     this.createWorld();
-    const hingeBellObj = this.createHinge(new THREE.Vector3(0, 7, 0));
-    this.hingeBellObj = hingeBellObj;
-    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7, 0));
-    this.hingeStickObj = hingeStickObj;
+    this.createHingeBell();
+    this.createHingeStick();
     await this.createBell();
     this.createStick();
     this.createConstraints();
-    this.detectCollision();
     this.createRaycaster();
     this.createOrbitControls();
+    this.detectCollision();
     this.addListeners();
     this.setLoop();
   }
@@ -82,7 +80,7 @@ class BellStrike extends PhysicsBase {
   // 创建悬挂点
   createHinge(position: THREE.Vector3) {
     const mesh = this.createMesh({
-      geometry: new THREE.SphereGeometry(this.debug ? 0.1 : 0),
+      geometry: new THREE.SphereGeometry(this.debug ? 0.1 : 0.001),
       position,
       material: new THREE.MeshPhongMaterial(),
     });
@@ -96,6 +94,16 @@ class BellStrike extends PhysicsBase {
     const hingeObj = new MeshPhysicsObject(mesh, body);
     this.meshPhysicsObjs.push(hingeObj);
     return hingeObj;
+  }
+  // 创建大钟悬挂点
+  createHingeBell() {
+    const hingeBellObj = this.createHinge(new THREE.Vector3(0, 7, 0));
+    this.hingeBellObj = hingeBellObj;
+  }
+  // 创建木棍悬挂点
+  createHingeStick() {
+    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7, 0));
+    this.hingeStickObj = hingeStickObj;
   }
   // 创建木棍
   createStick() {
