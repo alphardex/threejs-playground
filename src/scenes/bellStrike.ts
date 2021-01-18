@@ -3,6 +3,7 @@ import C from "cannon";
 import {
   bellAudioUrl,
   bellModelUrl,
+  pavilionModelUrl,
   woodTextureUrl,
 } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
@@ -41,6 +42,7 @@ class BellStrike extends PhysicsBase {
     this.createOrbitControls();
     this.createWorld();
     this.createLight();
+    await this.createPavilion();
     await this.createBell();
     this.createStick();
     this.createHingeBell();
@@ -58,6 +60,14 @@ class BellStrike extends PhysicsBase {
     const dirLight = new THREE.DirectionalLight(0xffffff);
     dirLight.position.set(-3, 10, -10);
     this.scene.add(dirLight);
+  }
+  // 创建亭子
+  async createPavilion() {
+    const mesh = await this.loadFBXModel(pavilionModelUrl);
+    mesh.position.set(0, 5, 0);
+    mesh.scale.set(0.002, 0.002, 0.002);
+    mesh.rotateZ(Math.PI / 2);
+    this.scene.add(mesh);
   }
   // 创建大钟
   async createBell() {

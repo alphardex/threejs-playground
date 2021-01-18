@@ -5,6 +5,7 @@ import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { MeshPhysicsObject } from "@/utils/physics";
 
 class Base {
@@ -195,6 +196,23 @@ class Base {
         (gltf) => {
           const model = gltf.scene;
           resolve(model);
+        },
+        undefined,
+        (err) => {
+          console.log(err);
+          reject();
+        }
+      );
+    });
+  }
+  // 加载FBX模型
+  loadFBXModel(url: string): Promise<THREE.Object3D> {
+    const loader = new FBXLoader();
+    return new Promise((resolve, reject) => {
+      loader.load(
+        url,
+        (obj) => {
+          resolve(obj);
         },
         undefined,
         (err) => {
