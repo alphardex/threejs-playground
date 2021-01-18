@@ -13,9 +13,6 @@ class BellStrike extends PhysicsBase {
   stickObj!: MeshPhysicsObject;
   hingeBellObj!: MeshPhysicsObject;
   hingeStickObj!: MeshPhysicsObject;
-  groundMat!: C.Material;
-  stickMat!: C.Material;
-  bellMat!: C.Material;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -49,7 +46,6 @@ class BellStrike extends PhysicsBase {
     await this.createBell();
     this.createStick();
     this.createConstraints();
-    this.createContactMaterial();
     this.detectCollision();
     this.createRaycaster();
     this.createOrbitControls();
@@ -74,9 +70,8 @@ class BellStrike extends PhysicsBase {
     const body = this.createBody(
       new C.Sphere(1),
       new C.Body({
-        mass: 2.5,
+        mass: 1.5,
         position: new C.Vec3(0, 3, 0),
-        material: this.bellMat,
       })
     );
     const bellObj = new MeshPhysicsObject(mesh, body);
@@ -116,7 +111,6 @@ class BellStrike extends PhysicsBase {
       new C.Body({
         mass: 1,
         position: new C.Vec3(-5, 3.6, 0),
-        material: this.stickMat,
       })
     );
     const stickObj = new MeshPhysicsObject(mesh, body);
@@ -192,19 +186,6 @@ class BellStrike extends PhysicsBase {
       }
     });
   }
-  // 创建联系材质
-  createContactMaterial() {
-    const groundMat = new C.Material("ground");
-    const stickMat = new C.Material("stick");
-    const bellMat = new C.Material("bell");
-    const contactMat1 = new C.ContactMaterial(groundMat, stickMat, {
-      friction: 0,
-    });
-    this.world.addContactMaterial(contactMat1);
-    this.groundMat = groundMat;
-    this.stickMat = stickMat;
-    this.bellMat = bellMat;
-  }
   // 添加约束条件
   createConstraints() {
     const bellConstraint = new C.PointToPointConstraint(
@@ -214,12 +195,12 @@ class BellStrike extends PhysicsBase {
       new C.Vec3(0, -2, 0)
     );
     this.world.addConstraint(bellConstraint);
-    const stickConstraint1 = new C.DistanceConstraint(
+    const stickConstraint = new C.DistanceConstraint(
       this.stickObj.body,
       this.hingeStickObj.body,
       4
     );
-    this.world.addConstraint(stickConstraint1);
+    this.world.addConstraint(stickConstraint);
   }
 }
 
