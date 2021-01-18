@@ -10,7 +10,7 @@ export default defineComponent({
   name: "BellStrike",
   setup() {
     const start = () => {
-      const bellStrike = new BellStrike(".bell-strike", true);
+      const bellStrike = new BellStrike(".bell-strike", false);
       bellStrike.init();
     };
     onMounted(() => {

@@ -82,7 +82,7 @@ class BellStrike extends PhysicsBase {
   // 创建悬挂点
   createHinge(position: THREE.Vector3) {
     const mesh = this.createMesh({
-      geometry: new THREE.SphereGeometry(0.1),
+      geometry: new THREE.SphereGeometry(this.debug ? 0.1 : 0),
       position,
       material: new THREE.MeshPhongMaterial(),
     });
