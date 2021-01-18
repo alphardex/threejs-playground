@@ -13,7 +13,6 @@ class BellStrike extends PhysicsBase {
   stickObj!: MeshPhysicsObject;
   hingeBellObj!: MeshPhysicsObject;
   hingeStickObj!: MeshPhysicsObject;
-  hingeSize!: number;
   groundMat!: C.Material;
   stickMat!: C.Material;
   bellMat!: C.Material;
@@ -34,7 +33,6 @@ class BellStrike extends PhysicsBase {
     this.cameraPosition = new THREE.Vector3(0, 5, -20);
     this.lookAtPosition = new THREE.Vector3(0, 1, 0);
     this.gravity = new C.Vec3(0, -10, 0);
-    this.hingeSize = 1;
   }
   async init() {
     this.createScene();
@@ -44,9 +42,9 @@ class BellStrike extends PhysicsBase {
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
     this.createWorld();
-    const hingeBellObj = this.createHinge(new THREE.Vector3(0, this.hingeSize * 7, 0));
+    const hingeBellObj = this.createHinge(new THREE.Vector3(0, 7, 0));
     this.hingeBellObj = hingeBellObj;
-    const hingeStickObj = this.createHinge(new THREE.Vector3(-this.hingeSize * 5, this.hingeSize * 7, 0));
+    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7, 0));
     this.hingeStickObj = hingeStickObj;
     await this.createBell();
     this.createStick();
@@ -74,10 +72,10 @@ class BellStrike extends PhysicsBase {
     mesh.scale.set(0.001, 0.001, 0.001);
     this.scene.add(mesh);
     const body = this.createBody(
-      new C.Sphere(this.hingeSize),
+      new C.Sphere(1),
       new C.Body({
-        mass: 1,
-        position: new C.Vec3(0, this.hingeSize * 3, 0),
+        mass: 5,
+        position: new C.Vec3(0, 3, 0),
         material: this.bellMat,
       })
     );
@@ -89,12 +87,12 @@ class BellStrike extends PhysicsBase {
   // 创建悬挂点
   createHinge(position: THREE.Vector3) {
     const mesh = this.createMesh({
-      geometry: new THREE.SphereGeometry(this.hingeSize / 10),
+      geometry: new THREE.SphereGeometry(0.1),
       position,
       material: new THREE.MeshPhongMaterial(),
     });
     const body = this.createBody(
-      new C.Sphere(this.hingeSize / 10),
+      new C.Sphere(0.1),
       new C.Body({
         mass: 0,
         position: new C.Vec3().copy(mesh.position as any),
@@ -211,22 +209,19 @@ class BellStrike extends PhysicsBase {
   }
   // 添加约束条件
   createConstraints() {
-    const h = this.hingeSize;
     const bellConstraint = new C.PointToPointConstraint(
       this.bellObj.body,
-      new C.Vec3(0, h * 2, 0),
+      new C.Vec3(0, 2, 0),
       this.hingeBellObj.body,
-      new C.Vec3(0, -h * 2, 0)
+      new C.Vec3(0, -2, 0)
     );
     this.world.addConstraint(bellConstraint);
-    const stickConstraint1 = new C.PointToPointConstraint(
+    const stickConstraint1 = new C.DistanceConstraint(
       this.stickObj.body,
-      new C.Vec3(0, h * 2, 0),
       this.hingeStickObj.body,
-      new C.Vec3(0, -h * 2, 0)
-    )
+      4
+    );
     this.world.addConstraint(stickConstraint1);
-    this.bellObj.body.velocity.set(5, 0, 0);
   }
 }
 
