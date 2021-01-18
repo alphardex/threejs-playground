@@ -179,6 +179,9 @@ class BellStrike extends PhysicsBase {
     });
     window.addEventListener("touchstart", () => {
       this.onClickStick();
+      // ios audio hack
+      this.sound.play();
+      this.sound.stop();
     });
   }
   // 点击木棍时
@@ -205,9 +208,7 @@ class BellStrike extends PhysicsBase {
         this.bellObj.body.angularDamping = 0.9;
         this.stickObj.body.angularDamping = 1;
         this.stickObj.body.linearDamping = 0.4;
-        if (!this.sound.isPlaying) {
-          this.sound.play();
-        }
+        this.sound.play();
       }
     });
   }
