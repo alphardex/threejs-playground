@@ -106,7 +106,7 @@ class BellStrike extends PhysicsBase {
   createStick() {
     const loader = new THREE.TextureLoader();
     const mesh = this.createMesh({
-      geometry: new THREE.CylinderGeometry(0.25, 0.25, 5),
+      geometry: new THREE.CylinderGeometry(0.25, 0.25, 5, 100),
       material: new THREE.MeshBasicMaterial({
         map: loader.load(woodTextureUrl),
       }),
@@ -148,7 +148,7 @@ class BellStrike extends PhysicsBase {
   }
   // 创建木棍悬挂点
   createHingeStick() {
-    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7, 0));
+    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 6.25, 0));
     this.hingeStickObj = hingeStickObj;
   }
   // 添加约束条件
