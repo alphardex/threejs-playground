@@ -11,8 +11,12 @@ import { MeshPhysicsObject } from "@/utils/physics";
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
   stickObj!: MeshPhysicsObject;
+  hingeBellObj!: MeshPhysicsObject;
+  hingeStickObj!: MeshPhysicsObject;
+  hingeSize!: number;
   groundMat!: C.Material;
   stickMat!: C.Material;
+  bellMat!: C.Material;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -27,21 +31,27 @@ class BellStrike extends PhysicsBase {
       near: 1,
       far: 1000,
     };
-    this.cameraPosition = new THREE.Vector3(-180, 50, -300);
-    this.lookAtPosition = new THREE.Vector3(0, 0, 0);
+    this.cameraPosition = new THREE.Vector3(0, 5, -20);
+    this.lookAtPosition = new THREE.Vector3(0, 1, 0);
     this.gravity = new C.Vec3(0, -10, 0);
+    this.hingeSize = 1;
   }
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createLight();
-    this.createWorld();
-    this.createContactMaterial();
-    await this.createBell();
-    this.createStick();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
+    this.createWorld();
+    const hingeBellObj = this.createHinge(new THREE.Vector3(0, this.hingeSize * 7, 0));
+    this.hingeBellObj = hingeBellObj;
+    const hingeStickObj = this.createHinge(new THREE.Vector3(-this.hingeSize * 5, this.hingeSize * 7, 0));
+    this.hingeStickObj = hingeStickObj;
+    await this.createBell();
+    this.createStick();
+    this.createConstraints();
+    this.createContactMaterial();
     this.detectCollision();
     this.createRaycaster();
     this.createOrbitControls();
@@ -61,47 +71,59 @@ class BellStrike extends PhysicsBase {
   async createBell() {
     const model = await this.loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
+    mesh.scale.set(0.001, 0.001, 0.001);
     this.scene.add(mesh);
-    const halfExtents = new C.Vec3(27.5, 50, 25);
-    const mass = 1;
-    const position = new C.Vec3(0, 0, 0);
-    const bodyOptions = { mass, position };
     const body = this.createBody(
-      new C.Box(halfExtents),
-      new C.Body(bodyOptions)
+      new C.Sphere(this.hingeSize),
+      new C.Body({
+        mass: 1,
+        position: new C.Vec3(0, this.hingeSize * 3, 0),
+        material: this.bellMat,
+      })
     );
     const bellObj = new MeshPhysicsObject(mesh, body);
     this.bellObj = bellObj;
     this.meshPhysicsObjs.push(bellObj);
-    this.createGround(new C.Vec3(100, 0.1, 100), new C.Vec3(0, -50, 0));
+    this.createGround(new C.Vec3(10, 0.1, 10), new C.Vec3(0, 0, 0));
+  }
+  // 创建悬挂点
+  createHinge(position: THREE.Vector3) {
+    const mesh = this.createMesh({
+      geometry: new THREE.SphereGeometry(this.hingeSize / 10),
+      position,
+      material: new THREE.MeshPhongMaterial(),
+    });
+    const body = this.createBody(
+      new C.Sphere(this.hingeSize / 10),
+      new C.Body({
+        mass: 0,
+        position: new C.Vec3().copy(mesh.position as any),
+      })
+    );
+    const hingeObj = new MeshPhysicsObject(mesh, body);
+    this.meshPhysicsObjs.push(hingeObj);
+    return hingeObj;
   }
   // 创建木棍
   createStick() {
     const loader = new THREE.TextureLoader();
-    const geometry = new THREE.BoxGeometry(50, 10, 10);
-    const material = new THREE.MeshBasicMaterial({
-      map: loader.load(woodTextureUrl),
-    });
     const mesh = this.createMesh({
-      geometry,
-      material,
+      geometry: new THREE.BoxGeometry(5, 0.5, 0.5),
+      material: new THREE.MeshBasicMaterial({
+        map: loader.load(woodTextureUrl),
+      }),
     });
-    const halfExtents = new C.Vec3(25, 5, 5);
-    const mass = 1;
-    const position = new C.Vec3(-60, 0, 0);
-    const bodyOptions = { mass, position, material: this.stickMat };
     const body = this.createBody(
-      new C.Box(halfExtents),
-      new C.Body(bodyOptions)
+      new C.Box(new C.Vec3(2.5, 0.25, 0.25)),
+      new C.Body({
+        mass: 1,
+        position: new C.Vec3(-5, 3.6, 0),
+        material: this.stickMat,
+      })
     );
     const stickObj = new MeshPhysicsObject(mesh, body);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
-    this.createGround(
-      new C.Vec3(24, 0.1, 25),
-      new C.Vec3(-60, -5.5, 0),
-      this.groundMat
-    );
   }
   // 创建地面
   createGround(
@@ -109,9 +131,14 @@ class BellStrike extends PhysicsBase {
     position: C.Vec3,
     material: C.Material | undefined = undefined
   ) {
-    const mass = 0;
-    const bodyOptions = { mass, position, material };
-    this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
+    this.createBody(
+      new C.Box(halfExtents),
+      new C.Body({
+        mass: 0,
+        position,
+        material,
+      })
+    );
     if (this.debug) {
       this.createMesh({
         geometry: new THREE.BoxGeometry(
@@ -148,7 +175,7 @@ class BellStrike extends PhysicsBase {
   strikeBell() {
     const { stickObj } = this;
     const { body } = stickObj;
-    const impulse = new C.Vec3(25, 0, 0);
+    const impulse = new C.Vec3(5, 0, 0);
     body.applyLocalImpulse(impulse, new C.Vec3());
   }
   // 碰撞检测
@@ -168,12 +195,38 @@ class BellStrike extends PhysicsBase {
   createContactMaterial() {
     const groundMat = new C.Material("ground");
     const stickMat = new C.Material("stick");
-    const contactMat = new C.ContactMaterial(groundMat, stickMat, {
+    const bellMat = new C.Material("bell");
+    const contactMat1 = new C.ContactMaterial(groundMat, stickMat, {
       friction: 0,
     });
-    this.world.addContactMaterial(contactMat);
+    const contactMat2 = new C.ContactMaterial(stickMat, bellMat, {
+      friction: 0,
+      restitution: 0.9,
+    });
+    this.world.addContactMaterial(contactMat1);
+    this.world.addContactMaterial(contactMat2);
     this.groundMat = groundMat;
     this.stickMat = stickMat;
+    this.bellMat = bellMat;
+  }
+  // 添加约束条件
+  createConstraints() {
+    const h = this.hingeSize;
+    const bellConstraint = new C.PointToPointConstraint(
+      this.bellObj.body,
+      new C.Vec3(0, h * 2, 0),
+      this.hingeBellObj.body,
+      new C.Vec3(0, -h * 2, 0)
+    );
+    this.world.addConstraint(bellConstraint);
+    const stickConstraint1 = new C.PointToPointConstraint(
+      this.stickObj.body,
+      new C.Vec3(0, h * 2, 0),
+      this.hingeStickObj.body,
+      new C.Vec3(0, -h * 2, 0)
+    )
+    this.world.addConstraint(stickConstraint1);
+    this.bellObj.body.velocity.set(5, 0, 0);
   }
 }
 
