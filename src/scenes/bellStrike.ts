@@ -35,20 +35,20 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createLight();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
+    this.createRaycaster();
+    this.createOrbitControls();
     this.createWorld();
+    this.createLight();
     await this.createBell();
     this.createStick();
     this.createHingeBell();
     this.createHingeStick();
     this.createConstraints();
-    this.createRaycaster();
-    this.createOrbitControls();
-    this.detectCollision();
     this.addListeners();
     this.setLoop();
+    this.detectCollision();
   }
   // 创建光
   createLight() {
@@ -58,31 +58,6 @@ class BellStrike extends PhysicsBase {
     const dirLight = new THREE.DirectionalLight(0xffffff);
     dirLight.position.set(-3, 10, -10);
     this.scene.add(dirLight);
-  }
-  // 创建地面
-  createGround(
-    halfExtents: C.Vec3,
-    position: C.Vec3,
-    material: C.Material | undefined = undefined
-  ) {
-    this.createBody(
-      new C.Box(halfExtents),
-      new C.Body({
-        mass: 0,
-        position,
-        material,
-      })
-    );
-    if (this.debug) {
-      this.createMesh({
-        geometry: new THREE.BoxGeometry(
-          halfExtents.x * 2,
-          halfExtents.y * 2,
-          halfExtents.z * 2
-        ),
-        position: new THREE.Vector3(position.x, position.y, position.z),
-      });
-    }
   }
   // 创建大钟
   async createBell() {
@@ -100,7 +75,6 @@ class BellStrike extends PhysicsBase {
     const bellObj = new MeshPhysicsObject(mesh, body);
     this.bellObj = bellObj;
     this.meshPhysicsObjs.push(bellObj);
-    this.createGround(new C.Vec3(10, 0.1, 10), new C.Vec3(0, 0, 0));
   }
   // 创建木棍
   createStick() {
