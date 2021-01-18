@@ -74,7 +74,7 @@ class BellStrike extends PhysicsBase {
     const body = this.createBody(
       new C.Sphere(1),
       new C.Body({
-        mass: 5,
+        mass: 2.5,
         position: new C.Vec3(0, 3, 0),
         material: this.bellMat,
       })
@@ -183,6 +183,7 @@ class BellStrike extends PhysicsBase {
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
+        this.bellObj.body.angularDamping = 0.9;
         this.stickObj.body.angularDamping = 1;
         this.stickObj.body.linearDamping = 0.4;
         if (!this.sound.isPlaying) {
