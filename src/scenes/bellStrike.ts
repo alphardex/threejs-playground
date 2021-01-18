@@ -101,11 +101,12 @@ class BellStrike extends PhysicsBase {
   createStick() {
     const loader = new THREE.TextureLoader();
     const mesh = this.createMesh({
-      geometry: new THREE.BoxGeometry(5, 0.5, 0.5),
+      geometry: new THREE.CylinderGeometry(0.25, 0.25, 5),
       material: new THREE.MeshBasicMaterial({
         map: loader.load(woodTextureUrl),
       }),
     });
+    mesh.rotateZ(-Math.PI * 0.5);
     const body = this.createBody(
       new C.Box(new C.Vec3(2.5, 0.25, 0.25)),
       new C.Body({
@@ -113,7 +114,7 @@ class BellStrike extends PhysicsBase {
         position: new C.Vec3(-5, 3.6, 0),
       })
     );
-    const stickObj = new MeshPhysicsObject(mesh, body);
+    const stickObj = new MeshPhysicsObject(mesh, body, true, false);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
   }

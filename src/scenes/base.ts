@@ -387,9 +387,13 @@ class PhysicsBase extends Base {
   // 同步物理和渲染
   sync() {
     this.meshPhysicsObjs.forEach((obj) => {
-      const { mesh, body } = obj;
-      mesh.position.copy(body.position as any);
-      mesh.quaternion.copy(body.quaternion as any);
+      const { mesh, body, copyPosition, copyQuaternion } = obj;
+      if (copyPosition) {
+        mesh.position.copy(body.position as any);
+      }
+      if (copyQuaternion) {
+        mesh.quaternion.copy(body.quaternion as any);
+      }
     });
   }
 }
