@@ -14,6 +14,7 @@ class BellStrike extends PhysicsBase {
   stickObj!: MeshPhysicsObject;
   hingeBellObj!: MeshPhysicsObject;
   hingeStickObj!: MeshPhysicsObject;
+  isFirstSoundPlayed!: boolean;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -31,6 +32,7 @@ class BellStrike extends PhysicsBase {
     this.cameraPosition = new THREE.Vector3(0, 5, -20);
     this.lookAtPosition = new THREE.Vector3(0, 1, 0);
     this.gravity = new C.Vec3(0, -10, 0);
+    this.isFirstSoundPlayed = false;
   }
   async init() {
     this.createScene();
@@ -164,8 +166,11 @@ class BellStrike extends PhysicsBase {
     window.addEventListener("touchstart", () => {
       this.onClickStick();
       // ios audio hack
-      this.sound.play();
-      this.sound.stop();
+      if (!this.isFirstSoundPlayed) {
+        this.sound.play();
+        this.sound.stop();
+        this.isFirstSoundPlayed = true;
+      }
     });
   }
   // 点击木棍时
@@ -189,9 +194,12 @@ class BellStrike extends PhysicsBase {
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
-        this.bellObj.body.angularDamping = 0.9;
+        this.bellObj.body.angularDamping = 0.7;
         this.stickObj.body.angularDamping = 1;
         this.stickObj.body.linearDamping = 0.4;
+        if (this.sound.isPlaying) {
+          this.sound.stop();
+        }
         this.sound.play();
       }
     });
