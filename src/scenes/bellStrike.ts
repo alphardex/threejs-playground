@@ -91,7 +91,7 @@ class BellStrike extends PhysicsBase {
     mesh.scale.set(0.001, 0.001, 0.001);
     this.scene.add(mesh);
     const body = this.createBody(
-      new C.Sphere(1),
+      new C.Sphere(1.05),
       new C.Body({
         mass: 1.5,
         position: new C.Vec3(0, 3, 0),
