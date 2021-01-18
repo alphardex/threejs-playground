@@ -183,6 +183,8 @@ class BellStrike extends PhysicsBase {
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
+        this.stickObj.body.angularDamping = 1;
+        this.stickObj.body.linearDamping = 0.4;
         if (!this.sound.isPlaying) {
           this.sound.play();
         }
@@ -197,12 +199,7 @@ class BellStrike extends PhysicsBase {
     const contactMat1 = new C.ContactMaterial(groundMat, stickMat, {
       friction: 0,
     });
-    const contactMat2 = new C.ContactMaterial(stickMat, bellMat, {
-      friction: 0,
-      restitution: 0.9,
-    });
     this.world.addContactMaterial(contactMat1);
-    this.world.addContactMaterial(contactMat2);
     this.groundMat = groundMat;
     this.stickMat = stickMat;
     this.bellMat = bellMat;
