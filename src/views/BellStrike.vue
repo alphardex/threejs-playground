@@ -1,5 +1,5 @@
 <template>
-  <div class="backdrop flex-center" v-show="!status.loadComplete">
+  <div class="backdrop flex-center" v-if="!status.loadComplete">
     <div class="flex flex-col items-center space-y-4">
       <div class="loader"></div>
       <div class="text-white text-sm">资源加载中</div>

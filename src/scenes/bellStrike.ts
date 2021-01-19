@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import C from "cannon";
+import gsap from "gsap";
+import ky from "kyouka";
 import {
   bellAudioUrl,
   bellModelUrl,
+  cloudModelUrl,
   pavilionModelUrl,
   planeTextureUrl,
   woodTextureUrl,
@@ -31,8 +34,8 @@ class BellStrike extends PhysicsBase {
       near: 1,
       far: 1000,
     };
-    this.cameraPosition = new THREE.Vector3(0, 5, -20);
-    this.lookAtPosition = new THREE.Vector3(0, 4, 0);
+    this.cameraPosition = new THREE.Vector3(0, 5, -100);
+    this.lookAtPosition = new THREE.Vector3(0, 5, 0);
     this.gravity = new C.Vec3(0, -10, 0);
     this.isFirstSoundPlayed = false;
     this.loadComplete = false;
@@ -41,31 +44,38 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    // this.enableShadow();
+    this.addListeners();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
-    this.createRaycaster();
     this.createOrbitControls();
     this.createWorld();
-    this.createLight();
     await this.createPavilion();
     await this.createBell();
     await this.createGround();
+    await this.createCloud();
     this.createStick();
     this.createHingeBell();
     this.createHingeStick();
     this.createConstraints();
-    this.addListeners();
+    this.createLight();
     this.setLoop();
-    this.detectCollision();
     this.loadComplete = true;
+    this.moveCamera(() => {
+      this.createRaycaster();
+      this.onClick();
+      this.detectCollision();
+    });
   }
   // 创建光
   createLight() {
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
     hemiLight.position.set(0, 20, 0);
+    hemiLight.castShadow = true;
     this.scene.add(hemiLight);
     const dirLight = new THREE.DirectionalLight(0xffffff);
     dirLight.position.set(-3, 10, -10);
+    dirLight.castShadow = true;
     this.scene.add(dirLight);
   }
   // 创建地面
@@ -76,19 +86,40 @@ class BellStrike extends PhysicsBase {
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(25, 25);
     const plane = this.createMesh({
-      geometry: new THREE.PlaneGeometry(100, 100),
+      geometry: new THREE.PlaneGeometry(200, 200),
       material: new THREE.MeshBasicMaterial({
         map: texture,
       }),
     });
-    plane.rotateX(-Math.PI / 2);
+    plane.rotateX(-ky.deg2rad(90));
+    plane.receiveShadow = true;
+  }
+  // 创建云朵
+  async createCloud() {
+    const mesh = await this.loadFBXModel(cloudModelUrl);
+    mesh.scale.set(0.8, 0.8, 0.8);
+    const cloudCount = 8;
+    const cloudGap = 12;
+    const cloudZLimit = 24;
+    for (let i = 0; i < cloudCount; i++) {
+      const cloud = mesh.clone();
+      const x =
+        (cloudGap + ky.randomNumberInRange(-cloudGap / 4, cloudGap / 4)) *
+        (i - cloudCount / 2);
+      const y = 24;
+      const z = ky.randomNumberInRange(-cloudZLimit, cloudZLimit);
+      cloud.position.set(x, y, z);
+      this.scene.add(cloud);
+    }
   }
   // 创建亭子
   async createPavilion() {
     const mesh = await this.loadModel(pavilionModelUrl);
     mesh.position.set(0, 0, 0);
     mesh.scale.set(2, 2, 2);
-    mesh.rotateY(Math.PI / 2);
+    mesh.rotateY(ky.deg2rad(90));
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     this.scene.add(mesh);
   }
   // 创建大钟
@@ -97,8 +128,9 @@ class BellStrike extends PhysicsBase {
     const mesh = model.children[0].parent!.children[3];
     mesh.scale.set(0.001, 0.001, 0.001);
     mesh.position.set(0, 4, 0);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     this.scene.add(mesh);
-    console.log(mesh);
     const body = this.createBody(
       new C.Sphere(1.05),
       new C.Body({
@@ -119,7 +151,9 @@ class BellStrike extends PhysicsBase {
         map: loader.load(woodTextureUrl),
       }),
     });
-    mesh.rotateZ(-Math.PI * 0.5);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.rotateZ(-ky.deg2rad(90));
     const body = this.createBody(
       new C.Box(new C.Vec3(2.5, 0.25, 0.25)),
       new C.Body({
@@ -175,10 +209,37 @@ class BellStrike extends PhysicsBase {
     );
     this.world.addConstraint(stickConstraint);
   }
+  // 移动相机
+  async moveCamera(cb: Function) {
+    const t1 = gsap.timeline();
+    t1.to(this.camera.position, {
+      z: -30,
+      duration: 3,
+    })
+      .to(
+        this.camera.rotation,
+        {
+          y: -ky.deg2rad(30),
+          duration: 2,
+        },
+        "-=2"
+      )
+      .to(
+        this.camera.position,
+        {
+          x: -14,
+          z: -24,
+          duration: 2,
+          onComplete() {
+            cb();
+          },
+        },
+        "-=2"
+      );
+  }
   // 监听事件
   addListeners() {
     this.onResize();
-    this.onClick();
   }
   // 监听点击
   onClick() {
@@ -186,6 +247,7 @@ class BellStrike extends PhysicsBase {
       this.onClickStick();
     });
     window.addEventListener("touchstart", () => {
+      console.log('touchstart');
       this.onClickStick();
       // ios audio hack
       if (!this.isFirstSoundPlayed) {
