@@ -12,7 +12,6 @@ import {
 } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
-import { Color } from "three";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
