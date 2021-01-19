@@ -100,7 +100,7 @@ class BellStrike extends PhysicsBase {
   async createCloud() {
     const mesh = await this.loadFBXModel(cloudModelUrl);
     mesh.scale.set(0.5, 0.5, 0.5);
-    const cloudCount = 4;
+    const cloudCount = 6;
     const cloudGap = 4;
     for (let i = 0; i < cloudCount; i++) {
       const cloud = mesh.clone();
@@ -109,6 +109,13 @@ class BellStrike extends PhysicsBase {
       const z = ky.isOdd(i) ? ky.randomNumberInRange(4, 5) : -ky.randomNumberInRange(4, 5);
       cloud.position.set(x, y, z);
       this.scene.add(cloud);
+      gsap.to(cloud.position, {
+        x: x + (ky.isOdd(i) ? 6 : -6),
+        duration: 20,
+        yoyo: true,
+        repeat: -1,
+        stagger: 5
+      })
     }
   }
   // 创建亭子
