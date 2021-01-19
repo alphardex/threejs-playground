@@ -44,7 +44,6 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    // this.enableShadow();
     this.addListeners();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
@@ -70,13 +69,17 @@ class BellStrike extends PhysicsBase {
   // 创建光
   createLight() {
     const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-    hemiLight.position.set(0, 20, 0);
-    hemiLight.castShadow = true;
+    hemiLight.position.set(0, 10, 0);
     this.scene.add(hemiLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff);
-    dirLight.position.set(-3, 10, -10);
-    dirLight.castShadow = true;
-    this.scene.add(dirLight);
+    const dirLight1 = new THREE.DirectionalLight(0xffffff);
+    dirLight1.position.set(16, 8, 8);
+    this.scene.add(dirLight1);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff);
+    dirLight2.position.set(-16, 8, 8);
+    this.scene.add(dirLight2);
+    const dirLight3 = new THREE.DirectionalLight(0xffffff);
+    dirLight3.position.set(0, 8, -16);
+    this.scene.add(dirLight3);
   }
   // 创建地面
   async createGround() {
@@ -92,7 +95,6 @@ class BellStrike extends PhysicsBase {
       }),
     });
     plane.rotateX(-ky.deg2rad(90));
-    plane.receiveShadow = true;
   }
   // 创建云朵
   async createCloud() {
@@ -118,8 +120,6 @@ class BellStrike extends PhysicsBase {
     mesh.position.set(0, 0, 0);
     mesh.scale.set(2, 2, 2);
     mesh.rotateY(ky.deg2rad(90));
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
     this.scene.add(mesh);
   }
   // 创建大钟
@@ -128,8 +128,6 @@ class BellStrike extends PhysicsBase {
     const mesh = model.children[0].parent!.children[3];
     mesh.scale.set(0.001, 0.001, 0.001);
     mesh.position.set(0, 4, 0);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
     this.scene.add(mesh);
     const body = this.createBody(
       new C.Sphere(1.05),
@@ -151,8 +149,6 @@ class BellStrike extends PhysicsBase {
         map: loader.load(woodTextureUrl),
       }),
     });
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
     mesh.rotateZ(-ky.deg2rad(90));
     const body = this.createBody(
       new C.Box(new C.Vec3(2.5, 0.25, 0.25)),
@@ -247,7 +243,7 @@ class BellStrike extends PhysicsBase {
       this.onClickStick();
     });
     window.addEventListener("touchstart", () => {
-      console.log('touchstart');
+      console.log("touchstart");
       this.onClickStick();
       // ios audio hack
       if (!this.isFirstSoundPlayed) {
