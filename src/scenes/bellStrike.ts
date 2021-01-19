@@ -15,6 +15,7 @@ class BellStrike extends PhysicsBase {
   hingeBellObj!: MeshPhysicsObject;
   hingeStickObj!: MeshPhysicsObject;
   isFirstSoundPlayed!: boolean;
+  loadComplete!: boolean;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -30,9 +31,10 @@ class BellStrike extends PhysicsBase {
       far: 1000,
     };
     this.cameraPosition = new THREE.Vector3(0, 5, -20);
-    this.lookAtPosition = new THREE.Vector3(0, 1, 0);
+    this.lookAtPosition = new THREE.Vector3(0, 4, 0);
     this.gravity = new C.Vec3(0, -10, 0);
     this.isFirstSoundPlayed = false;
+    this.loadComplete = false;
   }
   async init() {
     this.createScene();
@@ -53,6 +55,7 @@ class BellStrike extends PhysicsBase {
     this.addListeners();
     this.setLoop();
     this.detectCollision();
+    this.loadComplete = true;
   }
   // 创建光
   createLight() {
@@ -65,10 +68,10 @@ class BellStrike extends PhysicsBase {
   }
   // 创建亭子
   async createPavilion() {
-    const mesh = await this.loadFBXModel(pavilionModelUrl);
-    mesh.position.set(0, 5, 0);
-    mesh.scale.set(0.002, 0.002, 0.002);
-    mesh.rotateZ(Math.PI / 2);
+    const mesh = await this.loadModel(pavilionModelUrl);
+    mesh.position.set(0, -1, 0);
+    mesh.scale.set(2, 2, 2);
+    mesh.rotateY(Math.PI / 2);
     this.scene.add(mesh);
   }
   // 创建大钟
@@ -203,6 +206,12 @@ class BellStrike extends PhysicsBase {
         this.sound.play();
       }
     });
+  }
+  // 状态
+  get status() {
+    return {
+      loadComplete: this.loadComplete
+    }
   }
 }
 
