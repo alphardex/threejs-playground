@@ -5,6 +5,12 @@
       <div class="text-white text-sm">资源加载中</div>
     </div>
   </div>
+  <div
+    class="absolute z-1 bottom-6 h-center font-bold transition-opacity duration-300"
+    :class="{ 'opacity-0': !status.showTip }"
+  >
+    点击木棒即可撞钟
+  </div>
   <div class="bell-strike w-full h-full bg-blue-grad-1"></div>
 </template>
 
@@ -23,18 +29,15 @@ export default defineComponent({
     const state = reactive<State>({
       status: {
         loadComplete: false,
+        showTip: false,
       },
     });
     const start = async () => {
       const bellStrike = new BellStrike(".bell-strike", false);
       bellStrike.init();
-      while (!bellStrike.status.loadComplete) {
+      while (!state.status.showTip) {
         state.status = bellStrike.status;
         await ky.sleep(100);
-        if (bellStrike.status.loadComplete) {
-          state.status = bellStrike.status;
-          break;
-        }
       }
     };
     onMounted(async () => {

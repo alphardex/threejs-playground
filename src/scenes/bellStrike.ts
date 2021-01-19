@@ -12,6 +12,7 @@ import {
 } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
+import { Color } from "three";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
@@ -20,6 +21,7 @@ class BellStrike extends PhysicsBase {
   hingeStickObj!: MeshPhysicsObject;
   isFirstSoundPlayed!: boolean;
   loadComplete!: boolean;
+  showTip!: boolean;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -64,6 +66,7 @@ class BellStrike extends PhysicsBase {
       this.createRaycaster();
       this.onClick();
       this.detectCollision();
+      this.createHint();
     });
   }
   // 创建光
@@ -106,7 +109,9 @@ class BellStrike extends PhysicsBase {
       const cloud = mesh.clone();
       const x = cloudGap * (i - cloudCount / 2 + 0.5);
       const y = 12;
-      const z = ky.isOdd(i) ? ky.randomNumberInRange(4, 5) : -ky.randomNumberInRange(4, 5);
+      const z = ky.isOdd(i)
+        ? ky.randomNumberInRange(4, 5)
+        : -ky.randomNumberInRange(4, 5);
       cloud.position.set(x, y, z);
       this.scene.add(cloud);
       gsap.to(cloud.position, {
@@ -114,8 +119,8 @@ class BellStrike extends PhysicsBase {
         duration: 20,
         yoyo: true,
         repeat: -1,
-        stagger: 5
-      })
+        stagger: 5,
+      });
     }
   }
   // 创建亭子
@@ -247,7 +252,6 @@ class BellStrike extends PhysicsBase {
       this.onClickStick();
     });
     window.addEventListener("touchstart", () => {
-      console.log("touchstart");
       this.onClickStick();
       // ios audio hack
       if (!this.isFirstSoundPlayed) {
@@ -288,10 +292,15 @@ class BellStrike extends PhysicsBase {
       }
     });
   }
+  // 创建提示
+  createHint() {
+    this.showTip = true;
+  }
   // 状态
   get status() {
     return {
       loadComplete: this.loadComplete,
+      showTip: this.showTip,
     };
   }
 }
