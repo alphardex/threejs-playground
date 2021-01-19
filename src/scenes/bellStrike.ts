@@ -71,10 +71,14 @@ class BellStrike extends PhysicsBase {
   // 创建地面
   async createGround() {
     const loader = new THREE.TextureLoader();
+    const texture = loader.load(planeTextureUrl);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(25, 25);
     const plane = this.createMesh({
-      geometry: new THREE.PlaneGeometry(50, 50),
+      geometry: new THREE.PlaneGeometry(100, 100),
       material: new THREE.MeshBasicMaterial({
-        map: loader.load(planeTextureUrl),
+        map: texture,
       }),
     });
     plane.rotateX(-Math.PI / 2);
