@@ -4,6 +4,7 @@ import {
   bellAudioUrl,
   bellModelUrl,
   pavilionModelUrl,
+  planeTextureUrl,
   woodTextureUrl,
 } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
@@ -48,6 +49,7 @@ class BellStrike extends PhysicsBase {
     this.createLight();
     await this.createPavilion();
     await this.createBell();
+    await this.createGround();
     this.createStick();
     this.createHingeBell();
     this.createHingeStick();
@@ -66,10 +68,21 @@ class BellStrike extends PhysicsBase {
     dirLight.position.set(-3, 10, -10);
     this.scene.add(dirLight);
   }
+  // 创建地面
+  async createGround() {
+    const loader = new THREE.TextureLoader();
+    const plane = this.createMesh({
+      geometry: new THREE.PlaneGeometry(50, 50),
+      material: new THREE.MeshBasicMaterial({
+        map: loader.load(planeTextureUrl),
+      }),
+    });
+    plane.rotateX(-Math.PI / 2);
+  }
   // 创建亭子
   async createPavilion() {
     const mesh = await this.loadModel(pavilionModelUrl);
-    mesh.position.set(0, -1, 0);
+    mesh.position.set(0, 0, 0);
     mesh.scale.set(2, 2, 2);
     mesh.rotateY(Math.PI / 2);
     this.scene.add(mesh);
@@ -79,12 +92,14 @@ class BellStrike extends PhysicsBase {
     const model = await this.loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
     mesh.scale.set(0.001, 0.001, 0.001);
+    mesh.position.set(0, 4, 0);
     this.scene.add(mesh);
+    console.log(mesh);
     const body = this.createBody(
       new C.Sphere(1.05),
       new C.Body({
         mass: 1.5,
-        position: new C.Vec3(0, 3, 0),
+        position: new C.Vec3(0, 4, 0),
       })
     );
     const bellObj = new MeshPhysicsObject(mesh, body);
@@ -132,12 +147,12 @@ class BellStrike extends PhysicsBase {
   }
   // 创建大钟悬挂点
   createHingeBell() {
-    const hingeBellObj = this.createHinge(new THREE.Vector3(0, 7, 0));
+    const hingeBellObj = this.createHinge(new THREE.Vector3(0, 8, 0));
     this.hingeBellObj = hingeBellObj;
   }
   // 创建木棍悬挂点
   createHingeStick() {
-    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 6.25, 0));
+    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7.25, 0));
     this.hingeStickObj = hingeStickObj;
   }
   // 添加约束条件
@@ -210,8 +225,8 @@ class BellStrike extends PhysicsBase {
   // 状态
   get status() {
     return {
-      loadComplete: this.loadComplete
-    }
+      loadComplete: this.loadComplete,
+    };
   }
 }
 
