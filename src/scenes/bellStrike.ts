@@ -99,17 +99,14 @@ class BellStrike extends PhysicsBase {
   // 创建云朵
   async createCloud() {
     const mesh = await this.loadFBXModel(cloudModelUrl);
-    mesh.scale.set(0.8, 0.8, 0.8);
-    const cloudCount = 8;
-    const cloudGap = 12;
-    const cloudZLimit = 24;
+    mesh.scale.set(0.5, 0.5, 0.5);
+    const cloudCount = 4;
+    const cloudGap = 4;
     for (let i = 0; i < cloudCount; i++) {
       const cloud = mesh.clone();
-      const x =
-        (cloudGap + ky.randomNumberInRange(-cloudGap / 4, cloudGap / 4)) *
-        (i - cloudCount / 2);
-      const y = 24;
-      const z = ky.randomNumberInRange(-cloudZLimit, cloudZLimit);
+      const x = cloudGap * (i - cloudCount / 2 + 0.5);
+      const y = 12;
+      const z = ky.isOdd(i) ? ky.randomNumberInRange(4, 5) : -ky.randomNumberInRange(4, 5);
       cloud.position.set(x, y, z);
       this.scene.add(cloud);
     }
