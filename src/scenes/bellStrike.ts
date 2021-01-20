@@ -45,7 +45,6 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.enableShadow();
     this.addListeners();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
@@ -71,24 +70,16 @@ class BellStrike extends PhysicsBase {
   }
   // 创建光
   createLight() {
-    const d = 40;
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
-    dirLight1.position.set(25, 100, 25);
-    dirLight1.castShadow = true;
-    dirLight1.shadow.camera.top = d;
-    dirLight1.shadow.camera.right = d;
-    dirLight1.shadow.camera.bottom = -d;
-    dirLight1.shadow.camera.left = -d
-    dirLight1.shadow.camera.near = 0.1;
-    dirLight1.shadow.camera.far = 500;
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight1.position.set(16, 8, 8);
     this.scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-    dirLight2.position.set(-25, 25, 25);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight2.position.set(-16, 8, 8);
     this.scene.add(dirLight2);
-    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
-    dirLight3.position.set(-10, 25, -30);
+    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight3.position.set(0, 8, -16);
     this.scene.add(dirLight3);
-    const ambiLight = new THREE.AmbientLight(0xffffff, 0.4);
+    const ambiLight = new THREE.AmbientLight(0xffffff, 0.2);
     this.scene.add(ambiLight)
   }
   // 创建地面
@@ -107,7 +98,6 @@ class BellStrike extends PhysicsBase {
       }),
     });
     plane.rotateX(-ky.deg2rad(90));
-    plane.receiveShadow = true;
   }
   // 创建云朵
   async createCloud() {
