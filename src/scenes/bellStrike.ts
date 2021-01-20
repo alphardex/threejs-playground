@@ -48,7 +48,9 @@ class BellStrike extends PhysicsBase {
     this.addListeners();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
-    this.createOrbitControls();
+    if (this.debug) {
+      this.createOrbitControls();
+    }
     this.createWorld();
     await this.createPavilion();
     await this.createBell();

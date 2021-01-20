@@ -33,7 +33,7 @@ export default defineComponent({
       },
     });
     const start = async () => {
-      const bellStrike = new BellStrike(".bell-strike", false);
+      const bellStrike = new BellStrike(".bell-strike", true);
       bellStrike.init();
       while (!state.status.showTip) {
         state.status = bellStrike.status;
