@@ -92,7 +92,7 @@ class BellStrike extends PhysicsBase {
     texture.repeat.set(25, 25);
     const plane = this.createMesh({
       geometry: new THREE.PlaneGeometry(200, 200),
-      material: new THREE.MeshBasicMaterial({
+      material: new THREE.MeshStandardMaterial({
         map: texture,
       }),
     });
@@ -153,7 +153,7 @@ class BellStrike extends PhysicsBase {
     const loader = new THREE.TextureLoader();
     const mesh = this.createMesh({
       geometry: new THREE.CylinderGeometry(0.25, 0.25, 5, 100),
-      material: new THREE.MeshBasicMaterial({
+      material: new THREE.MeshStandardMaterial({
         map: loader.load(woodTextureUrl),
       }),
     });

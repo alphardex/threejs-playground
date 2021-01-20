@@ -149,7 +149,7 @@ class Base {
   ) {
     const {
       geometry = new THREE.BoxGeometry(1, 1, 1),
-      material = new THREE.MeshBasicMaterial({
+      material = new THREE.MeshStandardMaterial({
         color: new THREE.Color("#d9dfc8"),
       }),
       position = new THREE.Vector3(0, 0, 0),
