@@ -79,15 +79,15 @@ class BellStrike extends PhysicsBase {
   }
   // 创建光
   createLight() {
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight1.position.set(16, 8, 8);
-    this.scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight2.position.set(-16, 8, 8);
-    this.scene.add(dirLight2);
-    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight3.position.set(0, 8, -16);
-    this.scene.add(dirLight3);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(-100, 200, -100);
+    this.scene.add(dirLight);
+    const pointLight1 = new THREE.PointLight(0xffffff, 1, 500);
+    pointLight1.position.set(-20, 5, 20);
+    this.scene.add(pointLight1)
+    const pointLight2 = new THREE.PointLight(0xffffff, 1, 500);
+    pointLight2.position.set(-20, 5, -20);
+    this.scene.add(pointLight2)
     const ambiLight = new THREE.AmbientLight(0xffffff, 0.1);
     this.scene.add(ambiLight);
   }
