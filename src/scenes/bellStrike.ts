@@ -8,10 +8,14 @@ import {
   cloudModelUrl,
   pavilionModelUrl,
   planeTextureUrl,
+  skyParams,
   woodTextureUrl,
 } from "@/consts/bellStrike";
 import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { Sky } from "three/examples/jsm/objects/Sky";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
@@ -21,6 +25,7 @@ class BellStrike extends PhysicsBase {
   isFirstSoundPlayed!: boolean;
   loadComplete!: boolean;
   showTip!: boolean;
+  composer!: EffectComposer;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -61,6 +66,8 @@ class BellStrike extends PhysicsBase {
     this.createHingeStick();
     this.createConstraints();
     this.createLight();
+    this.createSky();
+    this.createEffects();
     this.setLoop();
     this.loadComplete = true;
     this.moveCamera(() => {
@@ -83,6 +90,43 @@ class BellStrike extends PhysicsBase {
     this.scene.add(dirLight3);
     const ambiLight = new THREE.AmbientLight(0xffffff, 0.2);
     this.scene.add(ambiLight);
+  }
+  // 创建天空
+  createSky() {
+    const sky = new Sky();
+    sky.scale.setScalar(450000);
+    const uniforms = sky.material.uniforms;
+    uniforms["turbidity"].value = skyParams.turbidity;
+    uniforms["rayleigh"].value = skyParams.rayleigh;
+    uniforms["mieCoefficient"].value = skyParams.mieCoefficient;
+    uniforms["mieDirectionalG"].value = skyParams.mieDirectionalG;
+    const sun = new THREE.Vector3();
+    const theta = Math.PI * (skyParams.inclination - 0.5);
+    const phi = 2 * Math.PI * (skyParams.azimuth - 0.5);
+    sun.x = Math.cos(phi);
+    sun.y = Math.sin(phi) * Math.sin(theta);
+    sun.z = Math.sin(phi) * Math.cos(theta);
+    uniforms["sunPosition"].value.copy(sun);
+    this.scene.add(sky);
+  }
+  // 创建后期处理效果
+  createEffects() {
+    const composer = new EffectComposer(this.renderer);
+    composer.addPass(new RenderPass(this.scene, this.camera));
+    this.composer = composer;
+  }
+  // 渲染
+  setLoop() {
+    this.renderer.setAnimationLoop(() => {
+      this.resizeRendererToDisplaySize();
+      this.update();
+      if (this.controls) {
+        this.controls.update();
+      }
+      if (this.composer) {
+        this.composer.render();
+      }
+    });
   }
   // 创建地面
   async createGround() {
