@@ -80,7 +80,7 @@ class BellStrike extends PhysicsBase {
     dirLight3.position.set(0, 8, -16);
     this.scene.add(dirLight3);
     const ambiLight = new THREE.AmbientLight(0xffffff, 0.2);
-    this.scene.add(ambiLight)
+    this.scene.add(ambiLight);
   }
   // 创建地面
   async createGround() {
@@ -94,7 +94,7 @@ class BellStrike extends PhysicsBase {
       geometry: new THREE.PlaneGeometry(planeSize, planeSize),
       material: new THREE.MeshLambertMaterial({
         map: texture,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
       }),
     });
     plane.rotateX(-ky.deg2rad(90));
