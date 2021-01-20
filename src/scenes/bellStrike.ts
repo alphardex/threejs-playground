@@ -45,6 +45,7 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.enableShadow();
     this.addListeners();
     this.createAudioSource();
     await this.loadAudio(bellAudioUrl);
@@ -70,33 +71,43 @@ class BellStrike extends PhysicsBase {
   }
   // 创建光
   createLight() {
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-    hemiLight.position.set(0, 10, 0);
-    this.scene.add(hemiLight);
-    const dirLight1 = new THREE.DirectionalLight(0xffffff);
-    dirLight1.position.set(16, 8, 8);
+    const d = 40;
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight1.position.set(25, 100, 25);
+    dirLight1.castShadow = true;
+    dirLight1.shadow.camera.top = d;
+    dirLight1.shadow.camera.right = d;
+    dirLight1.shadow.camera.bottom = -d;
+    dirLight1.shadow.camera.left = -d
+    dirLight1.shadow.camera.near = 0.1;
+    dirLight1.shadow.camera.far = 500;
     this.scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(0xffffff);
-    dirLight2.position.set(-16, 8, 8);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight2.position.set(-25, 25, 25);
     this.scene.add(dirLight2);
-    const dirLight3 = new THREE.DirectionalLight(0xffffff);
-    dirLight3.position.set(0, 8, -16);
+    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight3.position.set(-10, 25, -30);
     this.scene.add(dirLight3);
+    const ambiLight = new THREE.AmbientLight(0xffffff, 0.4);
+    this.scene.add(ambiLight)
   }
   // 创建地面
   async createGround() {
+    const planeSize = 200;
     const loader = new THREE.TextureLoader();
     const texture = loader.load(planeTextureUrl);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(25, 25);
+    texture.repeat.set(planeSize / 2, planeSize / 2);
     const plane = this.createMesh({
-      geometry: new THREE.PlaneGeometry(200, 200),
-      material: new THREE.MeshStandardMaterial({
+      geometry: new THREE.PlaneGeometry(planeSize, planeSize),
+      material: new THREE.MeshLambertMaterial({
         map: texture,
+        side: THREE.DoubleSide
       }),
     });
     plane.rotateX(-ky.deg2rad(90));
+    plane.receiveShadow = true;
   }
   // 创建云朵
   async createCloud() {
