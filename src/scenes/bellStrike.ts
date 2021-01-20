@@ -88,11 +88,12 @@ class BellStrike extends PhysicsBase {
     const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight3.position.set(0, 8, -16);
     this.scene.add(dirLight3);
-    const ambiLight = new THREE.AmbientLight(0xffffff, 0.2);
+    const ambiLight = new THREE.AmbientLight(0xffffff, 0.1);
     this.scene.add(ambiLight);
   }
   // 创建天空
   createSky() {
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     const sky = new Sky();
     sky.scale.setScalar(450000);
     const uniforms = sky.material.uniforms;
@@ -103,9 +104,12 @@ class BellStrike extends PhysicsBase {
     const sun = new THREE.Vector3();
     const theta = Math.PI * (skyParams.inclination - 0.5);
     const phi = 2 * Math.PI * (skyParams.azimuth - 0.5);
-    sun.x = Math.cos(phi);
-    sun.y = Math.sin(phi) * Math.sin(theta);
-    sun.z = Math.sin(phi) * Math.cos(theta);
+    const x = Math.cos(phi);
+    const y = Math.sin(phi) * Math.sin(theta);
+    const z = Math.sin(phi) * Math.cos(theta);
+    sun.x = x;
+    sun.y = y;
+    sun.z = -z;
     uniforms["sunPosition"].value.copy(sun);
     this.scene.add(sky);
   }
