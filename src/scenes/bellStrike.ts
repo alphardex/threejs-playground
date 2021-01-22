@@ -309,7 +309,7 @@ class BellStrike extends PhysicsBase {
   strikeBell() {
     const { stickObj } = this;
     const { body } = stickObj;
-    const impulse = new CANNON.Vec3(5, 0, 0);
+    const impulse = new CANNON.Vec3(6, 0, 0);
     body.applyLocalImpulse(impulse, new CANNON.Vec3());
   }
   // 碰撞检测
