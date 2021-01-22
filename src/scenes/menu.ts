@@ -1,6 +1,5 @@
 import * as THREE from "three";
-import C from "cannon";
-import ky from "kyouka";
+import CANNON from "cannon";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { PhysicsBase } from "./base";
 import { menuFontConfig, menuFontUrl } from "@/consts/menu";
@@ -11,7 +10,7 @@ class LetterObject extends MeshPhysicsObject {
   text!: string;
   constructor(
     mesh: THREE.Mesh,
-    body: C.Body,
+    body: CANNON.Body,
     xOffset: number,
     size: THREE.Vector3,
     text = ""
@@ -28,8 +27,8 @@ class Menu extends PhysicsBase {
   menuItems!: Element[];
   margin!: number;
   offset!: number;
-  groundMat!: C.Material;
-  letterMat!: C.Material;
+  groundMat!: CANNON.Material;
+  letterMat!: CANNON.Material;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
@@ -39,7 +38,7 @@ class Menu extends PhysicsBase {
       far: 100,
     };
     this.updateOrthographicCameraParams();
-    this.gravity = new C.Vec3(0, -50, 0);
+    this.gravity = new CANNON.Vec3(0, -50, 0);
     this.margin = 6;
     const menuItems = Array.from(
       document.querySelectorAll(".menu-list-item a")
@@ -99,15 +98,15 @@ class Menu extends PhysicsBase {
         letterXOffset += size.x;
         const letterYOffset =
           (this.menuItems.length - i - 1) * this.margin - this.offset;
-        const halfExtents = new C.Vec3().copy(size as any).scale(0.5);
+        const halfExtents = new CANNON.Vec3().copy(size as any).scale(0.5);
         const mass = 1 / textContent!.length;
-        const position = new C.Vec3(letterXOffset, letterYOffset, 0);
+        const position = new CANNON.Vec3(letterXOffset, letterYOffset, 0);
         const material = this.letterMat;
         const bodyOptions = { mass, position, material };
         const bodyOffset = mesh.geometry.boundingSphere!.center as any;
         const body = this.createBody(
-          new C.Box(halfExtents),
-          new C.Body(bodyOptions),
+          new CANNON.Box(halfExtents),
+          new CANNON.Body(bodyOptions),
           bodyOffset
         );
         const letterObj = new LetterObject(
@@ -131,12 +130,12 @@ class Menu extends PhysicsBase {
   }
   // 创建地面
   createGround(i: number) {
-    const halfExtents = new C.Vec3(50, 0.1, 50);
+    const halfExtents = new CANNON.Vec3(50, 0.1, 50);
     const mass = 0;
-    const position = new C.Vec3(0, i * this.margin - this.offset, 0);
+    const position = new CANNON.Vec3(0, i * this.margin - this.offset, 0);
     const material = this.groundMat;
     const bodyOptions = { mass, position, material };
-    this.createBody(new C.Box(halfExtents), new C.Body(bodyOptions));
+    this.createBody(new CANNON.Box(halfExtents), new CANNON.Body(bodyOptions));
   }
   // 监听事件
   addListeners() {
@@ -163,7 +162,7 @@ class Menu extends PhysicsBase {
           .copy(face!.normal)
           .negate()
           .multiplyScalar(25);
-        body.applyLocalImpulse(impulse as any, new C.Vec3());
+        body.applyLocalImpulse(impulse as any, new CANNON.Vec3());
       }
     });
   }
@@ -184,12 +183,12 @@ class Menu extends PhysicsBase {
         const letterObj = this.meshPhysicsObjs[letterIdx];
         const nextLetterObj = this.meshPhysicsObjs[nextLetterIdx];
         // 支点A为第二个字母的原点
-        const c = new C.ConeTwistConstraint(
+        const c = new CANNON.ConeTwistConstraint(
           letterObj.body,
           nextLetterObj.body,
           {
-            pivotA: new C.Vec3(letterObj.size.x, 0, 0),
-            pivotB: new C.Vec3(0, 0, 0),
+            pivotA: new CANNON.Vec3(letterObj.size.x, 0, 0),
+            pivotB: new CANNON.Vec3(0, 0, 0),
           }
         );
         c.collideConnected = true;
@@ -199,9 +198,9 @@ class Menu extends PhysicsBase {
   }
   // 创建联系材质
   createContactMaterial() {
-    const groundMat = new C.Material("ground");
-    const letterMat = new C.Material("letter");
-    const contactMat = new C.ContactMaterial(groundMat, letterMat, {
+    const groundMat = new CANNON.Material("ground");
+    const letterMat = new CANNON.Material("letter");
+    const contactMat = new CANNON.ContactMaterial(groundMat, letterMat, {
       friction: 0.01,
     });
     this.world.addContactMaterial(contactMat);

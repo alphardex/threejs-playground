@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import C from "cannon";
+import CANNON from "cannon";
 import gsap from "gsap";
 import ky from "kyouka";
 import {
@@ -42,7 +42,7 @@ class BellStrike extends PhysicsBase {
     };
     this.cameraPosition = new THREE.Vector3(0, 5, -100);
     this.lookAtPosition = new THREE.Vector3(0, 5, 0);
-    this.gravity = new C.Vec3(0, -10, 0);
+    this.gravity = new CANNON.Vec3(0, -10, 0);
     this.isFirstSoundPlayed = false;
     this.loadComplete = false;
   }
@@ -189,10 +189,10 @@ class BellStrike extends PhysicsBase {
     mesh.position.set(0, 4, 0);
     this.scene.add(mesh);
     const body = this.createBody(
-      new C.Sphere(1.05),
-      new C.Body({
+      new CANNON.Sphere(1.05),
+      new CANNON.Body({
         mass: 1.5,
-        position: new C.Vec3(0, 4, 0),
+        position: new CANNON.Vec3(0, 4, 0),
       })
     );
     const bellObj = new MeshPhysicsObject(mesh, body);
@@ -210,10 +210,10 @@ class BellStrike extends PhysicsBase {
     });
     mesh.rotateZ(-ky.deg2rad(90));
     const body = this.createBody(
-      new C.Box(new C.Vec3(2.5, 0.25, 0.25)),
-      new C.Body({
+      new CANNON.Box(new CANNON.Vec3(2.5, 0.25, 0.25)),
+      new CANNON.Body({
         mass: 1,
-        position: new C.Vec3(-5, 3.6, 0),
+        position: new CANNON.Vec3(-5, 3.6, 0),
       })
     );
     const stickObj = new MeshPhysicsObject(mesh, body, true, false);
@@ -228,10 +228,10 @@ class BellStrike extends PhysicsBase {
       material: new THREE.MeshPhongMaterial(),
     });
     const body = this.createBody(
-      new C.Sphere(0.1),
-      new C.Body({
+      new CANNON.Sphere(0.1),
+      new CANNON.Body({
         mass: 0,
-        position: new C.Vec3().copy(mesh.position as any),
+        position: new CANNON.Vec3().copy(mesh.position as any),
       })
     );
     const hingeObj = new MeshPhysicsObject(mesh, body);
@@ -250,14 +250,14 @@ class BellStrike extends PhysicsBase {
   }
   // 添加约束条件
   createConstraints() {
-    const bellConstraint = new C.PointToPointConstraint(
+    const bellConstraint = new CANNON.PointToPointConstraint(
       this.bellObj.body,
-      new C.Vec3(0, 2, 0),
+      new CANNON.Vec3(0, 2, 0),
       this.hingeBellObj.body,
-      new C.Vec3(0, -2, 0)
+      new CANNON.Vec3(0, -2, 0)
     );
     this.world.addConstraint(bellConstraint);
-    const stickConstraint = new C.DistanceConstraint(
+    const stickConstraint = new CANNON.DistanceConstraint(
       this.stickObj.body,
       this.hingeStickObj.body,
       4
@@ -322,8 +322,8 @@ class BellStrike extends PhysicsBase {
   strikeBell() {
     const { stickObj } = this;
     const { body } = stickObj;
-    const impulse = new C.Vec3(5, 0, 0);
-    body.applyLocalImpulse(impulse, new C.Vec3());
+    const impulse = new CANNON.Vec3(5, 0, 0);
+    body.applyLocalImpulse(impulse, new CANNON.Vec3());
   }
   // 碰撞检测
   detectCollision() {

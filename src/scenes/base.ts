@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import C from "cannon";
+import CANNON from "cannon";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -375,27 +375,27 @@ class Base {
 }
 
 class PhysicsBase extends Base {
-  world!: C.World;
-  gravity!: C.Vec3;
+  world!: CANNON.World;
+  gravity!: CANNON.Vec3;
   meshPhysicsObjs!: MeshPhysicsObject[];
   constructor(sel: string, debug = false) {
     super(sel, debug);
-    this.gravity = new C.Vec3(0, 0, 0);
+    this.gravity = new CANNON.Vec3(0, 0, 0);
     this.meshPhysicsObjs = [];
   }
   // 创建物理世界
   createWorld() {
     const { gravity } = this;
-    const world = new C.World();
+    const world = new CANNON.World();
     world.gravity.set(gravity.x, gravity.y, gravity.z);
     this.world = world;
   }
   // 创建物理物体
   createBody(
-    shape: C.Shape,
-    body: C.Body,
-    bodyOffset: C.Vec3 = new C.Vec3(0, 0, 0),
-    orientation: C.Quaternion = new C.Quaternion(0, 0, 0)
+    shape: CANNON.Shape,
+    body: CANNON.Body,
+    bodyOffset: CANNON.Vec3 = new CANNON.Vec3(0, 0, 0),
+    orientation: CANNON.Quaternion = new CANNON.Quaternion(0, 0, 0)
   ) {
     body.addShape(shape, bodyOffset, orientation);
     this.world.addBody(body);
