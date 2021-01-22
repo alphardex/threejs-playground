@@ -52,14 +52,14 @@ class BellStrike extends PhysicsBase {
     this.createRenderer();
     this.addListeners();
     this.createAudioSource();
-    await this.loadAudio(bellAudioUrl);
+    this.createWorld();
+    this.createGround();
     if (this.debug) {
       this.createOrbitControls();
     }
-    this.createWorld();
+    await this.loadAudio(bellAudioUrl);
     await this.createPavilion();
     await this.createBell();
-    await this.createGround();
     await this.createCloud();
     this.createStick();
     this.createHingeBell();
@@ -67,7 +67,7 @@ class BellStrike extends PhysicsBase {
     this.createConstraints();
     this.createLight();
     this.createSky();
-    this.createEffects();
+    // this.createEffects();
     this.setLoop();
     this.loadComplete = true;
     this.moveCamera(() => {
@@ -84,10 +84,10 @@ class BellStrike extends PhysicsBase {
     this.scene.add(dirLight);
     const pointLight1 = new THREE.PointLight(0xffffff, 1, 500);
     pointLight1.position.set(-20, 5, 20);
-    this.scene.add(pointLight1)
+    this.scene.add(pointLight1);
     const pointLight2 = new THREE.PointLight(0xffffff, 1, 500);
     pointLight2.position.set(-20, 5, -20);
-    this.scene.add(pointLight2)
+    this.scene.add(pointLight2);
     const ambiLight = new THREE.AmbientLight(0xffffff, 0.1);
     this.scene.add(ambiLight);
   }
@@ -119,21 +119,8 @@ class BellStrike extends PhysicsBase {
     composer.addPass(new RenderPass(this.scene, this.camera));
     this.composer = composer;
   }
-  // 渲染
-  setLoop() {
-    this.renderer.setAnimationLoop(() => {
-      this.resizeRendererToDisplaySize();
-      this.update();
-      if (this.controls) {
-        this.controls.update();
-      }
-      if (this.composer) {
-        this.composer.render();
-      }
-    });
-  }
   // 创建地面
-  async createGround() {
+  createGround() {
     const planeSize = 200;
     const loader = new THREE.TextureLoader();
     const texture = loader.load(planeTextureUrl);
@@ -265,7 +252,7 @@ class BellStrike extends PhysicsBase {
     this.world.addConstraint(stickConstraint);
   }
   // 移动相机
-  async moveCamera(cb: Function) {
+  moveCamera(cb: Function) {
     const t1 = gsap.timeline();
     t1.to(this.camera.position, {
       z: -30,

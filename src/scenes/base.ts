@@ -2,11 +2,13 @@ import * as THREE from "three";
 import CANNON from "cannon";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
+import { MeshPhysicsObject } from "@/utils/physics";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { MeshPhysicsObject } from "@/utils/physics";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 class Base {
   debug: boolean;
@@ -25,6 +27,8 @@ class Base {
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
   sound!: THREE.Audio;
+  stats!: Stats;
+  composer!: EffectComposer;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -65,6 +69,9 @@ class Base {
     const scene = new THREE.Scene();
     if (this.debug) {
       scene.add(new THREE.AxesHelper());
+      const stats = Stats();
+      this.container!.appendChild(stats.dom);
+      this.stats = stats;
     }
     this.scene = scene;
   }
@@ -369,7 +376,14 @@ class Base {
       if (this.controls) {
         this.controls.update();
       }
-      this.renderer.render(this.scene, this.camera);
+      if (this.stats) {
+        this.stats.update();
+      }
+      if (this.composer) {
+        this.composer.render();
+      } else {
+        this.renderer.render(this.scene, this.camera);
+      }
     });
   }
 }
