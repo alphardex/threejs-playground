@@ -319,7 +319,7 @@ class BellStrike extends PhysicsBase {
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
-        this.bellObj.body.angularDamping = 0.2;
+        this.bellObj.body.angularDamping = 0.99;
         this.stickObj.body.angularDamping = 1;
         this.stickObj.body.linearDamping = 0.4;
         if (this.sound.isPlaying) {
