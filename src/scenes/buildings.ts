@@ -31,7 +31,7 @@ class Buildings extends Base {
   // 创建楼层
   createBuilding(cube: any) {
     const { height, x, z } = cube;
-    const geometry = new THREE.BoxGeometry(0.25, height, 0.25);
+    const geometry = new THREE.BoxBufferGeometry(0.25, height, 0.25);
     const material = new THREE.MeshLambertMaterial({
       color: new THREE.Color("#26c6da"),
     });
@@ -62,7 +62,6 @@ class Buildings extends Base {
     const light2 = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
     light2.position.set(-1.5, 2, 1);
     this.scene.add(light2);
-    this.light = light1;
   }
   // 创建雾
   createFog() {

@@ -21,8 +21,6 @@ class Base {
   cameraPosition!: THREE.Vector3;
   lookAtPosition!: THREE.Vector3;
   renderer!: THREE.WebGLRenderer;
-  box!: THREE.Mesh;
-  light!: THREE.PointLight | THREE.DirectionalLight;
   controls!: OrbitControls;
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
@@ -32,13 +30,6 @@ class Base {
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
-    this.rendererParams = {
-      outputEncoding: THREE.LinearEncoding,
-      config: {
-        alpha: true,
-        antialias: true,
-      },
-    };
     this.perspectiveCameraParams = {
       fov: 75,
       near: 0.1,
@@ -51,6 +42,13 @@ class Base {
     };
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
+    this.rendererParams = {
+      outputEncoding: THREE.LinearEncoding,
+      config: {
+        alpha: true,
+        antialias: true,
+      },
+    };
     this.mousePos = new THREE.Vector2(0, 0);
   }
   // 初始化
@@ -81,8 +79,8 @@ class Base {
     const { fov, near, far } = perspectiveCameraParams;
     const aspect = calcAspect(this.container!);
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
+    camera.position.copy(cameraPosition);
+    camera.lookAt(lookAtPosition);
     this.camera = camera;
   }
   // 创建正交相机
@@ -97,8 +95,8 @@ class Base {
       near,
       far
     );
-    camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    camera.lookAt(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
+    camera.position.copy(cameraPosition);
+    camera.lookAt(lookAtPosition);
     this.camera = camera;
   }
   // 更新正交相机参数
@@ -165,6 +163,84 @@ class Base {
     mesh.position.copy(position);
     container.add(mesh);
     return mesh;
+  }
+  // 创建光源
+  createLight() {
+    const dirLight = new THREE.DirectionalLight(
+      new THREE.Color("#ffffff"),
+      0.5
+    );
+    dirLight.position.set(0, 50, 0);
+    this.scene.add(dirLight);
+    const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.4);
+    this.scene.add(ambiLight);
+  }
+  // 创建轨道控制
+  createOrbitControls() {
+    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    const { lookAtPosition } = this;
+    controls.target.copy(lookAtPosition);
+    controls.update();
+    this.controls = controls;
+  }
+  // 监听事件
+  addListeners() {
+    this.onResize();
+  }
+  // 监听画面缩放
+  onResize() {
+    window.addEventListener("resize", (e) => {
+      if (this.camera instanceof THREE.PerspectiveCamera) {
+        const aspect = calcAspect(this.container!);
+        const camera = this.camera as THREE.PerspectiveCamera;
+        camera.aspect = aspect;
+        camera.updateProjectionMatrix();
+      } else if (this.camera instanceof THREE.OrthographicCamera) {
+        this.updateOrthographicCameraParams();
+        const camera = this.camera as THREE.OrthographicCamera;
+        const {
+          left,
+          right,
+          top,
+          bottom,
+          near,
+          far,
+        } = this.orthographicCameraParams;
+        camera.left = left;
+        camera.right = right;
+        camera.top = top;
+        camera.bottom = bottom;
+        camera.near = near;
+        camera.far = far;
+        camera.updateProjectionMatrix();
+      }
+      this.renderer.setSize(
+        this.container!.clientWidth,
+        this.container!.clientHeight
+      );
+    });
+  }
+  // 动画
+  update() {
+    console.log("animation");
+  }
+  // 渲染
+  setLoop() {
+    this.renderer.setAnimationLoop(() => {
+      this.resizeRendererToDisplaySize();
+      this.update();
+      if (this.controls) {
+        this.controls.update();
+      }
+      if (this.stats) {
+        this.stats.update();
+      }
+      if (this.composer) {
+        this.composer.render();
+      } else {
+        this.renderer.render(this.scene, this.camera);
+      }
+    });
   }
   // 创建文本
   createText(
@@ -242,18 +318,6 @@ class Base {
       });
     });
   }
-  // 创建光源
-  createLight() {
-    const light = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 0.5);
-    light.position.set(0, 50, 0);
-    this.scene.add(light);
-    const ambientLight = new THREE.AmbientLight(
-      new THREE.Color("#ffffff"),
-      0.4
-    );
-    this.scene.add(ambientLight);
-    this.light = light;
-  }
   // 创建点选模型
   createRaycaster() {
     this.raycaster = new THREE.Raycaster();
@@ -315,77 +379,6 @@ class Base {
     const { object } = intersect;
     return target === object ? intersect : null;
   }
-  // 创建轨道控制
-  createOrbitControls() {
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    const { lookAtPosition } = this;
-    controls.target.set(lookAtPosition.x, lookAtPosition.y, lookAtPosition.z);
-    controls.update();
-    this.controls = controls;
-  }
-  // 监听事件
-  addListeners() {
-    this.onResize();
-  }
-  // 监听画面缩放
-  onResize() {
-    window.addEventListener("resize", (e) => {
-      if (this.camera instanceof THREE.PerspectiveCamera) {
-        const aspect = calcAspect(this.container!);
-        const camera = this.camera as THREE.PerspectiveCamera;
-        camera.aspect = aspect;
-        camera.updateProjectionMatrix();
-        this.renderer.setSize(
-          this.container!.clientWidth,
-          this.container!.clientHeight
-        );
-      } else if (this.camera instanceof THREE.OrthographicCamera) {
-        this.updateOrthographicCameraParams();
-        const camera = this.camera as THREE.OrthographicCamera;
-        const {
-          left,
-          right,
-          top,
-          bottom,
-          near,
-          far,
-        } = this.orthographicCameraParams;
-        camera.left = left;
-        camera.right = right;
-        camera.top = top;
-        camera.bottom = bottom;
-        camera.near = near;
-        camera.far = far;
-        camera.updateProjectionMatrix();
-        this.renderer.setSize(
-          this.container!.clientWidth,
-          this.container!.clientHeight
-        );
-      }
-    });
-  }
-  // 动画
-  update() {
-    console.log("animation");
-  }
-  // 渲染
-  setLoop() {
-    this.renderer.setAnimationLoop(() => {
-      this.resizeRendererToDisplaySize();
-      this.update();
-      if (this.controls) {
-        this.controls.update();
-      }
-      if (this.stats) {
-        this.stats.update();
-      }
-      if (this.composer) {
-        this.composer.render();
-      } else {
-        this.renderer.render(this.scene, this.camera);
-      }
-    });
-  }
 }
 
 class PhysicsBase extends Base {
@@ -401,7 +394,7 @@ class PhysicsBase extends Base {
   createWorld() {
     const { gravity } = this;
     const world = new CANNON.World();
-    world.gravity.set(gravity.x, gravity.y, gravity.z);
+    world.gravity.copy(gravity);
     this.world = world;
   }
   // 创建物理物体

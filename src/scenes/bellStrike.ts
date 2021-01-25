@@ -15,6 +15,7 @@ import { PhysicsBase } from "./base";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Sky } from "three/examples/jsm/objects/Sky";
 
 class BellStrike extends PhysicsBase {
@@ -38,7 +39,7 @@ class BellStrike extends PhysicsBase {
     this.perspectiveCameraParams = {
       fov: 45,
       near: 1,
-      far: 1000,
+      far: 100,
     };
     this.cameraPosition = new THREE.Vector3(0, 5, -100);
     this.lookAtPosition = new THREE.Vector3(0, 5, 0);
@@ -116,7 +117,12 @@ class BellStrike extends PhysicsBase {
   // 创建后期处理效果
   createEffects() {
     const composer = new EffectComposer(this.renderer);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    composer.setSize(window.innerWidth, window.innerHeight);
     composer.addPass(new RenderPass(this.scene, this.camera));
+    const bufferSize = new THREE.Vector2(window.innerWidth, window.innerHeight);
+    const unrealBloomPass = new UnrealBloomPass(bufferSize, 0.3, 1, 0.8);
+    composer.addPass(unrealBloomPass);
     this.composer = composer;
   }
   // 创建地面

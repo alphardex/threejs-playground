@@ -14,7 +14,7 @@ export interface Path {
 }
 
 export interface MeshObject {
-  geometry?: THREE.Geometry;
+  geometry?: THREE.Geometry | THREE.BufferGeometry;
   material?: THREE.Material;
   position?: THREE.Vector3;
 }

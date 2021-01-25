@@ -4,6 +4,7 @@ import ky from "kyouka";
 import { Base } from "./base";
 
 class Stack extends Base {
+  box!: THREE.Mesh;
   colorOffset: number; // 颜色偏移量
   boxParams: Record<string, any>; // 方块属性参数
   level: number; // 关卡
