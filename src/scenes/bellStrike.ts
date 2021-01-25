@@ -17,6 +17,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Sky } from "three/examples/jsm/objects/Sky";
+import * as dat from "dat.gui";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
@@ -27,6 +28,7 @@ class BellStrike extends PhysicsBase {
   loadComplete!: boolean;
   showTip!: boolean;
   composer!: EffectComposer;
+  params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.rendererParams = {
@@ -46,6 +48,16 @@ class BellStrike extends PhysicsBase {
     this.gravity = new CANNON.Vec3(0, -10, 0);
     this.isFirstSoundPlayed = false;
     this.loadComplete = false;
+    this.params = {
+      force: 6,
+      bellMass: 1.5,
+      bellAngularDamping: 0.99,
+      stickLinearDamping: 0.4,
+      stickRopeLength: 4,
+      stickY: 3.6,
+      stickLength: 5,
+      hingeStickY: 7.25,
+    };
   }
   async init() {
     this.createScene();
@@ -69,6 +81,9 @@ class BellStrike extends PhysicsBase {
     this.createLight();
     this.createSky();
     // this.createEffects();
+    if (this.debug) {
+      this.createDebugPanel();
+    }
     this.setLoop();
     this.loadComplete = true;
     this.moveCamera(() => {
@@ -184,7 +199,7 @@ class BellStrike extends PhysicsBase {
     const body = this.createBody(
       new CANNON.Sphere(1.05),
       new CANNON.Body({
-        mass: 1.5,
+        mass: this.params.bellMass,
         position: new CANNON.Vec3(0, 4, 0),
       })
     );
@@ -196,7 +211,12 @@ class BellStrike extends PhysicsBase {
   createStick() {
     const loader = new THREE.TextureLoader();
     const mesh = this.createMesh({
-      geometry: new THREE.CylinderGeometry(0.25, 0.25, 5, 100),
+      geometry: new THREE.CylinderGeometry(
+        0.25,
+        0.25,
+        this.params.stickLength,
+        100
+      ),
       material: new THREE.MeshStandardMaterial({
         map: loader.load(woodTextureUrl),
       }),
@@ -206,7 +226,7 @@ class BellStrike extends PhysicsBase {
       new CANNON.Box(new CANNON.Vec3(2.5, 0.25, 0.25)),
       new CANNON.Body({
         mass: 1,
-        position: new CANNON.Vec3(-5, 3.6, 0),
+        position: new CANNON.Vec3(-5, this.params.stickY, 0),
       })
     );
     const stickObj = new MeshPhysicsObject(mesh, body, true, false);
@@ -238,7 +258,9 @@ class BellStrike extends PhysicsBase {
   }
   // 创建木棍悬挂点
   createHingeStick() {
-    const hingeStickObj = this.createHinge(new THREE.Vector3(-5, 7.25, 0));
+    const hingeStickObj = this.createHinge(
+      new THREE.Vector3(-5, this.params.hingeStickY, 0)
+    );
     this.hingeStickObj = hingeStickObj;
   }
   // 添加约束条件
@@ -253,7 +275,7 @@ class BellStrike extends PhysicsBase {
     const stickConstraint = new CANNON.DistanceConstraint(
       this.stickObj.body,
       this.hingeStickObj.body,
-      4
+      this.params.stickRopeLength
     );
     this.world.addConstraint(stickConstraint);
   }
@@ -315,7 +337,7 @@ class BellStrike extends PhysicsBase {
   strikeBell() {
     const { stickObj } = this;
     const { body } = stickObj;
-    const impulse = new CANNON.Vec3(6, 0, 0);
+    const impulse = new CANNON.Vec3(this.params.force, 0, 0);
     body.applyLocalImpulse(impulse, new CANNON.Vec3());
   }
   // 碰撞检测
@@ -325,9 +347,9 @@ class BellStrike extends PhysicsBase {
       const target = e.body;
       const bell = this.bellObj.body;
       if (target === bell) {
-        this.bellObj.body.angularDamping = 0.99;
+        this.bellObj.body.angularDamping = this.params.bellAngularDamping;
         this.stickObj.body.angularDamping = 1;
-        this.stickObj.body.linearDamping = 0.4;
+        this.stickObj.body.linearDamping = this.params.stickLinearDamping;
         if (this.sound.isPlaying) {
           this.sound.stop();
         }
@@ -338,6 +360,33 @@ class BellStrike extends PhysicsBase {
   // 创建提示
   createHint() {
     this.showTip = true;
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI({ width: 320 });
+    gui
+      .add(this.params, "force")
+      .min(0)
+      .max(25)
+      .step(0.1);
+    gui
+      .add(this.params, "bellMass")
+      .min(0)
+      .max(25)
+      .step(0.1)
+      .onChange((value) => {
+        this.bellObj.body.mass = value;
+      });
+    gui
+      .add(this.params, "bellAngularDamping")
+      .min(0)
+      .max(1)
+      .step(0.01);
+    gui
+      .add(this.params, "stickLinearDamping")
+      .min(0)
+      .max(1)
+      .step(0.01);
   }
   // 状态
   get status() {
