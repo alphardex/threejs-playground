@@ -1,5 +1,5 @@
-import CANNON from "cannon";
 import * as THREE from "three";
+import * as CANNON from "cannon-es";
 
 class MeshPhysicsObject {
   mesh!: THREE.Mesh | THREE.Object3D;

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import CANNON from "cannon";
+import * as CANNON from "cannon-es";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { MeshPhysicsObject } from "@/utils/physics";

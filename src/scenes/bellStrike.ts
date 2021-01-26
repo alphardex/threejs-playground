@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import CANNON from "cannon";
+import * as CANNON from "cannon-es";
 import gsap from "gsap";
 import ky from "kyouka";
 import {
@@ -219,8 +219,12 @@ class BellStrike extends PhysicsBase {
       }),
     });
     mesh.rotateZ(-ky.deg2rad(90));
+    const shape = new CANNON.Cylinder(0.25, 0.25, this.params.stickLength);
+    const q = new CANNON.Quaternion();
+    q.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -ky.deg2rad(90));
+    shape.transformAllPoints(new CANNON.Vec3(0, 0, 0), q);
     const body = this.createBody(
-      new CANNON.Box(new CANNON.Vec3(2.5, 0.25, 0.25)),
+      shape,
       new CANNON.Body({
         mass: 1,
         position: new CANNON.Vec3(-5, this.params.stickY, 0),

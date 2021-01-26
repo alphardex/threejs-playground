@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@alphardex/aqua.css": "^1.6.4",
-    "cannon": "^0.6.2",
+    "cannon-es": "^0.16.0",
     "core-js": "^3.6.5",
     "dat.gui": "^0.7.7",
     "gsap": "^3.5.1",
