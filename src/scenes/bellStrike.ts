@@ -169,7 +169,7 @@ class BellStrike extends PhysicsBase {
       material: new THREE.MeshLambertMaterial({
         map: texture,
         side: THREE.DoubleSide,
-      })
+      }),
     });
     plane.rotateX(-ky.deg2rad(90));
     plane.receiveShadow = true;
@@ -205,9 +205,9 @@ class BellStrike extends PhysicsBase {
     mesh.position.set(0, 6.5, 0);
     mesh.scale.set(0.002, 0.002, 0.002);
     mesh.rotateY(ky.deg2rad(90));
-    mesh.children.forEach(item => {
+    mesh.children.forEach((item) => {
       item.castShadow = true;
-    })
+    });
     this.scene.add(mesh);
   }
   // 创建大钟
