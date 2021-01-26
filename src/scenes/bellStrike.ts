@@ -108,7 +108,7 @@ class BellStrike extends PhysicsBase {
     dirLight.shadow.camera.bottom = -d;
     dirLight.shadow.camera.left = -d;
     this.scene.add(dirLight);
-    if (this.debug) {
+    if (this.debug && this.renderer.shadowMap.enabled) {
       const dirLightCameraHelper = new THREE.CameraHelper(
         dirLight.shadow.camera
       );
