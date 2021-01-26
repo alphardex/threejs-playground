@@ -89,12 +89,15 @@ class Menu extends PhysicsBase {
           font,
           ...menuFontConfig,
         };
-        const { mesh, size } = this.createText(
+        const mesh = this.createText(
           letter,
           config,
-          THREE.MeshPhongMaterial,
-          new THREE.Color("#31C9BB")
+          new THREE.MeshPhongMaterial({ color: new THREE.Color("#31C9BB") })
         );
+        const geo = mesh.geometry;
+        geo.computeBoundingBox();
+        geo.computeBoundingSphere();
+        const size = geo.boundingBox!.getSize(new THREE.Vector3());
         letterXOffset += size.x;
         const letterYOffset =
           (this.menuItems.length - i - 1) * this.margin - this.offset;

@@ -7,6 +7,7 @@ import Panorama from "../views/Panorama.vue";
 import Buildings from '../views/Buildings.vue';
 import Menu from '../views/Menu.vue';
 import BellStrike from '../views/BellStrike.vue';
+import FloatWorld from '../views/FloatWorld.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -43,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/bell-strike',
     name: 'BellStrike',
     component: BellStrike
+  },
+  {
+    path: '/float-world',
+    name: 'FloatWorld',
+    component: FloatWorld
   },
   {
     path: "/:pathMatch(.*)*",

@@ -19,6 +19,9 @@
       <li>
         <router-link :to="{ name: 'BellStrike' }">BellStrike</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'FloatWorld' }">FloatWorld</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

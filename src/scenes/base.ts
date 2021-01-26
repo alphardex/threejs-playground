@@ -246,16 +246,13 @@ class Base {
   createText(
     text = "",
     config: THREE.TextGeometryParameters,
-    material: any,
-    color: number | THREE.Color
+    material: THREE.Material = new THREE.MeshStandardMaterial({
+      color: "#ffffff",
+    })
   ) {
-    const mat = new material({ color });
     const geo = new THREE.TextGeometry(text, config);
-    geo.computeBoundingBox();
-    geo.computeBoundingSphere();
-    const size = geo.boundingBox!.getSize(new THREE.Vector3());
-    const mesh = new THREE.Mesh(geo, mat);
-    return { mesh, size };
+    const mesh = new THREE.Mesh(geo, material);
+    return mesh;
   }
   // 创建音效源
   createAudioSource() {
