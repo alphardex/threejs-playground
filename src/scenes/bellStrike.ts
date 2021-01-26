@@ -39,7 +39,7 @@ class BellStrike extends PhysicsBase {
     this.perspectiveCameraParams = {
       fov: 45,
       near: 1,
-      far: 100,
+      far: 1000,
     };
     this.cameraPosition = new THREE.Vector3(0, 5, -100);
     this.lookAtPosition = new THREE.Vector3(0, 5, 0);
@@ -93,8 +93,24 @@ class BellStrike extends PhysicsBase {
   // 创建光
   createLight() {
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    dirLight.position.set(-100, 200, -100);
+    dirLight.position.set(-10, 20, 10);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    dirLight.shadow.camera.near = 1;
+    dirLight.shadow.camera.far = 38;
+    const d = 10;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.bottom = -d;
+    dirLight.shadow.camera.left = -d;
     this.scene.add(dirLight);
+    if (this.debug) {
+      const dirLightCameraHelper = new THREE.CameraHelper(
+        dirLight.shadow.camera
+      );
+      this.scene.add(dirLightCameraHelper);
+    }
     const pointLight1 = new THREE.PointLight(0xffffff, 1, 500);
     pointLight1.position.set(-20, 5, 20);
     this.scene.add(pointLight1);
@@ -150,9 +166,10 @@ class BellStrike extends PhysicsBase {
       material: new THREE.MeshLambertMaterial({
         map: texture,
         side: THREE.DoubleSide,
-      }),
+      })
     });
     plane.rotateX(-ky.deg2rad(90));
+    plane.receiveShadow = true;
   }
   // 创建云朵
   async createCloud() {
@@ -180,9 +197,10 @@ class BellStrike extends PhysicsBase {
   }
   // 创建亭子
   async createPavilion() {
-    const mesh = await this.loadModel(pavilionModelUrl);
-    mesh.position.set(0, 0, 0);
-    mesh.scale.set(2, 2, 2);
+    const model = await this.loadModel(pavilionModelUrl);
+    const mesh = model.children[2];
+    mesh.position.set(0, 6.5, 0);
+    mesh.scale.set(0.002, 0.002, 0.002);
     mesh.rotateY(ky.deg2rad(90));
     this.scene.add(mesh);
   }
@@ -219,6 +237,7 @@ class BellStrike extends PhysicsBase {
       }),
     });
     mesh.rotateZ(-ky.deg2rad(90));
+    mesh.castShadow = true;
     const shape = new CANNON.Cylinder(0.25, 0.25, this.params.stickLength);
     const q = new CANNON.Quaternion();
     q.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -ky.deg2rad(90));
