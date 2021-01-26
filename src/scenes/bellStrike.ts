@@ -60,6 +60,8 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    // 出于移动端性能考虑，这里未开启投影
+    // this.enableShadow()
     this.addListeners();
     this.createAudioSource();
     this.createWorld();
@@ -77,6 +79,7 @@ class BellStrike extends PhysicsBase {
     this.createConstraints();
     this.createLight();
     this.createSky();
+    // 出于移动端性能考虑，这里未开启后期特效
     // this.createEffects();
     if (this.debug) {
       this.createDebugPanel();
@@ -202,6 +205,9 @@ class BellStrike extends PhysicsBase {
     mesh.position.set(0, 6.5, 0);
     mesh.scale.set(0.002, 0.002, 0.002);
     mesh.rotateY(ky.deg2rad(90));
+    mesh.children.forEach(item => {
+      item.castShadow = true;
+    })
     this.scene.add(mesh);
   }
   // 创建大钟
