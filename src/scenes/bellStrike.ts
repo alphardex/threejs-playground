@@ -24,7 +24,6 @@ class BellStrike extends PhysicsBase {
   stickObj!: MeshPhysicsObject;
   hingeBellObj!: MeshPhysicsObject;
   hingeStickObj!: MeshPhysicsObject;
-  isFirstSoundPlayed!: boolean;
   loadComplete!: boolean;
   showTip!: boolean;
   composer!: EffectComposer;
@@ -46,7 +45,6 @@ class BellStrike extends PhysicsBase {
     this.cameraPosition = new THREE.Vector3(0, 5, -100);
     this.lookAtPosition = new THREE.Vector3(0, 5, 0);
     this.gravity = new CANNON.Vec3(0, -10, 0);
-    this.isFirstSoundPlayed = false;
     this.loadComplete = false;
     this.params = {
       force: 6,
@@ -318,13 +316,16 @@ class BellStrike extends PhysicsBase {
     });
     window.addEventListener("touchstart", () => {
       this.onClickStick();
-      // ios audio hack
-      if (!this.isFirstSoundPlayed) {
+    });
+    window.addEventListener(
+      "touchstart",
+      () => {
+        // ios audio hack
         this.sound.play();
         this.sound.stop();
-        this.isFirstSoundPlayed = true;
-      }
-    });
+      },
+      { once: true }
+    );
   }
   // 点击木棍时
   onClickStick() {
