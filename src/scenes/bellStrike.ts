@@ -26,7 +26,6 @@ class BellStrike extends PhysicsBase {
   hingeStickObj!: MeshPhysicsObject;
   loadComplete!: boolean;
   showTip!: boolean;
-  composer!: EffectComposer;
   params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
