@@ -43,7 +43,6 @@ class BellStrike extends PhysicsBase {
     };
     this.cameraPosition = new THREE.Vector3(0, 5, -100);
     this.lookAtPosition = new THREE.Vector3(0, 5, 0);
-    this.gravity = new CANNON.Vec3(0, -10, 0);
     this.loadComplete = false;
     this.params = {
       force: 6,

@@ -384,7 +384,7 @@ class PhysicsBase extends Base {
   meshPhysicsObjs!: MeshPhysicsObject[];
   constructor(sel: string, debug = false) {
     super(sel, debug);
-    this.gravity = new CANNON.Vec3(0, 0, 0);
+    this.gravity = new CANNON.Vec3(0, -9.82, 0);
     this.meshPhysicsObjs = [];
   }
   // 创建物理世界
