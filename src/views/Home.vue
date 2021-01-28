@@ -22,6 +22,9 @@
       <li>
         <router-link :to="{ name: 'FloatWorld' }">FloatWorld</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'GridWave' }">GridWave</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

@@ -8,6 +8,7 @@ import Buildings from '../views/Buildings.vue';
 import Menu from '../views/Menu.vue';
 import BellStrike from '../views/BellStrike.vue';
 import FloatWorld from '../views/FloatWorld.vue';
+import GridWave from '../views/GridWave.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -49,6 +50,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/float-world',
     name: 'FloatWorld',
     component: FloatWorld
+  },
+  {
+    path: '/grid-wave',
+    name: 'GridWave',
+    component: GridWave
   },
   {
     path: "/:pathMatch(.*)*",
