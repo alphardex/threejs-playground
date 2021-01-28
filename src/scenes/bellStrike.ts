@@ -172,6 +172,11 @@ class BellStrike extends PhysicsBase {
     });
     plane.rotateX(-ky.deg2rad(90));
     plane.receiveShadow = true;
+    const body = this.createBody(
+      new CANNON.Plane(),
+      new CANNON.Body({ mass: 0 })
+    );
+    body.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), ky.deg2rad(90));
   }
   // 创建云朵
   async createCloud() {
@@ -217,7 +222,7 @@ class BellStrike extends PhysicsBase {
     mesh.position.set(0, 4, 0);
     this.scene.add(mesh);
     const body = this.createBody(
-      new CANNON.Sphere(1.05),
+      new CANNON.Box(new CANNON.Vec3(1, 2, 1)),
       new CANNON.Body({
         mass: this.params.bellMass,
         position: new CANNON.Vec3(0, 4, 0),
@@ -254,6 +259,7 @@ class BellStrike extends PhysicsBase {
         position: new CANNON.Vec3(-5, this.params.stickY, 0),
       })
     );
+    // body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -ky.deg2rad(90));
     const stickObj = new MeshPhysicsObject(mesh, body, true, false);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
@@ -365,8 +371,8 @@ class BellStrike extends PhysicsBase {
   strikeBell() {
     const { stickObj } = this;
     const { body } = stickObj;
-    const impulse = new CANNON.Vec3(this.params.force, 0, 0);
-    body.applyLocalImpulse(impulse, new CANNON.Vec3());
+    const force = new CANNON.Vec3(this.params.force, 0, 0);
+    body.applyLocalImpulse(force, new CANNON.Vec3(0, 0, 0));
   }
   // 碰撞检测
   detectCollision() {
