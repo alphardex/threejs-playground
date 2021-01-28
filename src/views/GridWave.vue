@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import GridWave from "@/scenes/gridwave";
+import GridWave from "@/scenes/gridWave";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
