@@ -4,11 +4,12 @@ import NotFound from "../views/NotFound.vue";
 import Base from "../views/Base.vue";
 import Stack from "../views/Stack.vue";
 import Panorama from "../views/Panorama.vue";
-import Buildings from '../views/Buildings.vue';
-import Menu from '../views/Menu.vue';
-import BellStrike from '../views/BellStrike.vue';
-import FloatWorld from '../views/FloatWorld.vue';
-import GridWave from '../views/GridWave.vue'
+import Buildings from "../views/Buildings.vue";
+import Menu from "../views/Menu.vue";
+import BellStrike from "../views/BellStrike.vue";
+import FloatWorld from "../views/FloatWorld.vue";
+import GridWave from "../views/GridWave.vue";
+import WavinFlag from "../views/WavinFlag.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -32,29 +33,34 @@ const routes: Array<RouteRecordRaw> = [
     component: Panorama,
   },
   {
-    path: '/buildings',
-    name: 'Buildings',
-    component: Buildings
+    path: "/buildings",
+    name: "Buildings",
+    component: Buildings,
   },
   {
-    path: '/menu',
-    name: 'Menu',
-    component: Menu
+    path: "/menu",
+    name: "Menu",
+    component: Menu,
   },
   {
-    path: '/bell-strike',
-    name: 'BellStrike',
-    component: BellStrike
+    path: "/bell-strike",
+    name: "BellStrike",
+    component: BellStrike,
   },
   {
-    path: '/float-world',
-    name: 'FloatWorld',
-    component: FloatWorld
+    path: "/float-world",
+    name: "FloatWorld",
+    component: FloatWorld,
   },
   {
-    path: '/grid-wave',
-    name: 'GridWave',
-    component: GridWave
+    path: "/grid-wave",
+    name: "GridWave",
+    component: GridWave,
+  },
+  {
+    path: "/wavin-flag",
+    name: "WavinFlag",
+    component: WavinFlag,
   },
   {
     path: "/:pathMatch(.*)*",

@@ -25,6 +25,9 @@
       <li>
         <router-link :to="{ name: 'GridWave' }">GridWave</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'WavinFlag' }">WavinFlag</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
