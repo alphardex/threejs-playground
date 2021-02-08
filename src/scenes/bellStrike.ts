@@ -5,6 +5,8 @@ import ky from "kyouka";
 import {
   bellAudioUrl,
   bellModelUrl,
+  bellTextureUrl,
+  bgTextureUrl,
   cloudModelUrl,
   pavilionModelUrl,
   planeTextureUrl,
@@ -26,6 +28,10 @@ class BellStrike extends PhysicsBase {
   hingeStickObj!: MeshPhysicsObject;
   loadComplete!: boolean;
   showTip!: boolean;
+  startStrike!: boolean;
+  isStriked!: boolean;
+  startWish!: boolean;
+  number!: number;
   params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
@@ -71,19 +77,21 @@ class BellStrike extends PhysicsBase {
     await this.loadAudio(bellAudioUrl);
     await this.createPavilion();
     await this.createBell();
-    await this.createCloud();
+    // await this.createCloud();
     this.createStick();
     this.createHingeBell();
     this.createHingeStick();
     this.createConstraints();
     this.createLight();
-    this.createSky();
+    // this.createSky();
+    this.createBg();
     // 出于移动端性能考虑，这里未开启后期特效
     // this.createEffects();
     if (this.debug) {
       this.createDebugPanel();
     }
     this.setLoop();
+    await ky.sleep(500);
     this.loadComplete = true;
     this.moveCamera(() => {
       this.createRaycaster();
@@ -143,6 +151,12 @@ class BellStrike extends PhysicsBase {
     sun.z = -z;
     uniforms["sunPosition"].value.copy(sun);
     this.scene.add(sky);
+  }
+  // 创建背景
+  createBg() {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(bgTextureUrl);
+    this.scene.background = texture;
   }
   // 创建后期处理效果
   createEffects() {
@@ -216,8 +230,19 @@ class BellStrike extends PhysicsBase {
   }
   // 创建大钟
   async createBell() {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(bellTextureUrl);
     const model = await this.loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
+    mesh.traverse((obj) => {
+      // @ts-ignore
+      if (obj.material) {
+        // @ts-ignore
+        obj.material.map = texture;
+        // @ts-ignore
+        obj.material.color = new THREE.Color("#988259");
+      }
+    });
     mesh.scale.set(0.001, 0.001, 0.001);
     mesh.position.set(0, 4, 0);
     this.scene.add(mesh);
@@ -259,7 +284,6 @@ class BellStrike extends PhysicsBase {
         position: new CANNON.Vec3(-5, this.params.stickY, 0),
       })
     );
-    // body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -ky.deg2rad(90));
     const stickObj = new MeshPhysicsObject(mesh, body, true, false);
     this.stickObj = stickObj;
     this.meshPhysicsObjs.push(stickObj);
@@ -344,10 +368,10 @@ class BellStrike extends PhysicsBase {
   }
   // 监听点击
   onClick() {
-    window.addEventListener("click", () => {
+    window.addEventListener("click", (e) => {
       this.onClickStick();
     });
-    window.addEventListener("touchstart", () => {
+    window.addEventListener("touchstart", (e) => {
       this.onClickStick();
     });
     window.addEventListener(
@@ -363,8 +387,9 @@ class BellStrike extends PhysicsBase {
   // 点击木棍时
   onClickStick() {
     const intersect = this.onChooseIntersect(this.stickObj.mesh);
-    if (intersect) {
+    if (intersect && !this.startStrike) {
       this.strikeBell();
+      this.startStrike = true;
     }
   }
   // 撞钟
@@ -387,13 +412,39 @@ class BellStrike extends PhysicsBase {
         if (this.sound.isPlaying) {
           this.sound.stop();
         }
+        this.sound.setVolume(3);
         this.sound.play();
+        if (!this.isStriked) {
+          this.isStriked = true;
+        }
       }
     });
   }
   // 创建提示
   createHint() {
     this.showTip = true;
+  }
+  // 渲染
+  setLoop() {
+    this.renderer.setAnimationLoop(async () => {
+      this.resizeRendererToDisplaySize();
+      this.update();
+      if (this.controls) {
+        this.controls.update();
+      }
+      if (this.stats) {
+        this.stats.update();
+      }
+      if (this.composer) {
+        this.composer.render();
+      } else {
+        this.renderer.render(this.scene, this.camera);
+      }
+      if (this.isStriked) {
+        await ky.sleep(4000);
+        this.startWish = true;
+      }
+    });
   }
   // 创建调试面板
   createDebugPanel() {
@@ -427,6 +478,9 @@ class BellStrike extends PhysicsBase {
     return {
       loadComplete: this.loadComplete,
       showTip: this.showTip,
+      startWish: this.startWish,
+      startStrike: this.startStrike,
+      number: this.number,
     };
   }
 }

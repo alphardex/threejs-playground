@@ -1,17 +1,20 @@
 <template>
-  <div class="backdrop flex-center" v-if="!status.loadComplete">
-    <div class="flex flex-col items-center space-y-4">
-      <div class="loader"></div>
-      <div class="text-white text-sm">资源加载中</div>
+  <div class="relative w-screen h-screen">
+    <div
+      class="backdrop z-5 flex-center bg-transparent pointer-events-none duration-600"
+      :class="{ 'opacity-0': status.loadComplete }"
+    >
+      <div class="flex flex-col items-center space-y-4">
+        <img src="../assets/bell-strike/loading.gif" class="w-75" alt="" />
+      </div>
     </div>
+    <img
+      src="../assets/bell-strike/hint.png"
+      class="absolute z-1 right-0 top-58vh w-30 transition-opacity duration-300 pointer-events-none blink-1"
+      v-if="status.showTip && !status.startStrike"
+    />
+    <div class="bell-strike w-full h-full bg-temple"></div>
   </div>
-  <div
-    class="absolute z-1 bottom-6 h-center font-bold transition-opacity duration-300"
-    :class="{ 'opacity-0': !status.showTip }"
-  >
-    点击木棒即可撞钟
-  </div>
-  <div class="bell-strike w-full h-full bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">
@@ -30,12 +33,13 @@ export default defineComponent({
       status: {
         loadComplete: false,
         showTip: false,
+        startWish: false,
       },
     });
     const start = async () => {
       const bellStrike = new BellStrike(".bell-strike", true);
       bellStrike.init();
-      while (!state.status.showTip) {
+      while (!state.status.startWish) {
         state.status = bellStrike.status;
         await ky.sleep(100);
       }
@@ -51,4 +55,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>s
+<style lang="scss" scoped>
+.bg-temple {
+  background: url("../assets/bell-strike/bg.png") 0 0 / 100% no-repeat;
+}
+</style>

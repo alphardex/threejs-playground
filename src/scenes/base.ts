@@ -334,7 +334,6 @@ class Base {
     window.addEventListener(
       "touchstart",
       (e: TouchEvent) => {
-        e.preventDefault();
         this.setMousePos(e.touches[0]);
       },
       { passive: false }

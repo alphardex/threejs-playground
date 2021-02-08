@@ -69,6 +69,10 @@ a {
 
 // utils
 
+.top-58vh {
+  top: 58vh;
+}
+
 .opacity-0 {
   opacity: 0 !important;
 }
