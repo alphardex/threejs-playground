@@ -10,6 +10,7 @@ import BellStrike from "../views/BellStrike.vue";
 import FloatWorld from "../views/FloatWorld.vue";
 import GridWave from "../views/GridWave.vue";
 import WavinFlag from "../views/WavinFlag.vue";
+import TwistedShape from "../views/TwistedShape.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,6 +62,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/wavin-flag",
     name: "WavinFlag",
     component: WavinFlag,
+  },
+  {
+    path: "/twisted-shape",
+    name: "TwistedShape",
+    component: TwistedShape,
   },
   {
     path: "/:pathMatch(.*)*",

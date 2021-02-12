@@ -28,6 +28,9 @@
       <li>
         <router-link :to="{ name: 'WavinFlag' }">WavinFlag</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'TwistedShape' }">TwistedShape</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
