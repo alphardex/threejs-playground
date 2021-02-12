@@ -30,7 +30,6 @@ vec3 rotate(vec3 v,vec3 axis,float angle){
 }
 
 // https://github.com/glslify/glsl-easings
-
 float qinticInOut(float t){
     return t<.5
     ?+16.*pow(t,5.)
