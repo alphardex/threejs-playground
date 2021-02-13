@@ -34,8 +34,8 @@ class TwistedShape extends Base {
       fragmentShader: twistedShapeFragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uVelocity: { value: 1 },
-        uAxis: { value: new THREE.Vector3(1, 0, 0) },
+        uVelocity: { value: 0.5 },
+        uAxis: { value: new THREE.Vector3(0, 1, 0) },
         uDistortion: { value: 3 },
       },
     });
