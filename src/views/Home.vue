@@ -31,6 +31,11 @@
       <li>
         <router-link :to="{ name: 'TwistedShape' }">TwistedShape</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'TravellingParticles' }"
+          >TravellingParticles</router-link
+        >
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

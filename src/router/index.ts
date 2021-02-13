@@ -11,6 +11,7 @@ import FloatWorld from "../views/FloatWorld.vue";
 import GridWave from "../views/GridWave.vue";
 import WavinFlag from "../views/WavinFlag.vue";
 import TwistedShape from "../views/TwistedShape.vue";
+import TravellingParticles from "../views/TravellingParticles.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -67,6 +68,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/twisted-shape",
     name: "TwistedShape",
     component: TwistedShape,
+  },
+  {
+    path: "/travelling-particles",
+    name: "TravellingParticles",
+    component: TravellingParticles,
   },
   {
     path: "/:pathMatch(.*)*",
