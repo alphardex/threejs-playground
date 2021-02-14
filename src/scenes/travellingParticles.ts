@@ -7,32 +7,33 @@ import travellingParticlesVertexShader from "../shaders/travellingParticles/vert
 import travellingParticlesFragmentShader from "../shaders/travellingParticles/fragment.glsl";
 
 interface Line {
-  pointCount: number;
   points: THREE.Vector3[];
+  pointCount: number;
   currentPos: number;
-  speed: number;
 }
 
 class TravellingParticles extends Base {
-  clock!: THREE.Clock;
   geometry!: THREE.BufferGeometry;
   material!: THREE.ShaderMaterial;
   lines!: Line[];
+  pointSize!: number;
   positions!: Float32Array;
   opacitys!: Float32Array;
   activePointCount!: number;
   activePointPerLine!: number;
   opacityRate!: number;
+  pointSpeed!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
-    this.clock = new THREE.Clock();
     this.perspectiveCameraParams.near = 100;
     this.perspectiveCameraParams.far = 1000;
-    this.cameraPosition = new THREE.Vector3(0, 0, 600);
+    this.cameraPosition = new THREE.Vector3(0, 0, 400);
     this.lines = [];
+    this.pointSize = 4;
     this.activePointCount = 0;
     this.activePointPerLine = 100;
     this.opacityRate = 5;
+    this.pointSpeed = 1;
   }
   // 初始化
   init() {
@@ -49,32 +50,32 @@ class TravellingParticles extends Base {
   // 获取svg路径的点线数据
   getSvgPathsPointLineData() {
     const paths = ([
-      ...document.querySelectorAll(".path"),
+      ...document.querySelectorAll(".land"),
     ] as unknown) as SVGPathElement[];
     paths.forEach((path) => {
       const pathLength = path.getTotalLength();
-      const pointSize = 5;
-      const pointCount = Math.floor(pathLength / pointSize);
+      const pointCount = Math.floor(pathLength / this.pointSize);
       const points = [];
       for (let i = 0; i < pointCount; i++) {
         // 获取点距离路径原点的距离，进而获取其坐标
         const distance = (pathLength * i) / pointCount;
         const point = path.getPointAtLength(distance);
-        let { x, y } = point;
-        // 使点在屏幕正中央
-        x -= 1024;
-        y -= 512;
-        const randX = ky.randomNumberInRange(-2.5, 2.5);
-        const randY = ky.randomNumberInRange(-2.5, 2.5);
-        x += randX;
-        y += randY;
-        points.push(new THREE.Vector3(x, y, 0));
+        if (point) {
+          let { x, y } = point;
+          // 使点在屏幕正中央
+          x -= 480;
+          y -= 270;
+          const randX = ky.randomNumberInRange(-2.5, 2.5);
+          const randY = ky.randomNumberInRange(-2.5, 2.5);
+          x += randX;
+          y += randY;
+          points.push(new THREE.Vector3(x, y, 0));
+        }
       }
       const line = {
-        pointCount,
         points,
+        pointCount,
         currentPos: 0,
-        speed: 1,
       } as Line;
       this.lines.push(line);
     });
@@ -100,11 +101,6 @@ class TravellingParticles extends Base {
     const material = new THREE.ShaderMaterial({
       vertexShader: travellingParticlesVertexShader,
       fragmentShader: travellingParticlesFragmentShader,
-      uniforms: {
-        uTime: {
-          value: 0,
-        },
-      },
       side: THREE.DoubleSide,
       transparent: true,
       depthTest: true,
@@ -117,26 +113,26 @@ class TravellingParticles extends Base {
   }
   // 动画
   update() {
-    const elapsedTime = this.clock.getElapsedTime();
     if (this.geometry && this.material) {
       let activePoint = 0;
       this.lines.forEach((line) => {
         // 使线的前n个点动起来
-        line.currentPos += line.speed;
+        line.currentPos += this.pointSpeed;
         line.currentPos = line.currentPos % line.pointCount;
         for (let i = 0; i < this.activePointPerLine; i++) {
           const currentIndex = (line.currentPos + i) % line.pointCount;
           const point = line.points[currentIndex];
-          const { x, y, z } = point;
-          this.positions.set([x, y, z], activePoint * 3);
-          this.opacitys.set(
-            [i / (this.activePointPerLine * this.opacityRate * 2)],
-            activePoint
-          );
-          activePoint++;
+          if (point) {
+            const { x, y, z } = point;
+            this.positions.set([x, y, z], activePoint * 3);
+            this.opacitys.set(
+              [i / (this.activePointPerLine * this.opacityRate * 2)],
+              activePoint
+            );
+            activePoint++;
+          }
         }
       });
-      this.material.uniforms.uTime.value = elapsedTime;
       this.geometry.attributes.position.needsUpdate = true;
     }
   }
