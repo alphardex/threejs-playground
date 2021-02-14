@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import ky from "kyouka";
+import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
 import travellingParticlesVertexShader from "../shaders/travellingParticles/vertex.glsl";
@@ -12,17 +13,23 @@ interface Line {
   currentPos: number;
 }
 
+interface Params {
+  activePointPerLine: number;
+  opacityRate: number;
+  pointSpeed: number;
+  pointColor: string;
+}
+
 class TravellingParticles extends Base {
   geometry!: THREE.BufferGeometry;
   material!: THREE.ShaderMaterial;
+  points!: THREE.Points | null;
   lines!: Line[];
   pointSize!: number;
   positions!: Float32Array;
   opacitys!: Float32Array;
   activePointCount!: number;
-  activePointPerLine!: number;
-  opacityRate!: number;
-  pointSpeed!: number;
+  params!: Params;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.perspectiveCameraParams.near = 100;
@@ -31,9 +38,12 @@ class TravellingParticles extends Base {
     this.lines = [];
     this.pointSize = 4;
     this.activePointCount = 0;
-    this.activePointPerLine = 100;
-    this.opacityRate = 5;
-    this.pointSpeed = 1;
+    this.params = {
+      activePointPerLine: 50,
+      opacityRate: 7.5,
+      pointSpeed: 1,
+      pointColor: "#4ec0e9",
+    };
   }
   // 初始化
   init() {
@@ -44,6 +54,7 @@ class TravellingParticles extends Base {
     this.createPoints();
     this.createLight();
     this.createOrbitControls();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -79,10 +90,14 @@ class TravellingParticles extends Base {
       } as Line;
       this.lines.push(line);
     });
-    this.activePointCount = this.lines.length * 100;
   }
   // 创建点
   createPoints() {
+    if (this.points) {
+      this.scene.remove(this.points);
+      this.points = null;
+    }
+    this.activePointCount = this.lines.length * this.params.activePointPerLine;
     // const geometry = new THREE.PlaneBufferGeometry(1, 1, 10, 10);
     const geometry = new THREE.BufferGeometry();
     const lineCoords = this.lines.map((line) =>
@@ -92,7 +107,7 @@ class TravellingParticles extends Base {
     const positions = new Float32Array(pointCoords.flat(1) as []);
     this.positions = positions;
     const opacitys = new Float32Array(positions.length).map(
-      () => Math.random() / this.opacityRate
+      () => Math.random() / this.params.opacityRate
     );
     this.opacitys = opacitys;
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -106,27 +121,38 @@ class TravellingParticles extends Base {
       depthTest: true,
       depthWrite: true,
       blending: THREE.AdditiveBlending,
+      uniforms: {
+        uColor: {
+          value: new THREE.Color(this.params.pointColor),
+        },
+      },
     });
     this.material = material;
     const points = new THREE.Points(geometry, material);
     this.scene.add(points);
+    this.points = points;
   }
   // 动画
   update() {
-    if (this.geometry && this.material) {
+    if (this.points) {
       let activePoint = 0;
       this.lines.forEach((line) => {
         // 使线的前n个点动起来
-        line.currentPos += this.pointSpeed;
+        line.currentPos += this.params.pointSpeed;
         line.currentPos = line.currentPos % line.pointCount;
-        for (let i = 0; i < this.activePointPerLine; i++) {
+        for (let i = 0; i < this.params.activePointPerLine; i++) {
           const currentIndex = (line.currentPos + i) % line.pointCount;
           const point = line.points[currentIndex];
           if (point) {
             const { x, y, z } = point;
             this.positions.set([x, y, z], activePoint * 3);
             this.opacitys.set(
-              [i / (this.activePointPerLine * this.opacityRate * 2)],
+              [
+                i /
+                  (this.params.activePointPerLine *
+                    this.params.opacityRate *
+                    2),
+              ],
               activePoint
             );
             activePoint++;
@@ -135,6 +161,21 @@ class TravellingParticles extends Base {
       });
       this.geometry.attributes.position.needsUpdate = true;
     }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    gui
+      .add(this.params, "opacityRate")
+      .min(5)
+      .max(10)
+      .step(0.1)
+      .onFinishChange(() => {
+        this.createPoints();
+      });
+    gui.addColor(this.params, "pointColor").onChange(() => {
+      this.material.uniforms.uColor.value.set(this.params.pointColor);
+    });
   }
 }
 
