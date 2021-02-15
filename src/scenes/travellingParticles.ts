@@ -21,6 +21,7 @@ interface Params {
   mapOffsetY: number;
   activePointPerLine: number;
   opacityRate: number;
+  pointSize: number;
   pointSpeed: number;
   pointColor: string;
 }
@@ -51,6 +52,7 @@ class TravellingParticles extends Base {
       mapOffsetY: 285,
       activePointPerLine: 50,
       opacityRate: 7.5,
+      pointSize: 30000,
       pointSpeed: 1,
       pointColor: "#4ec0e9",
     };
@@ -152,6 +154,9 @@ class TravellingParticles extends Base {
       depthWrite: true,
       blending: THREE.AdditiveBlending,
       uniforms: {
+        uSize: {
+          value: this.params.pointSize,
+        },
         uColor: {
           value: new THREE.Color(this.params.pointColor),
         },
@@ -237,6 +242,12 @@ class TravellingParticles extends Base {
       .onFinishChange(() => {
         this.createPoints();
       });
+    gui
+      .add(this.material.uniforms.uSize, "value")
+      .min(0)
+      .max(100000)
+      .step(1)
+      .name("pointSize");
     gui.addColor(this.params, "pointColor").onChange(() => {
       this.material.uniforms.uColor.value.set(this.params.pointColor);
     });
