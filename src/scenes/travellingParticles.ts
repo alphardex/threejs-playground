@@ -6,6 +6,7 @@ import { Base } from "./base";
 import travellingParticlesVertexShader from "../shaders/travellingParticles/vertex.glsl";
 // @ts-ignore
 import travellingParticlesFragmentShader from "../shaders/travellingParticles/fragment.glsl";
+import { mapTextureUrl } from "@/consts/travellingParticles";
 
 interface Line {
   points: THREE.Vector3[];
@@ -14,6 +15,10 @@ interface Line {
 }
 
 interface Params {
+  mapSizeX: number;
+  mapSizeY: number;
+  mapOffsetX: number;
+  mapOffsetY: number;
   activePointPerLine: number;
   opacityRate: number;
   pointSpeed: number;
@@ -29,6 +34,7 @@ class TravellingParticles extends Base {
   positions!: Float32Array;
   opacitys!: Float32Array;
   activePointCount!: number;
+  map!: THREE.Mesh;
   params!: Params;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -39,6 +45,10 @@ class TravellingParticles extends Base {
     this.pointSize = 4;
     this.activePointCount = 0;
     this.params = {
+      mapSizeX: 775,
+      mapSizeY: 574,
+      mapOffsetX: 388,
+      mapOffsetY: 285,
       activePointPerLine: 50,
       opacityRate: 7.5,
       pointSpeed: 1,
@@ -50,6 +60,7 @@ class TravellingParticles extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.createMap();
     this.getSvgPathsPointLineData();
     this.createPoints();
     this.createLight();
@@ -58,10 +69,29 @@ class TravellingParticles extends Base {
     this.addListeners();
     this.setLoop();
   }
+  // 创建地图
+  createMap() {
+    if (this.map) {
+      this.scene.remove(this.map);
+    }
+    const loader = new THREE.TextureLoader();
+    const mapTexture = loader.load(mapTextureUrl);
+    const map = this.createMesh({
+      geometry: new THREE.PlaneBufferGeometry(
+        this.params.mapSizeX,
+        this.params.mapSizeY
+      ),
+      material: new THREE.MeshBasicMaterial({
+        map: mapTexture,
+      }),
+    });
+    this.map = map;
+  }
   // 获取svg路径的点线数据
   getSvgPathsPointLineData() {
+    this.lines = [];
     const paths = ([
-      ...document.querySelectorAll(".land"),
+      ...document.querySelectorAll(".svg-map path"),
     ] as unknown) as SVGPathElement[];
     paths.forEach((path) => {
       const pathLength = path.getTotalLength();
@@ -74,10 +104,11 @@ class TravellingParticles extends Base {
         if (point) {
           let { x, y } = point;
           // 使点在屏幕正中央
-          x -= 480;
-          y -= 270;
-          const randX = ky.randomNumberInRange(-2.5, 2.5);
-          const randY = ky.randomNumberInRange(-2.5, 2.5);
+          x -= this.params.mapOffsetX;
+          y -= this.params.mapOffsetY;
+          y *= -1;
+          const randX = ky.randomNumberInRange(-1.5, 1.5);
+          const randY = ky.randomNumberInRange(-1.5, 1.5);
           x += randX;
           y += randY;
           points.push(new THREE.Vector3(x, y, 0));
@@ -98,7 +129,6 @@ class TravellingParticles extends Base {
       this.points = null;
     }
     this.activePointCount = this.lines.length * this.params.activePointPerLine;
-    // const geometry = new THREE.PlaneBufferGeometry(1, 1, 10, 10);
     const geometry = new THREE.BufferGeometry();
     const lineCoords = this.lines.map((line) =>
       line.points.map((point) => [point.x, point.y, point.z])
@@ -165,6 +195,40 @@ class TravellingParticles extends Base {
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
+    gui
+      .add(this.params, "mapSizeX")
+      .min(0)
+      .max(1024)
+      .step(1)
+      .onFinishChange(() => {
+        this.createMap();
+      });
+    gui
+      .add(this.params, "mapSizeY")
+      .min(0)
+      .max(1024)
+      .step(1)
+      .onFinishChange(() => {
+        this.createMap();
+      });
+    gui
+      .add(this.params, "mapOffsetX")
+      .min(0)
+      .max(1024)
+      .step(1)
+      .onFinishChange(() => {
+        this.getSvgPathsPointLineData();
+        this.createPoints();
+      });
+    gui
+      .add(this.params, "mapOffsetY")
+      .min(0)
+      .max(1024)
+      .step(1)
+      .onFinishChange(() => {
+        this.getSvgPathsPointLineData();
+        this.createPoints();
+      });
     gui
       .add(this.params, "opacityRate")
       .min(5)

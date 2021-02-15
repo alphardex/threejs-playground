@@ -1,7 +1,7 @@
 <template>
   <div class="travelling-particles w-full h-full bg-black"></div>
   <!--  地图来源：https://www.amcharts.com/svg-maps/  -->
-  <svg class="hidden" xmlns="http://www.w3.org/2000/svg">
+  <svg class="svg-map hidden" xmlns="http://www.w3.org/2000/svg">
     <path
       id="CN-34"
       title="Anhui"
