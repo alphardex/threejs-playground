@@ -51,7 +51,7 @@ class TravellingParticles extends Base {
       mapOffsetX: 388,
       mapOffsetY: 285,
       activePointPerLine: 50,
-      opacityRate: 7.5,
+      opacityRate: 15,
       pointSize: 30000,
       pointSpeed: 1,
       pointColor: "#4ec0e9",
@@ -62,20 +62,29 @@ class TravellingParticles extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createMap();
-    this.getSvgPathsPointLineData();
-    this.createPoints();
+    this.createEverything();
     this.createLight();
     this.createOrbitControls();
     this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
-  // 创建地图
-  createMap() {
+  // 创建一切
+  createEverything() {
     if (this.map) {
       this.scene.remove(this.map);
     }
+    this.lines = [];
+    if (this.points) {
+      this.scene.remove(this.points);
+      this.points = null;
+    }
+    this.createMap();
+    this.getSvgPathsPointLineData();
+    this.createPoints();
+  }
+  // 创建地图
+  createMap() {
     const loader = new THREE.TextureLoader();
     const mapTexture = loader.load(mapTextureUrl);
     const map = this.createMesh({
@@ -85,13 +94,13 @@ class TravellingParticles extends Base {
       ),
       material: new THREE.MeshBasicMaterial({
         map: mapTexture,
+        side: THREE.DoubleSide,
       }),
     });
     this.map = map;
   }
   // 获取svg路径的点线数据
   getSvgPathsPointLineData() {
-    this.lines = [];
     const paths = ([
       ...document.querySelectorAll(".svg-map path"),
     ] as unknown) as SVGPathElement[];
@@ -108,7 +117,9 @@ class TravellingParticles extends Base {
           // 使点在屏幕正中央
           x -= this.params.mapOffsetX;
           y -= this.params.mapOffsetY;
+          // 翻转y轴
           y *= -1;
+          // 加点随机性
           const randX = ky.randomNumberInRange(-1.5, 1.5);
           const randY = ky.randomNumberInRange(-1.5, 1.5);
           x += randX;
@@ -126,17 +137,14 @@ class TravellingParticles extends Base {
   }
   // 创建点
   createPoints() {
-    if (this.points) {
-      this.scene.remove(this.points);
-      this.points = null;
-    }
     this.activePointCount = this.lines.length * this.params.activePointPerLine;
     const geometry = new THREE.BufferGeometry();
-    const lineCoords = this.lines.map((line) =>
-      line.points.map((point) => [point.x, point.y, point.z])
-    );
-    const pointCoords = lineCoords.flat(1).slice(0, this.activePointCount);
-    const positions = new Float32Array(pointCoords.flat(1) as []);
+    const pointCoords = this.lines
+      .map((line) => line.points.map((point) => [point.x, point.y, point.z]))
+      .flat(1)
+      .slice(0, this.activePointCount)
+      .flat(1);
+    const positions = new Float32Array(pointCoords);
     this.positions = positions;
     const opacitys = new Float32Array(positions.length).map(
       () => Math.random() / this.params.opacityRate
@@ -174,20 +182,15 @@ class TravellingParticles extends Base {
       this.lines.forEach((line) => {
         // 使线的前n个点动起来
         line.currentPos += this.params.pointSpeed;
-        line.currentPos = line.currentPos % line.pointCount;
         for (let i = 0; i < this.params.activePointPerLine; i++) {
           const currentIndex = (line.currentPos + i) % line.pointCount;
+          // 将数据同步到着色器上
           const point = line.points[currentIndex];
           if (point) {
             const { x, y, z } = point;
             this.positions.set([x, y, z], activePoint * 3);
             this.opacitys.set(
-              [
-                i /
-                  (this.params.activePointPerLine *
-                    this.params.opacityRate *
-                    2),
-              ],
+              [i / (this.params.activePointPerLine * this.params.opacityRate)],
               activePoint
             );
             activePoint++;
@@ -206,7 +209,7 @@ class TravellingParticles extends Base {
       .max(1024)
       .step(1)
       .onFinishChange(() => {
-        this.createMap();
+        this.createEverything();
       });
     gui
       .add(this.params, "mapSizeY")
@@ -214,7 +217,7 @@ class TravellingParticles extends Base {
       .max(1024)
       .step(1)
       .onFinishChange(() => {
-        this.createMap();
+        this.createEverything();
       });
     gui
       .add(this.params, "mapOffsetX")
@@ -222,8 +225,7 @@ class TravellingParticles extends Base {
       .max(1024)
       .step(1)
       .onFinishChange(() => {
-        this.getSvgPathsPointLineData();
-        this.createPoints();
+        this.createEverything();
       });
     gui
       .add(this.params, "mapOffsetY")
@@ -231,16 +233,15 @@ class TravellingParticles extends Base {
       .max(1024)
       .step(1)
       .onFinishChange(() => {
-        this.getSvgPathsPointLineData();
-        this.createPoints();
+        this.createEverything();
       });
     gui
       .add(this.params, "opacityRate")
-      .min(5)
-      .max(10)
+      .min(10)
+      .max(20)
       .step(0.1)
       .onFinishChange(() => {
-        this.createPoints();
+        this.createEverything();
       });
     gui
       .add(this.material.uniforms.uSize, "value")
