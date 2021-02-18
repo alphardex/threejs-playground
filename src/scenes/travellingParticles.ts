@@ -6,7 +6,6 @@ import { Base } from "./base";
 import travellingParticlesVertexShader from "../shaders/travellingParticles/vertex.glsl";
 // @ts-ignore
 import travellingParticlesFragmentShader from "../shaders/travellingParticles/fragment.glsl";
-import { mapTextureUrl } from "@/consts/travellingParticles";
 
 interface Line {
   points: THREE.Vector3[];
@@ -15,8 +14,6 @@ interface Line {
 }
 
 interface Params {
-  mapSizeX: number;
-  mapSizeY: number;
   mapOffsetX: number;
   mapOffsetY: number;
   activePointPerLine: number;
@@ -41,16 +38,14 @@ class TravellingParticles extends Base {
     super(sel, debug);
     this.perspectiveCameraParams.near = 100;
     this.perspectiveCameraParams.far = 1000;
-    this.cameraPosition = new THREE.Vector3(0, 0, 400);
+    this.cameraPosition = new THREE.Vector3(0, 0, 600);
     this.lines = [];
     this.pointSize = 4;
     this.activePointCount = 0;
     this.params = {
-      mapSizeX: 775,
-      mapSizeY: 574,
-      mapOffsetX: 388,
-      mapOffsetY: 285,
-      activePointPerLine: 50,
+      mapOffsetX: -80,
+      mapOffsetY: 160,
+      activePointPerLine: 100,
       opacityRate: 15,
       pointSize: 30000,
       pointSpeed: 1,
@@ -79,30 +74,13 @@ class TravellingParticles extends Base {
       this.scene.remove(this.points);
       this.points = null;
     }
-    this.createMap();
     this.getSvgPathsPointLineData();
     this.createPoints();
-  }
-  // 创建地图
-  createMap() {
-    const loader = new THREE.TextureLoader();
-    const mapTexture = loader.load(mapTextureUrl);
-    const map = this.createMesh({
-      geometry: new THREE.PlaneBufferGeometry(
-        this.params.mapSizeX,
-        this.params.mapSizeY
-      ),
-      material: new THREE.MeshBasicMaterial({
-        map: mapTexture,
-        side: THREE.DoubleSide,
-      }),
-    });
-    this.map = map;
   }
   // 获取svg路径的点线数据
   getSvgPathsPointLineData() {
     const paths = ([
-      ...document.querySelectorAll(".svg-map path"),
+      ...document.querySelectorAll(".svg-particles path"),
     ] as unknown) as SVGPathElement[];
     paths.forEach((path) => {
       const pathLength = path.getTotalLength();
@@ -117,8 +95,6 @@ class TravellingParticles extends Base {
           // 使点在屏幕正中央
           x -= this.params.mapOffsetX;
           y -= this.params.mapOffsetY;
-          // 翻转y轴
-          y *= -1;
           // 加点随机性
           const randX = ky.randomNumberInRange(-1.5, 1.5);
           const randY = ky.randomNumberInRange(-1.5, 1.5);
@@ -203,38 +179,6 @@ class TravellingParticles extends Base {
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
-    gui
-      .add(this.params, "mapSizeX")
-      .min(0)
-      .max(1024)
-      .step(1)
-      .onFinishChange(() => {
-        this.createEverything();
-      });
-    gui
-      .add(this.params, "mapSizeY")
-      .min(0)
-      .max(1024)
-      .step(1)
-      .onFinishChange(() => {
-        this.createEverything();
-      });
-    gui
-      .add(this.params, "mapOffsetX")
-      .min(0)
-      .max(1024)
-      .step(1)
-      .onFinishChange(() => {
-        this.createEverything();
-      });
-    gui
-      .add(this.params, "mapOffsetY")
-      .min(0)
-      .max(1024)
-      .step(1)
-      .onFinishChange(() => {
-        this.createEverything();
-      });
     gui
       .add(this.params, "opacityRate")
       .min(10)
