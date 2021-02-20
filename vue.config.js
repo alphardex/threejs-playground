@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 module.exports = {
   productionSourceMap: false,
   publicPath: "/",
@@ -8,5 +10,10 @@ module.exports = {
       .use("raw-loader")
       .loader("raw-loader")
       .end();
+    config.plugin("provide").use(webpack.ProvidePlugin, [
+      {
+        THREE: "three",
+      },
+    ]);
   },
 };

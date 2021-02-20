@@ -115,10 +115,12 @@ class Base {
     };
   }
   // 创建渲染
-  createRenderer() {
+  createRenderer(useWebGL1 = false) {
     const { rendererParams } = this;
     const { outputEncoding, config } = rendererParams;
-    const renderer = new THREE.WebGLRenderer(config);
+    const renderer = !useWebGL1
+      ? new THREE.WebGLRenderer(config)
+      : new THREE.WebGL1Renderer(config);
     renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
     renderer.outputEncoding = outputEncoding;
     this.resizeRendererToDisplaySize();
