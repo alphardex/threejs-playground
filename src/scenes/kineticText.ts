@@ -18,22 +18,29 @@ class KineticText extends Base {
   rt!: THREE.WebGLRenderTarget;
   rtScene!: THREE.Scene;
   rtCamera!: THREE.PerspectiveCamera;
+  clock: THREE.Clock;
+  material!: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
-    this.cameraPosition = new THREE.Vector3(0, 0, 5);
+    this.cameraPosition = new THREE.Vector3(0, 0, 40);
+    this.clock = new THREE.Clock();
   }
   // 初始化
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer(true);
-    await this.createFontText("ENDLESS");
-    this.createRenderTarget();
-    this.createObj();
+    await this.createKineticText("ALPHARDEX");
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
+  }
+  // 创建动态文字
+  async createKineticText(text: string) {
+    await this.createFontText(text);
+    this.createRenderTarget();
+    this.createTextContainer();
   }
   // 加载字体文本
   loadFontText(text: string): any {
@@ -66,9 +73,9 @@ class KineticText extends Base {
       geometry: fontGeo,
       material: fontMat,
     });
-    textMesh.position.set(-0.965, -0.275, 0);
+    textMesh.position.set(-0.965, -0.525, 0);
     textMesh.rotation.set(ky.deg2rad(180), 0, 0);
-    textMesh.scale.set(0.008, 0.02, 1);
+    textMesh.scale.set(0.008, 0.025, 1);
     this.textMesh = textMesh;
   }
   // 创建渲染目标
@@ -85,9 +92,10 @@ class KineticText extends Base {
     rtScene.add(this.textMesh);
     this.rtScene = rtScene;
   }
-  // 创建物体
-  createObj() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+  // 创建字体的容器
+  createTextContainer() {
+    // const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.TorusKnotGeometry(9, 3, 768, 3, 4, 3);
     const material = new THREE.ShaderMaterial({
       vertexShader: kineticTextVertexShader,
       fragmentShader: kineticTextFragmentShader,
@@ -95,11 +103,18 @@ class KineticText extends Base {
         uTime: {
           value: 0,
         },
+        uVelocity: {
+          value: 0.5,
+        },
         uTexture: {
           value: this.rt.texture,
         },
+        uShadow: {
+          value: 5,
+        },
       },
     });
+    this.material = material;
     this.createMesh({
       geometry,
       material,
@@ -111,6 +126,10 @@ class KineticText extends Base {
       this.renderer.setRenderTarget(this.rt);
       this.renderer.render(this.rtScene, this.rtCamera);
       this.renderer.setRenderTarget(null);
+    }
+    const elapsedTime = this.clock.getElapsedTime();
+    if (this.material) {
+      this.material.uniforms.uTime.value = elapsedTime;
     }
   }
 }

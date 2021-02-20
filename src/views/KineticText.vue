@@ -1,5 +1,5 @@
 <template>
-  <div class="kinetic-text w-full h-full bg-black"></div>
+  <div class="kinetic-text w-full h-full bg-blue-1"></div>
 </template>
 
 <script lang="ts">
