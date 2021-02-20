@@ -36,6 +36,9 @@
           >TravellingParticles</router-link
         >
       </li>
+      <li>
+        <router-link :to="{ name: 'KineticText' }">KineticText</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
