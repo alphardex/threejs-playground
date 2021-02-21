@@ -17,12 +17,27 @@ import kineticTextTorusKnotFragmentShader from "../shaders/kineticText/torusKnot
 import kineticTextSphereVertexShader from "../shaders/kineticText/sphere/vertex.glsl";
 // @ts-ignore
 import kineticTextSphereFragmentShader from "../shaders/kineticText/sphere/fragment.glsl";
+// @ts-ignore
+import kineticTextPlaneVertexShader from "../shaders/kineticText/plane/vertex.glsl";
+// @ts-ignore
+import kineticTextPlaneFragmentShader from "../shaders/kineticText/plane/fragment.glsl";
+// @ts-ignore
+import kineticTextTorusVertexShader from "../shaders/kineticText/torus/vertex.glsl";
+// @ts-ignore
+import kineticTextTorusFragmentShader from "../shaders/kineticText/torus/fragment.glsl";
+// @ts-ignore
+import kineticTextCylinderVertexShader from "../shaders/kineticText/cylinder/vertex.glsl";
+// @ts-ignore
+import kineticTextCylinderFragmentShader from "../shaders/kineticText/cylinder/fragment.glsl";
 
 interface Params {
   meshName: string;
   velocity: number;
   shadow: number;
   color: string;
+  frequency: number;
+  text: string;
+  cameraZ: number;
 }
 
 class KineticText extends Base {
@@ -49,7 +64,22 @@ class KineticText extends Base {
       sphere: {
         vertexShader: kineticTextSphereVertexShader,
         fragmentShader: kineticTextSphereFragmentShader,
-        geometry: new THREE.SphereGeometry(15, 100, 100),
+        geometry: new THREE.SphereGeometry(15, 64, 64),
+      },
+      plane: {
+        vertexShader: kineticTextPlaneVertexShader,
+        fragmentShader: kineticTextPlaneFragmentShader,
+        geometry: new THREE.PlaneGeometry(30, 30, 64, 64),
+      },
+      torus: {
+        vertexShader: kineticTextTorusVertexShader,
+        fragmentShader: kineticTextTorusFragmentShader,
+        geometry: new THREE.TorusGeometry(12, 4, 20, 45),
+      },
+      cylinder: {
+        vertexShader: kineticTextCylinderVertexShader,
+        fragmentShader: kineticTextCylinderFragmentShader,
+        geometry: new THREE.CylinderGeometry(12, 12, 21, 64, 64),
       },
     };
     this.meshNames = Object.keys(this.meshConfig);
@@ -58,6 +88,9 @@ class KineticText extends Base {
       velocity: 0.5,
       shadow: 5,
       color: "#000000",
+      frequency: 0.5,
+      text: "ALPHARDEX",
+      cameraZ: 2.5,
     };
   }
   // 初始化
@@ -65,7 +98,7 @@ class KineticText extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer(true);
-    await this.createKineticText("ALPHARDEX");
+    await this.createKineticText(this.params.text);
     this.createLight();
     this.createOrbitControls();
     this.createDebugPanel();
@@ -122,7 +155,7 @@ class KineticText extends Base {
     );
     this.rt = rt;
     const rtCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    rtCamera.position.z = 2.5;
+    rtCamera.position.z = this.params.cameraZ;
     this.rtCamera = rtCamera;
     const rtScene = new THREE.Scene();
     rtScene.add(this.textMesh);
@@ -155,6 +188,9 @@ class KineticText extends Base {
         uShadow: {
           value: this.params.shadow,
         },
+        uFrequency: {
+          value: this.params.frequency,
+        },
       },
     });
     this.material = material;
@@ -180,21 +216,28 @@ class KineticText extends Base {
   createDebugPanel() {
     const gui = new dat.GUI();
     gui
-      .add(this.material!.uniforms.uVelocity, "value")
+      .add(this.params, "velocity")
       .min(0)
-      .max(3)
+      .max(5)
       .step(0.01)
-      .name("velocity");
+      .onFinishChange(() => {
+        this.createTextContainer();
+      });
     gui
-      .add(this.material!.uniforms.uShadow, "value")
+      .add(this.params, "cameraZ")
       .min(0)
-      .max(10)
+      .max(5)
       .step(0.01)
-      .name("shadow");
+      .onFinishChange(async () => {
+        await this.createKineticText(this.params.text);
+      });
     gui.add(this.params, "meshName", this.meshNames).onFinishChange(() => {
       this.createTextContainer();
     });
-    gui.addColor(this.params, "color").onChange(() => {
+    gui.add(this.params, "text").onFinishChange(async () => {
+      await this.createKineticText(this.params.text);
+    });
+    gui.addColor(this.params, "color").onFinishChange(() => {
       this.createTextContainer();
     });
   }
