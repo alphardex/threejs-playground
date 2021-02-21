@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import ky from "kyouka";
+import * as dat from "dat.gui";
 // @ts-ignore
 import loadFont from "load-bmfont";
 // @ts-ignore
@@ -9,9 +10,20 @@ import MSDFShader from "three-bmfont-text/shaders/msdf";
 import { Base } from "./base";
 import { fontAtlas, fontFile } from "@/consts/kineticText";
 // @ts-ignore
-import kineticTextVertexShader from "../shaders/kineticText/vertex.glsl";
+import kineticTextTorusKnotVertexShader from "../shaders/kineticText/torusKnot/vertex.glsl";
 // @ts-ignore
-import kineticTextFragmentShader from "../shaders/kineticText/fragment.glsl";
+import kineticTextTorusKnotFragmentShader from "../shaders/kineticText/torusKnot/fragment.glsl";
+// @ts-ignore
+import kineticTextSphereVertexShader from "../shaders/kineticText/sphere/vertex.glsl";
+// @ts-ignore
+import kineticTextSphereFragmentShader from "../shaders/kineticText/sphere/fragment.glsl";
+
+interface Params {
+  meshName: string;
+  velocity: number;
+  shadow: number;
+  color: string;
+}
 
 class KineticText extends Base {
   textMesh!: THREE.Mesh;
@@ -19,11 +31,34 @@ class KineticText extends Base {
   rtScene!: THREE.Scene;
   rtCamera!: THREE.PerspectiveCamera;
   clock: THREE.Clock;
-  material!: THREE.ShaderMaterial;
+  material!: THREE.ShaderMaterial | null;
+  params!: Params;
+  meshConfig!: any;
+  mesh!: THREE.Mesh | null;
+  meshNames!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(0, 0, 40);
     this.clock = new THREE.Clock();
+    this.meshConfig = {
+      torusKnot: {
+        vertexShader: kineticTextTorusKnotVertexShader,
+        fragmentShader: kineticTextTorusKnotFragmentShader,
+        geometry: new THREE.TorusKnotGeometry(9, 3, 768, 3, 4, 3),
+      },
+      sphere: {
+        vertexShader: kineticTextSphereVertexShader,
+        fragmentShader: kineticTextSphereFragmentShader,
+        geometry: new THREE.SphereGeometry(15, 100, 100),
+      },
+    };
+    this.meshNames = Object.keys(this.meshConfig);
+    this.params = {
+      meshName: "torusKnot",
+      velocity: 0.5,
+      shadow: 5,
+      color: "#000000",
+    };
   }
   // 初始化
   async init() {
@@ -33,6 +68,7 @@ class KineticText extends Base {
     await this.createKineticText("ALPHARDEX");
     this.createLight();
     this.createOrbitControls();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -94,31 +130,39 @@ class KineticText extends Base {
   }
   // 创建字体的容器
   createTextContainer() {
-    // const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const geometry = new THREE.TorusKnotGeometry(9, 3, 768, 3, 4, 3);
+    if (this.mesh) {
+      this.scene.remove(this.mesh);
+      this.mesh = null;
+      this.material!.dispose();
+      this.material = null;
+    }
+    this.rtScene.background = new THREE.Color(this.params.color);
+    const meshConfig = this.meshConfig[this.params.meshName];
+    const geometry = meshConfig.geometry;
     const material = new THREE.ShaderMaterial({
-      vertexShader: kineticTextVertexShader,
-      fragmentShader: kineticTextFragmentShader,
+      vertexShader: meshConfig.vertexShader,
+      fragmentShader: meshConfig.fragmentShader,
       uniforms: {
         uTime: {
           value: 0,
         },
         uVelocity: {
-          value: 0.5,
+          value: this.params.velocity,
         },
         uTexture: {
           value: this.rt.texture,
         },
         uShadow: {
-          value: 5,
+          value: this.params.shadow,
         },
       },
     });
     this.material = material;
-    this.createMesh({
+    const mesh = this.createMesh({
       geometry,
       material,
     });
+    this.mesh = mesh;
   }
   // 动画
   update() {
@@ -131,6 +175,28 @@ class KineticText extends Base {
     if (this.material) {
       this.material.uniforms.uTime.value = elapsedTime;
     }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    gui
+      .add(this.material!.uniforms.uVelocity, "value")
+      .min(0)
+      .max(3)
+      .step(0.01)
+      .name("velocity");
+    gui
+      .add(this.material!.uniforms.uShadow, "value")
+      .min(0)
+      .max(10)
+      .step(0.01)
+      .name("shadow");
+    gui.add(this.params, "meshName", this.meshNames).onFinishChange(() => {
+      this.createTextContainer();
+    });
+    gui.addColor(this.params, "color").onChange(() => {
+      this.createTextContainer();
+    });
   }
 }
 
