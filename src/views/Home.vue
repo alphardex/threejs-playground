@@ -39,6 +39,9 @@
       <li>
         <router-link :to="{ name: 'KineticText' }">KineticText</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'LineWave' }">LineWave</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

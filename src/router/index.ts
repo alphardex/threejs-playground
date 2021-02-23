@@ -13,6 +13,7 @@ import WavinFlag from "../views/WavinFlag.vue";
 import TwistedShape from "../views/TwistedShape.vue";
 import TravellingParticles from "../views/TravellingParticles.vue";
 import KineticText from "../views/KineticText.vue";
+import LineWave from "../views/LineWave.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -79,6 +80,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/kinetic-text",
     name: "KineticText",
     component: KineticText,
+  },
+  {
+    path: "/line-wave",
+    name: "LineWave",
+    component: LineWave,
   },
   {
     path: "/:pathMatch(.*)*",
