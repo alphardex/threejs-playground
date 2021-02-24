@@ -10,7 +10,7 @@ export default defineComponent({
   name: "LineWave",
   setup() {
     const start = () => {
-      const lineWave = new LineWave(".line-wave", true);
+      const lineWave = new LineWave(".line-wave", false);
       lineWave.init();
     };
     onMounted(() => {

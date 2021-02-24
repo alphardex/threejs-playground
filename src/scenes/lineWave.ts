@@ -14,10 +14,17 @@ class LineWave extends Base {
   material!: THREE.ShaderMaterial;
   faceMesh!: THREE.Object3D;
   clock: THREE.Clock;
+  params: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(-0.25, 0, 1.5);
     this.clock = new THREE.Clock();
+    this.params = {
+      faceZ: -0.75,
+      depthScale: 0.75,
+      faceColor: "#ED5464",
+      lineColor: "#4EC0E9",
+    };
   }
   // 初始化
   async init() {
@@ -49,7 +56,7 @@ class LineWave extends Base {
     rt.depthTexture.format = THREE.DepthFormat;
     rt.depthTexture.type = THREE.UnsignedShortType;
     this.rt = rt;
-    const rtCamera = new THREE.PerspectiveCamera(40, 1, 2, 3);
+    const rtCamera = new THREE.PerspectiveCamera(40, 1, 2.1, 3);
     rtCamera.position.set(0, 0, 2);
     this.rtCamera = rtCamera;
   }
@@ -67,6 +74,18 @@ class LineWave extends Base {
         },
         cameraNear: { value: this.rtCamera.near },
         cameraFar: { value: this.rtCamera.far },
+        uTime: {
+          value: 0,
+        },
+        uDepthScale: {
+          value: this.params.depthScale,
+        },
+        uFaceColor: {
+          value: new THREE.Color(this.params.faceColor),
+        },
+        uLineColor: {
+          value: new THREE.Color(this.params.lineColor),
+        },
       },
     });
     this.material = material;
@@ -81,8 +100,15 @@ class LineWave extends Base {
     const model = await this.loadModel(faceModelUrl);
     const mesh = model.children[0].children[0];
     mesh.scale.set(0.05, 0.05, 0.05);
-    mesh.position.set(0, 0, -1);
+    mesh.position.set(0, 0, this.params.faceZ);
     mesh.rotation.set(ky.deg2rad(90), 0, 0);
+    mesh.traverse((obj) => {
+      if (obj.isObject3D) {
+        (obj as THREE.Mesh).material = new THREE.MeshBasicMaterial({
+          color: 0x000000,
+        });
+      }
+    });
     this.scene.add(mesh);
     this.faceMesh = mesh;
   }
@@ -111,9 +137,10 @@ class LineWave extends Base {
     this.renderer.setRenderTarget(null);
     const elapsedTime = this.clock.getElapsedTime();
     if (this.faceMesh) {
-      this.faceMesh.position.z = -1 + 0.2 * Math.sin(elapsedTime);
-      this.faceMesh.rotation.y = -0.1 + 0.2 * Math.sin(elapsedTime);
+      this.faceMesh.position.z =
+        this.params.faceZ + 0.2 * Math.sin(elapsedTime);
     }
+    this.material.uniforms.uTime.value = elapsedTime;
   }
 }
 
