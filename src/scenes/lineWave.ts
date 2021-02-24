@@ -46,7 +46,7 @@ class LineWave extends Base {
     rt.depthTexture.format = THREE.DepthFormat;
     rt.depthTexture.type = THREE.UnsignedShortType;
     this.rt = rt;
-    const rtCamera = new THREE.PerspectiveCamera(70, 1, 2, 3);
+    const rtCamera = new THREE.PerspectiveCamera(40, 1, 2, 2.5);
     rtCamera.position.set(0, 0, 2);
     this.rtCamera = rtCamera;
   }
@@ -67,7 +67,7 @@ class LineWave extends Base {
     //   });
     // }
     this.createRenderTarget();
-    const geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+    const geometry = new THREE.PlaneBufferGeometry(1, 1, 200, 200);
     const material = new THREE.ShaderMaterial({
       vertexShader: lineWaveVertexShader,
       fragmentShader: lineWaveFragmentShader,
@@ -79,9 +79,6 @@ class LineWave extends Base {
         cameraNear: { value: this.rtCamera.near },
         cameraFar: { value: this.rtCamera.far },
       },
-      extensions: {
-        derivatives: true,
-      },
     });
     this.material = material;
     this.createMesh({
@@ -92,14 +89,19 @@ class LineWave extends Base {
   // 创建人脸
   async createFace() {
     const model = await this.loadModel(faceModelUrl);
-    model.scale.set(0.15, 0.15, 0.15);
-    model.position.set(0, 0, -0.5);
-    model.traverse((obj) => {
+    const mesh = model.children[0].children[0];
+    console.log(mesh);
+    mesh.scale.set(0.05, 0.05, 0.05);
+    mesh.position.set(0, 0, -0.5);
+    mesh.rotation.set(ky.deg2rad(90), 0, 0);
+    mesh.traverse((obj) => {
       if (obj.isObject3D) {
-        (obj as THREE.Mesh).material = this.material;
+        (obj as THREE.Mesh).material = new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+        });
       }
     });
-    this.scene.add(model);
+    this.scene.add(mesh);
   }
   // 动画
   update() {
