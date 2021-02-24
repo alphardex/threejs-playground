@@ -98,7 +98,7 @@ class LineWave extends Base {
   createLines(count = 100) {
     const material = this.material;
     for (let i = 0; i < count; i++) {
-      const geometry = new THREE.PlaneBufferGeometry(2, 0.005, count, 1);
+      const geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
       const yCoordCount = geometry.attributes.position.array.length / 3;
       const yCoords = new Float32Array(yCoordCount).map(() => i / count);
       geometry.setAttribute("aY", new THREE.BufferAttribute(yCoords, 1));
