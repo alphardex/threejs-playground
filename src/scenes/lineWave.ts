@@ -11,7 +11,7 @@ import lineWaveFragmentShader from "../shaders/lineWave/fragment.glsl";
 class LineWave extends Base {
   rt!: THREE.WebGLRenderTarget;
   rtCamera!: THREE.PerspectiveCamera;
-  material!: THREE.ShaderMaterial;
+  depthMaterial!: THREE.ShaderMaterial;
   faceMesh!: THREE.Object3D;
   clock: THREE.Clock;
   params: any;
@@ -31,7 +31,7 @@ class LineWave extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createDepthPlane();
+    this.createDepthMaterial();
     await this.createFace();
     this.createLines();
     this.createLight();
@@ -40,41 +40,28 @@ class LineWave extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 创建渲染目标，即包含深度信息的贴图
-  // From: three.js\examples\webgl_depth_texture.html
-  createRenderTarget() {
+  // 创建包含深度信息的材质
+  createDepthMaterial() {
+    // From: three.js\examples\webgl_depth_texture.html
     const rt = new THREE.WebGLRenderTarget(
       window.innerWidth,
       window.innerHeight
     );
-    rt.texture.format = THREE.RGBFormat;
-    rt.texture.minFilter = THREE.NearestFilter;
-    rt.texture.magFilter = THREE.NearestFilter;
-    rt.texture.generateMipmaps = false;
-    rt.stencilBuffer = false;
-    rt.depthBuffer = true;
     rt.depthTexture = new THREE.DepthTexture(1, 1);
-    rt.depthTexture.format = THREE.DepthFormat;
-    rt.depthTexture.type = THREE.UnsignedShortType;
     this.rt = rt;
     const rtCamera = new THREE.PerspectiveCamera(40, 1, 2.1, 3);
     rtCamera.position.set(0, 0, 2);
     this.rtCamera = rtCamera;
-  }
-  // 创建深度平面
-  createDepthPlane() {
-    this.createRenderTarget();
-    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
-    const material = new THREE.ShaderMaterial({
+    const depthMaterial = new THREE.ShaderMaterial({
       vertexShader: lineWaveVertexShader,
       fragmentShader: lineWaveFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uDepth: {
-          value: this.rt.depthTexture,
+          value: rt.depthTexture,
         },
-        cameraNear: { value: this.rtCamera.near },
-        cameraFar: { value: this.rtCamera.far },
+        cameraNear: { value: rtCamera.near },
+        cameraFar: { value: rtCamera.far },
         uTime: {
           value: 0,
         },
@@ -89,18 +76,22 @@ class LineWave extends Base {
         },
       },
     });
-    this.material = material;
-    const plane = this.createMesh({
-      geometry,
-      material,
+    this.depthMaterial = depthMaterial;
+  }
+  // 创建球体
+  createSphere() {
+    const mesh = this.createMesh({
+      geometry: new THREE.SphereGeometry(8, 100),
+      material: new THREE.MeshBasicMaterial({
+        color: 0x000000,
+      }),
     });
-    plane.visible = false;
+    mesh.scale.set(0.05, 0.05, 0.05);
+    mesh.position.set(0, 0, this.params.faceZ);
+    this.faceMesh = mesh;
   }
   // 创建人脸
   async createFace() {
-    if (this.faceMesh) {
-      this.scene.remove(this.faceMesh);
-    }
     const model = await this.loadModel(faceModelUrl);
     const mesh = model.children[0].children[0];
     mesh.scale.set(0.05, 0.05, 0.05);
@@ -118,7 +109,7 @@ class LineWave extends Base {
   }
   // 创建线
   createLines(count = 100) {
-    const material = this.material;
+    const material = this.depthMaterial;
     for (let i = 0; i < count; i++) {
       const geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
       const yCoordCount = geometry.attributes.position.array.length / 3;
@@ -144,16 +135,16 @@ class LineWave extends Base {
       this.faceMesh.position.z =
         this.params.faceZ + 0.2 * Math.sin(elapsedTime);
     }
-    this.material.uniforms.uTime.value = elapsedTime;
+    this.depthMaterial.uniforms.uTime.value = elapsedTime;
   }
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
     gui.addColor(this.params, "faceColor").onFinishChange(() => {
-      this.material.uniforms.uFaceColor.value.set(this.params.faceColor);
+      this.depthMaterial.uniforms.uFaceColor.value.set(this.params.faceColor);
     });
     gui.addColor(this.params, "lineColor").onFinishChange(() => {
-      this.material.uniforms.uLineColor.value.set(this.params.lineColor);
+      this.depthMaterial.uniforms.uLineColor.value.set(this.params.lineColor);
     });
   }
 }
