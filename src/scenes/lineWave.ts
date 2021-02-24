@@ -12,9 +12,12 @@ class LineWave extends Base {
   rt!: THREE.WebGLRenderTarget;
   rtCamera!: THREE.PerspectiveCamera;
   material!: THREE.ShaderMaterial;
+  faceMesh!: THREE.Object3D;
+  clock: THREE.Clock;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.clock = new THREE.Clock();
   }
   // 初始化
   async init() {
@@ -22,8 +25,9 @@ class LineWave extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.renderer.setClearColor(0xeeeeee, 1);
-    this.createLines();
+    this.createDepthPlane();
     await this.createFace();
+    this.createLines();
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
@@ -46,68 +50,78 @@ class LineWave extends Base {
     rt.depthTexture.format = THREE.DepthFormat;
     rt.depthTexture.type = THREE.UnsignedShortType;
     this.rt = rt;
-    const rtCamera = new THREE.PerspectiveCamera(40, 1, 2, 2.5);
+    const rtCamera = new THREE.PerspectiveCamera(40, 1, 2, 3);
     rtCamera.position.set(0, 0, 2);
     this.rtCamera = rtCamera;
   }
-  // 创建线
-  createLines(count = 20) {
-    // const geometry = new THREE.PlaneGeometry(1, 0.01, 100, 1);
-    // const material = new THREE.ShaderMaterial({
-    //   vertexShader: lineWaveVertexShader,
-    //   fragmentShader: lineWaveFragmentShader,
-    //   side: THREE.DoubleSide,
-    // });
-    // for (let i = 0; i < count; i++) {
-    //   const lineY = (i - count / 2) / count;
-    //   const mesh = this.createMesh({
-    //     geometry,
-    //     material,
-    //     position: new THREE.Vector3(0, lineY, 0),
-    //   });
-    // }
+  // 创建深度平面
+  createDepthPlane() {
     this.createRenderTarget();
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 200, 200);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
     const material = new THREE.ShaderMaterial({
       vertexShader: lineWaveVertexShader,
       fragmentShader: lineWaveFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uDepth: {
-          value: this.rt.texture,
+          value: this.rt.depthTexture,
         },
         cameraNear: { value: this.rtCamera.near },
         cameraFar: { value: this.rtCamera.far },
       },
     });
     this.material = material;
-    this.createMesh({
+    const plane = this.createMesh({
       geometry,
       material,
     });
+    plane.visible = false;
   }
   // 创建人脸
   async createFace() {
     const model = await this.loadModel(faceModelUrl);
     const mesh = model.children[0].children[0];
-    console.log(mesh);
     mesh.scale.set(0.05, 0.05, 0.05);
-    mesh.position.set(0, 0, -0.5);
+    mesh.position.set(0, 0, -1);
     mesh.rotation.set(ky.deg2rad(90), 0, 0);
     mesh.traverse((obj) => {
       if (obj.isObject3D) {
         (obj as THREE.Mesh).material = new THREE.MeshBasicMaterial({
-          color: 0x00ff00,
+          color: 0xff0000,
         });
       }
     });
     this.scene.add(mesh);
+    this.faceMesh = mesh;
+  }
+  // 创建线
+  createLines(count = 100) {
+    const material = this.material;
+    for (let i = 0; i < count; i++) {
+      const geometry = new THREE.PlaneBufferGeometry(2, 0.005, count, 1);
+      const yCoordCount = geometry.attributes.position.array.length / 3;
+      const yCoords = new Float32Array(yCoordCount).map(() => i / count);
+      geometry.setAttribute("aY", new THREE.BufferAttribute(yCoords, 1));
+
+      const halfCount = count / 2;
+      const lineY = (i - halfCount) / halfCount;
+      const mesh = this.createMesh({
+        geometry,
+        material,
+        position: new THREE.Vector3(0, lineY, 0),
+      });
+    }
   }
   // 动画
   update() {
     this.renderer.setRenderTarget(this.rt);
     this.renderer.render(this.scene, this.rtCamera);
     this.renderer.setRenderTarget(null);
+    const elapsedTime = this.clock.getElapsedTime();
+    if (this.faceMesh) {
+      this.faceMesh.position.z = -1 + 0.2 * Math.sin(elapsedTime);
+      this.faceMesh.rotation.y = -0.1 + 0.2 * Math.sin(elapsedTime);
+    }
   }
 }
 

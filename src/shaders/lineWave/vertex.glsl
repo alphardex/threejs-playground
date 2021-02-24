@@ -17,6 +17,9 @@ uniform float cameraFar;
 uniform sampler2D uDepth;
 
 varying vec2 vUv;
+varying vec2 vUv1;
+
+attribute float aY;
 
 float readDepth(sampler2D depthSampler,vec2 coord){
     float fragCoordZ=texture2D(depthSampler,coord).x;
@@ -24,12 +27,17 @@ float readDepth(sampler2D depthSampler,vec2 coord){
     return viewZToOrthographicDepth(viewZ,cameraNear,cameraFar);
 }
 
+float invert(float n){
+    return 1.-n;
+}
+
 void main(){
     vUv=uv;
+    vUv1=vec2(vUv.x,aY);
     
-    float depth=readDepth(uDepth,vUv);
+    float depth=readDepth(uDepth,vUv1);
     vec3 pos=position;
-    pos.z+=depth;
+    pos.z+=invert(depth);
     vec4 modelPosition=modelMatrix*vec4(pos,1.);
     vec4 viewPosition=viewMatrix*modelPosition;
     vec4 projectedPosition=projectionMatrix*viewPosition;

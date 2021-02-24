@@ -17,6 +17,7 @@ uniform float cameraFar;
 uniform sampler2D uDepth;
 
 varying vec2 vUv;
+varying vec2 vUv1;
 
 float readDepth(sampler2D depthSampler,vec2 coord){
     float fragCoordZ=texture2D(depthSampler,coord).x;
