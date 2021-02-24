@@ -25,11 +25,12 @@ float readDepth(sampler2D depthSampler,vec2 coord){
     return viewZToOrthographicDepth(viewZ,cameraNear,cameraFar);
 }
 
+float invert(float n){
+    return 1.-n;
+}
+
 void main(){
-    // vec3 color=vec3(vUv.x,vUv.y,1.);
-    // gl_FragColor=vec4(color,1.);
-    
     float depth=readDepth(uDepth,vUv);
-    gl_FragColor.rgb=1.-vec3(depth);
-    gl_FragColor.a=1.;
+    vec3 color=vec3(invert(depth));
+    gl_FragColor=vec4(color,1.);
 }
