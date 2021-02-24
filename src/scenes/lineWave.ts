@@ -36,6 +36,7 @@ class LineWave extends Base {
     this.createLines();
     this.createLight();
     this.createOrbitControls();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -97,6 +98,9 @@ class LineWave extends Base {
   }
   // 创建人脸
   async createFace() {
+    if (this.faceMesh) {
+      this.scene.remove(this.faceMesh);
+    }
     const model = await this.loadModel(faceModelUrl);
     const mesh = model.children[0].children[0];
     mesh.scale.set(0.05, 0.05, 0.05);
@@ -141,6 +145,16 @@ class LineWave extends Base {
         this.params.faceZ + 0.2 * Math.sin(elapsedTime);
     }
     this.material.uniforms.uTime.value = elapsedTime;
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    gui.addColor(this.params, "faceColor").onFinishChange(() => {
+      this.material.uniforms.uFaceColor.value.set(this.params.faceColor);
+    });
+    gui.addColor(this.params, "lineColor").onFinishChange(() => {
+      this.material.uniforms.uLineColor.value.set(this.params.lineColor);
+    });
   }
 }
 
