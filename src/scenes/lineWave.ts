@@ -93,7 +93,8 @@ class LineWave extends Base {
     for (let i = 0; i < count; i++) {
       const geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
       const yCoordCount = geometry.attributes.position.array.length / 3;
-      const yCoords = new Float32Array(yCoordCount).fill(i / count);
+      const yCoord = i / count;
+      const yCoords = new Float32Array(yCoordCount).fill(yCoord);
       geometry.setAttribute("aY", new THREE.BufferAttribute(yCoords, 1));
       const halfCount = count / 2;
       const lineY = (i - halfCount) / halfCount;
