@@ -16,8 +16,7 @@ uniform float cameraNear;
 uniform float cameraFar;
 uniform sampler2D uDepth;
 
-varying vec2 vUv;
-varying vec2 vUv1;
+varying float vDepth;
 
 attribute float aY;
 
@@ -32,14 +31,14 @@ float invert(float n){
 }
 
 void main(){
-    vUv=uv;
-    vUv1=vec2(vUv.x,aY);
-    
-    float depth=readDepth(uDepth,vUv1);
+    vec2 newUv=vec2(uv.x,aY);
+    float depth=readDepth(uDepth,newUv);
     vec3 pos=position;
     pos.z+=invert(depth);
     vec4 modelPosition=modelMatrix*vec4(pos,1.);
     vec4 viewPosition=viewMatrix*modelPosition;
     vec4 projectedPosition=projectionMatrix*viewPosition;
     gl_Position=projectedPosition;
+    
+    vDepth=depth;
 }

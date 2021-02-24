@@ -1,5 +1,5 @@
 <template>
-  <div class="line-wave w-full h-full bg-blue-1"></div>
+  <div class="line-wave w-full h-full bg-black"></div>
 </template>
 
 <script lang="ts">

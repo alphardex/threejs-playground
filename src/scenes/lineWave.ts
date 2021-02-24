@@ -24,7 +24,6 @@ class LineWave extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.renderer.setClearColor(0xeeeeee, 1);
     this.createDepthPlane();
     await this.createFace();
     this.createLines();
