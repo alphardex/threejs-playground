@@ -84,13 +84,6 @@ class LineWave extends Base {
     mesh.scale.set(0.05, 0.05, 0.05);
     mesh.position.set(0, 0, -1);
     mesh.rotation.set(ky.deg2rad(90), 0, 0);
-    mesh.traverse((obj) => {
-      if (obj.isObject3D) {
-        (obj as THREE.Mesh).material = new THREE.MeshBasicMaterial({
-          color: 0xff0000,
-        });
-      }
-    });
     this.scene.add(mesh);
     this.faceMesh = mesh;
   }
@@ -100,12 +93,11 @@ class LineWave extends Base {
     for (let i = 0; i < count; i++) {
       const geometry = new THREE.PlaneBufferGeometry(2, 0.005, 300, 1);
       const yCoordCount = geometry.attributes.position.array.length / 3;
-      const yCoords = new Float32Array(yCoordCount).map(() => i / count);
+      const yCoords = new Float32Array(yCoordCount).fill(i / count);
       geometry.setAttribute("aY", new THREE.BufferAttribute(yCoords, 1));
-
       const halfCount = count / 2;
       const lineY = (i - halfCount) / halfCount;
-      const mesh = this.createMesh({
+      this.createMesh({
         geometry,
         material,
         position: new THREE.Vector3(0, lineY, 0),
