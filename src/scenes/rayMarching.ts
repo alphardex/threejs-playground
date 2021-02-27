@@ -3,12 +3,12 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
-import templateVertexShader from "../shaders/template/vertex.glsl";
+import rayMarchingVertexShader from "../shaders/rayMarching/vertex.glsl";
 // @ts-ignore
-import templateFragmentShader from "../shaders/template/fragment.glsl";
+import rayMarchingFragmentShader from "../shaders/rayMarching/fragment.glsl";
 
-class Template extends Base {
-  templateMaterial!: THREE.Material;
+class RayMarching extends Base {
+  rayMarchingMaterial!: THREE.Material;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(0, 0, 1);
@@ -18,18 +18,18 @@ class Template extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createTemplateMaterial();
+    this.createRayMarchingMaterial();
     this.createPlane();
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
-  // 创建材质
-  createTemplateMaterial() {
-    const templateMaterial = new THREE.ShaderMaterial({
-      vertexShader: templateVertexShader,
-      fragmentShader: templateFragmentShader,
+  // 创建光线追踪材质
+  createRayMarchingMaterial() {
+    const rayMarchingMaterial = new THREE.ShaderMaterial({
+      vertexShader: rayMarchingVertexShader,
+      fragmentShader: rayMarchingFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -37,12 +37,12 @@ class Template extends Base {
         },
       },
     });
-    this.templateMaterial = templateMaterial;
+    this.rayMarchingMaterial = rayMarchingMaterial;
   }
   // 创建平面
   createPlane() {
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
-    const material = this.templateMaterial;
+    const material = this.rayMarchingMaterial;
     this.createMesh({
       geometry,
       material,
@@ -50,4 +50,4 @@ class Template extends Base {
   }
 }
 
-export default Template;
+export default RayMarching;

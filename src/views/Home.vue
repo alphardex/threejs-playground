@@ -2,6 +2,9 @@
   <div class="home min-h-screen">
     <ul class="flex flex-col">
       <li>
+        <router-link :to="{ name: 'Template' }">Template</router-link>
+      </li>
+      <li>
         <router-link :to="{ name: 'Base' }">Base</router-link>
       </li>
       <li>
@@ -42,6 +45,9 @@
       <li>
         <router-link :to="{ name: 'LineWave' }">LineWave</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'RayMarching' }">RayMarching</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
@@ -67,5 +73,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

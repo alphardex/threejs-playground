@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import NotFound from "../views/NotFound.vue";
+import Template from "../views/Template.vue";
 import Base from "../views/Base.vue";
 import Stack from "../views/Stack.vue";
 import Panorama from "../views/Panorama.vue";
@@ -14,12 +15,18 @@ import TwistedShape from "../views/TwistedShape.vue";
 import TravellingParticles from "../views/TravellingParticles.vue";
 import KineticText from "../views/KineticText.vue";
 import LineWave from "../views/LineWave.vue";
+import RayMarching from "../views/RayMarching.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/template",
+    name: "Template",
+    component: Template,
   },
   {
     path: "/base",
@@ -85,6 +92,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/line-wave",
     name: "LineWave",
     component: LineWave,
+  },
+  {
+    path: "/ray-marching",
+    name: "RayMarching",
+    component: RayMarching,
   },
   {
     path: "/:pathMatch(.*)*",
