@@ -8,9 +8,11 @@ import templateVertexShader from "../shaders/template/vertex.glsl";
 import templateFragmentShader from "../shaders/template/fragment.glsl";
 
 class Template extends Base {
-  templateMaterial!: THREE.Material;
+  clock!: THREE.Clock;
+  templateMaterial!: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1);
   }
   // 初始化
@@ -47,6 +49,13 @@ class Template extends Base {
       geometry,
       material,
     });
+  }
+  // 动画
+  update() {
+    const elapsedTime = this.clock.getElapsedTime();
+    if (this.templateMaterial) {
+      this.templateMaterial.uniforms.uTime.value = elapsedTime;
+    }
   }
 }
 

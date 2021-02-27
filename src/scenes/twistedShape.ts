@@ -19,6 +19,7 @@ class TwistedShape extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.createTwistedMaterial();
     this.createTwistedShape();
     this.createLight();
     this.createOrbitControls();
@@ -26,9 +27,8 @@ class TwistedShape extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 创建扭曲图形
-  createTwistedShape() {
-    const geometry = new THREE.TorusBufferGeometry(1, 0.3, 20, 45);
+  // 创建扭曲材质
+  createTwistedMaterial() {
     const material = new THREE.ShaderMaterial({
       vertexShader: twistedShapeVertexShader,
       fragmentShader: twistedShapeFragmentShader,
@@ -40,10 +40,12 @@ class TwistedShape extends Base {
       },
     });
     this.material = material;
-    this.createMesh({
-      geometry,
-      material,
-    });
+  }
+  // 创建扭曲图形
+  createTwistedShape() {
+    const geometry = new THREE.TorusBufferGeometry(1, 0.3, 20, 45);
+    const material = this.material;
+    this.createMesh({ geometry, material });
   }
   // 动画
   update() {

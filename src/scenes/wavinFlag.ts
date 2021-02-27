@@ -20,6 +20,7 @@ class WavingFlag extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.createFlagMaterial();
     this.createFlag();
     this.createLight();
     this.createDebug();
@@ -27,11 +28,10 @@ class WavingFlag extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 创建旗帜
-  createFlag() {
+  // 创建旗帜材质
+  createFlagMaterial() {
     const loader = new THREE.TextureLoader();
     const flagTexture = loader.load(flagTextureUrl);
-    const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
     const material = new THREE.ShaderMaterial({
       vertexShader: wavinFlagVertexShader,
       fragmentShader: wavinFlagFragmentShader,
@@ -48,6 +48,11 @@ class WavingFlag extends Base {
       },
     });
     this.material = material;
+  }
+  // 创建旗帜
+  createFlag() {
+    const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
+    const material = this.material;
     const mesh = this.createMesh({ geometry, material });
     mesh.scale.y = 2 / 3;
   }

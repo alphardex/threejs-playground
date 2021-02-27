@@ -8,9 +8,11 @@ import rayMarchingVertexShader from "../shaders/rayMarching/vertex.glsl";
 import rayMarchingFragmentShader from "../shaders/rayMarching/fragment.glsl";
 
 class RayMarching extends Base {
-  rayMarchingMaterial!: THREE.Material;
+  clock!: THREE.Clock;
+  rayMarchingMaterial!: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
+    this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1);
   }
   // 初始化
@@ -47,6 +49,13 @@ class RayMarching extends Base {
       geometry,
       material,
     });
+  }
+  // 动画
+  update() {
+    const elapsedTime = this.clock.getElapsedTime();
+    if (this.rayMarchingMaterial) {
+      this.rayMarchingMaterial.uniforms.uTime.value = elapsedTime;
+    }
   }
 }
 
