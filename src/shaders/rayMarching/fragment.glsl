@@ -5,6 +5,7 @@
 // https://www.iquilezles.org/www/articles/smin/smin.htm
 // https://github.com/hughsk/matcap/blob/master/matcap.glsl
 // https://www.shadertoy.com/view/4scSW4
+// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
 // https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
 
 uniform float uTime;
@@ -15,6 +16,8 @@ uniform vec2 uResolution;
 uniform float uVelocity;
 
 varying vec2 vUv;
+
+const float EPSILON=.0001;
 
 mat4 rotationMatrix(vec3 axis,float angle){
     axis=normalize(axis);
@@ -89,31 +92,38 @@ vec3 background(vec2 uv){
     return bg;
 }
 
-void main(){
-    vec2 newUv=vUv;
-    newUv=2.*newUv-1.;
+vec2 centerUv(vec2 uv){
+    uv=2.*uv-1.;
     float aspect=uResolution.x/uResolution.y;
-    newUv.x*=aspect;
-    vec3 camPos=vec3(0.,0.,2.5);
-    vec3 ray=normalize(vec3(newUv,-camPos.z));
-    vec3 bg=background(vUv);
-    vec3 normal;
-    vec3 color=bg;
-    float progress=0.;
-    float progressMin=.0001;
-    float progressMax=5.;
-    for(int i=0;i<256;i++){
-        vec3 pos=camPos+progress*ray;
-        float d=sdf(pos);
-        if(d<progressMin||d>progressMax){
+    uv.x*=aspect;
+    return uv;
+}
+
+float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
+    float depth=0.;
+    for(int i=0;i<maxIter;i++){
+        vec3 pos=eye+depth*ray;
+        float dist=sdf(pos);
+        depth+=dist;
+        if(dist<EPSILON||dist>=end){
             break;
         }
-        progress+=d;
     }
-    if(progress<progressMax){
-        vec3 pos=camPos+progress*ray;
-        normal=calcNormal(pos);
-        color=normal;
+    return depth;
+}
+
+void main(){
+    vec2 cUv=centerUv(vUv);
+    vec3 eye=vec3(0.,0.,2.5);
+    vec3 ray=normalize(vec3(cUv,-eye.z));
+    vec3 bg=background(vUv);
+    vec3 color=bg;
+    float end=5.;
+    int maxIter=256;
+    float depth=rayMarch(eye,ray,end,maxIter);
+    if(depth<end){
+        vec3 pos=eye+depth*ray;
+        vec3 normal=calcNormal(pos);
         vec2 matcapUv=matcap(ray,normal);
         color=texture2D(uTexture,matcapUv).rgb;
         float F=fresnel(0.,.4,3.2,ray,normal);
