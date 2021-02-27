@@ -61,8 +61,17 @@ class RayMarching extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        uVelocity: {
+        uVelocityBox: {
           value: 0.25,
+        },
+        uVelocitySphere: {
+          value: 0.5,
+        },
+        uAngle: {
+          value: 0.5,
+        },
+        uDistance: {
+          value: 1.2,
         },
       },
     });
@@ -89,13 +98,37 @@ class RayMarching extends Base {
   // 创建调试面板
   createDebugPanel() {
     const { rayMarchingMaterial } = this;
-    const gui = new dat.GUI();
+    const gui = new dat.GUI({ width: 300 });
     gui
       .add(rayMarchingMaterial.uniforms.uProgress, "value")
       .min(0)
       .max(1)
       .step(0.01)
       .name("progress");
+    gui
+      .add(rayMarchingMaterial.uniforms.uVelocityBox, "value")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("velocityBox");
+    gui
+      .add(rayMarchingMaterial.uniforms.uVelocitySphere, "value")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("velocitySphere");
+    gui
+      .add(rayMarchingMaterial.uniforms.uAngle, "value")
+      .min(0)
+      .max(2)
+      .step(0.01)
+      .name("angle");
+    gui
+      .add(rayMarchingMaterial.uniforms.uDistance, "value")
+      .min(0)
+      .max(2)
+      .step(0.01)
+      .name("distance");
   }
 }
 

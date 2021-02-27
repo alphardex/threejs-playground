@@ -1,24 +1,19 @@
-// https://i.loli.net/2021/02/27/9KNcMUrHSIbGfop.png
-// https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
-// https://www.iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
-// https://gist.github.com/yiwenl/3f804e80d0930e34a0b33359259b556c
-// https://www.iquilezles.org/www/articles/smin/smin.htm
-// https://github.com/hughsk/matcap/blob/master/matcap.glsl
-// https://www.shadertoy.com/view/4scSW4
-// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
-// https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
-
 uniform float uTime;
 uniform sampler2D uTexture;
 uniform vec2 uMouse;
-uniform float uProgress;
 uniform vec2 uResolution;
-uniform float uVelocity;
+uniform float uProgress;
+uniform float uVelocityBox;
+uniform float uVelocitySphere;
+uniform float uAngle;
+uniform float uDistance;
 
 varying vec2 vUv;
 
 const float EPSILON=.0001;
+const float PI=3.14159265359;
 
+// https://gist.github.com/yiwenl/3f804e80d0930e34a0b33359259b556c
 mat4 rotationMatrix(vec3 axis,float angle){
     axis=normalize(axis);
     float s=sin(angle);
@@ -36,12 +31,7 @@ vec3 rotate(vec3 v,vec3 axis,float angle){
     return(m*vec4(v,1.)).xyz;
 }
 
-float smin(float a,float b,float k)
-{
-    float h=clamp(.5+.5*(b-a)/k,0.,1.);
-    return mix(b,a,h)-k*h*(1.-h);
-}
-
+// https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 float sdSphere(vec3 p,float r)
 {
     return length(p)-r;
@@ -53,12 +43,28 @@ float sdBox(vec3 p,vec3 b)
     return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.);
 }
 
+// https://www.iquilezles.org/www/articles/smin/smin.htm
+float smin(float a,float b,float k)
+{
+    float h=clamp(.5+.5*(b-a)/k,0.,1.);
+    return mix(b,a,h)-k*h*(1.-h);
+}
+
+float movingSphere(vec3 p,float shape){
+    float rad=uAngle*PI;
+    vec3 pos=vec3(cos(rad),sin(rad),0.)*uDistance;
+    vec3 displacement=pos*fract(uTime*uVelocitySphere);
+    float gotoCenter=sdSphere(p-displacement,.1);
+    return smin(shape,gotoCenter,.3);
+}
+
 float sdf(vec3 p){
-    vec3 p1=rotate(p,vec3(1.),uTime*uVelocity);
+    vec3 p1=rotate(p,vec3(1.),uTime*uVelocityBox);
     float box=sdBox(p1,vec3(.3));
     float sphere=sdSphere(p,.3);
     float sBox=smin(box,sphere,.3);
     float mixedBox=mix(sBox,box,uProgress);
+    mixedBox=movingSphere(p,mixedBox);
     float aspect=uResolution.x/uResolution.y;
     vec2 mousePos=uMouse;
     mousePos.x*=aspect;
@@ -66,21 +72,24 @@ float sdf(vec3 p){
     return smin(mixedBox,mouseSphere,.1);
 }
 
-vec3 calcNormal(in vec3 p)// for function f(p)
+// https://www.iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
+vec3 calcNormal(in vec3 p)
 {
-    const float eps=.0001;// or some other value
+    const float eps=.0001;
     const vec2 h=vec2(eps,0);
     return normalize(vec3(sdf(p+h.xyy)-sdf(p-h.xyy),
     sdf(p+h.yxy)-sdf(p-h.yxy),
     sdf(p+h.yyx)-sdf(p-h.yyx)));
 }
 
+// https://github.com/hughsk/matcap/blob/master/matcap.glsl
 vec2 matcap(vec3 eye,vec3 normal){
     vec3 reflected=reflect(eye,normal);
     float m=2.8284271247461903*sqrt(reflected.z+1.);
     return reflected.xy/m+.5;
 }
 
+// https://www.shadertoy.com/view/4scSW4
 float fresnel(float bias,float scale,float power,vec3 I,vec3 N)
 {
     return bias+scale*pow(1.+dot(I,N),power);
@@ -99,6 +108,8 @@ vec2 centerUv(vec2 uv){
     return uv;
 }
 
+// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+// https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
 float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     float depth=0.;
     for(int i=0;i<maxIter;i++){
