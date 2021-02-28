@@ -1,3 +1,7 @@
+uniform float uTime;
+uniform vec2 uMouse;
+uniform vec2 uResolution;
+
 varying vec2 vUv;
 
 void main(){

@@ -1,7 +1,7 @@
 uniform float uTime;
-uniform sampler2D uTexture;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
+uniform sampler2D uTexture;
 uniform float uProgress;
 uniform float uVelocityBox;
 uniform float uVelocitySphere;

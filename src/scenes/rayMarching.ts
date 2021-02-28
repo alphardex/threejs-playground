@@ -48,17 +48,17 @@ class RayMarching extends Base {
         uTime: {
           value: 0,
         },
-        uTexture: {
-          value: texture,
-        },
         uMouse: {
           value: new THREE.Vector2(0, 0),
         },
-        uProgress: {
-          value: 1,
-        },
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTexture: {
+          value: texture,
+        },
+        uProgress: {
+          value: 1,
         },
         uVelocityBox: {
           value: 0.25,

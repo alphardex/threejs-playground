@@ -23,6 +23,7 @@ class Template extends Base {
     this.createTemplateMaterial();
     this.createPlane();
     this.createLight();
+    this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -36,6 +37,12 @@ class Template extends Base {
       uniforms: {
         uTime: {
           value: 0,
+        },
+        uMouse: {
+          value: new THREE.Vector2(0, 0),
+        },
+        uResolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
       },
     });
@@ -53,8 +60,10 @@ class Template extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
+    const mousePos = this.mousePos;
     if (this.templateMaterial) {
       this.templateMaterial.uniforms.uTime.value = elapsedTime;
+      this.templateMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }
