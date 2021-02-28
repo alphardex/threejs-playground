@@ -1,12 +1,12 @@
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
-uniform sampler2D uTexture;
-uniform float uProgress;
 uniform float uVelocityBox;
-uniform float uVelocitySphere;
+uniform float uProgress;
 uniform float uAngle;
 uniform float uDistance;
+uniform float uVelocitySphere;
+uniform sampler2D uTexture;
 
 varying vec2 vUv;
 
@@ -29,6 +29,12 @@ mat4 rotationMatrix(vec3 axis,float angle){
 vec3 rotate(vec3 v,vec3 axis,float angle){
     mat4 m=rotationMatrix(axis,angle);
     return(m*vec4(v,1.)).xyz;
+}
+
+vec3 background(vec2 uv){
+    float dist=length(uv-vec2(.5));
+    vec3 bg=mix(vec3(.3),vec3(.0),dist);
+    return bg;
 }
 
 // https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
@@ -72,6 +78,28 @@ float sdf(vec3 p){
     return smin(mixedBox,mouseSphere,.1);
 }
 
+// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
+// https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
+float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
+    float depth=0.;
+    for(int i=0;i<maxIter;i++){
+        vec3 pos=eye+depth*ray;
+        float dist=sdf(pos);
+        depth+=dist;
+        if(dist<EPSILON||dist>=end){
+            break;
+        }
+    }
+    return depth;
+}
+
+vec2 centerUv(vec2 uv){
+    uv=2.*uv-1.;
+    float aspect=uResolution.x/uResolution.y;
+    uv.x*=aspect;
+    return uv;
+}
+
 // https://www.iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
 vec3 calcNormal(in vec3 p)
 {
@@ -93,34 +121,6 @@ vec2 matcap(vec3 eye,vec3 normal){
 float fresnel(float bias,float scale,float power,vec3 I,vec3 N)
 {
     return bias+scale*pow(1.+dot(I,N),power);
-}
-
-vec3 background(vec2 uv){
-    float dist=length(uv-vec2(.5));
-    vec3 bg=mix(vec3(.3),vec3(.0),dist);
-    return bg;
-}
-
-vec2 centerUv(vec2 uv){
-    uv=2.*uv-1.;
-    float aspect=uResolution.x/uResolution.y;
-    uv.x*=aspect;
-    return uv;
-}
-
-// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
-// https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
-float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
-    float depth=0.;
-    for(int i=0;i<maxIter;i++){
-        vec3 pos=eye+depth*ray;
-        float dist=sdf(pos);
-        depth+=dist;
-        if(dist<EPSILON||dist>=end){
-            break;
-        }
-    }
-    return depth;
 }
 
 void main(){
