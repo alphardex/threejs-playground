@@ -48,6 +48,9 @@
       <li>
         <router-link :to="{ name: 'RayMarching' }">RayMarching</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'DistortImage' }">DistortImage</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

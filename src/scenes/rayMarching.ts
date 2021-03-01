@@ -67,7 +67,7 @@ class RayMarching extends Base {
           value: 0.5,
         },
         uAngle: {
-          value: 0.5,
+          value: 1.5,
         },
         uDistance: {
           value: 1.2,

@@ -16,6 +16,7 @@ import TravellingParticles from "../views/TravellingParticles.vue";
 import KineticText from "../views/KineticText.vue";
 import LineWave from "../views/LineWave.vue";
 import RayMarching from "../views/RayMarching.vue";
+import DistortImage from "../views/DistortImage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -97,6 +98,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/ray-marching",
     name: "RayMarching",
     component: RayMarching,
+  },
+  {
+    path: "/distort-image",
+    name: "DistortImage",
+    component: DistortImage,
   },
   {
     path: "/:pathMatch(.*)*",
