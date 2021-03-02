@@ -80,8 +80,12 @@ float cnoise(vec3 P){
 void main(){
     vec3 newPos=position;
     // newPos.z+=.1*sin((newPos.x+.25+uTime*.1)*2.*PI);
-    float noise=cnoise(vec3(newPos.x*4.,newPos.y*4.+uTime/5.,0.));
-    // newPos.z+=.2*noise;
+    // float noise=cnoise(vec3(newPos.x*4.,newPos.y*4.+uTime/5.,0.));
+    // float noise=distance(uv,vec2(.5));
+    // float noise=distance(position.xy,vec2(.5));
+    float noise=cnoise(3.*vec3(position.x,position.y,position.z+uTime/10.));
+    // newPos.z+=.05*sin(40.*noise-uTime);
+    // newPos+=.1*normal*noise;
     vec4 modelPosition=modelMatrix*vec4(newPos,1.);
     vec4 viewPosition=viewMatrix*modelPosition;
     vec4 projectedPosition=projectionMatrix*viewPosition;
