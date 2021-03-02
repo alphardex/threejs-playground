@@ -92,7 +92,7 @@ void main(){
     color=oceanTexture.rgb;
     // color=vec3(noise);
     // color+=.5*vec3(vNoise);
-    color=vec3(vUv,0.);
+    // color=vec3(vUv,0.);
     // color=vec3(vNoise);
     gl_FragColor=vec4(color,1.);
 }

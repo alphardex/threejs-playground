@@ -16,6 +16,7 @@ class DistortImage extends Base {
   images!: HTMLImageElement[];
   imageDOMMeshObjs!: DOMMeshObject[];
   distortImageMaterial!: THREE.ShaderMaterial;
+  materials!: THREE.ShaderMaterial[];
   scroll!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -29,6 +30,7 @@ class DistortImage extends Base {
     };
     this.images = [...document.querySelectorAll("img")];
     this.imageDOMMeshObjs = [];
+    this.materials = [];
   }
   // 初始化
   async init() {
@@ -41,9 +43,10 @@ class DistortImage extends Base {
     this.setImagesPosition();
     this.listenScroll();
     this.createLight();
-    this.trackMousePos();
+    this.createRaycaster();
     this.createOrbitControls();
     this.addListeners();
+    this.onMousemove();
     this.setLoop();
   }
   // 获取跟屏幕同像素的fov角度
@@ -54,8 +57,6 @@ class DistortImage extends Base {
   }
   // 创建材质
   createDistortImageMaterial() {
-    const loader = new THREE.TextureLoader();
-    const texture = loader.load(distortImageTextureUrl);
     const distortImageMaterial = new THREE.ShaderMaterial({
       vertexShader: distortImageVertexShader,
       fragmentShader: distortImageFragmentShader,
@@ -71,10 +72,9 @@ class DistortImage extends Base {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTexture: {
-          value: texture,
+          value: 0,
         },
       },
-      wireframe: true,
     });
     this.distortImageMaterial = distortImageMaterial;
   }
@@ -84,9 +84,9 @@ class DistortImage extends Base {
     const imageDOMMeshObjs = images.map((image) => {
       const texture = new THREE.Texture(image);
       texture.needsUpdate = true;
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-      });
+      const material = this.distortImageMaterial.clone();
+      material.uniforms.uTexture.value = texture;
+      this.materials.push(material);
       const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
       return imageDOMMeshObj;
     });
@@ -111,13 +111,21 @@ class DistortImage extends Base {
   stopScroll() {
     this.scroll.stop();
   }
+  // 监听鼠标位置
+  onMousemove() {
+    window.addEventListener("mousemove", () => {
+      const intersect = this.getInterSects()[0];
+    });
+  }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.distortImageMaterial) {
-      this.distortImageMaterial.uniforms.uTime.value = elapsedTime;
-      this.distortImageMaterial.uniforms.uMouse.value = mousePos;
+    if (!ky.isEmpty(this.materials)) {
+      this.materials.forEach((material) => {
+        material.uniforms.uTime.value = elapsedTime;
+        material.uniforms.uMouse.value = mousePos;
+      });
     }
   }
 }

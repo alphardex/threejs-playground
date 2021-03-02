@@ -15,13 +15,13 @@ class DOMMeshObject {
   constructor(
     el: Element,
     scene: THREE.Scene,
-    material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    material: THREE.Material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
   ) {
     this.el = el;
     const rect = el.getBoundingClientRect();
     this.rect = rect;
     const { width, height } = rect;
-    const geometry = new THREE.PlaneBufferGeometry(width, height, 1, 1);
+    const geometry = new THREE.PlaneBufferGeometry(width, height, 10, 10);
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     this.mesh = mesh;
