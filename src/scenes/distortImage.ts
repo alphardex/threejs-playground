@@ -6,10 +6,18 @@ import { Base } from "./base";
 import distortImageMouseWaveVertexShader from "../shaders/distortImage/mousewave/vertex.glsl";
 // @ts-ignore
 import distortImageMouseWaveFragmentShader from "../shaders/distortImage/mousewave/fragment.glsl";
+// @ts-ignore
+import distortImagePostprocessingVertexShader from "../shaders/distortImage/postprocessing/vertex.glsl";
+// @ts-ignore
+import distortImagePostprocessingFragmentShader from "../shaders/distortImage/postprocessing/fragment.glsl";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
 import gsap from "gsap";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 class DistortImage extends Base {
   clock!: THREE.Clock;
@@ -58,6 +66,7 @@ class DistortImage extends Base {
     this.createLight();
     this.createRaycaster();
     this.createMouseWaveEffect();
+    this.createPostprocessingEffect();
     this.createOrbitControls();
     this.createDebugPanel();
     this.addListeners();
@@ -150,6 +159,24 @@ class DistortImage extends Base {
         obj.material.uniforms.uHoverUv.value = intersect.uv;
       }
     });
+  }
+  // 创建后期处理特效
+  createPostprocessingEffect() {
+    const composer = new EffectComposer(this.renderer);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    composer.addPass(renderPass);
+    const customPass = new ShaderPass({
+      vertexShader: distortImagePostprocessingVertexShader,
+      fragmentShader: distortImagePostprocessingFragmentShader,
+      uniforms: {
+        tDiffuse: {
+          value: null,
+        },
+      },
+    });
+    customPass.renderToScreen = true;
+    composer.addPass(customPass);
+    this.composer = composer;
   }
   // 动画
   update() {
