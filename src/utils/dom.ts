@@ -30,7 +30,7 @@ class DOMMeshObject {
     const { mesh, rect } = this;
     const { top, left, width, height } = rect;
     const x = left + width / 2 - window.innerWidth / 2;
-    const y = -(top + height / 2 - window.innerHeight / 2);
+    const y = -(top + height / 2 - window.innerHeight / 2) + window.scrollY;
     mesh.position.set(x, y, 0);
   }
 }

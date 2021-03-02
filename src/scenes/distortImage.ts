@@ -8,12 +8,15 @@ import distortImageVertexShader from "../shaders/distortImage/vertex.glsl";
 import distortImageFragmentShader from "../shaders/distortImage/fragment.glsl";
 import { distortImageTextureUrl } from "@/consts/distortImage";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
+// @ts-ignore
+import LocomotiveScroll from "locomotive-scroll";
 
 class DistortImage extends Base {
   clock!: THREE.Clock;
   images!: HTMLImageElement[];
   imageDOMMeshObjs!: DOMMeshObject[];
   distortImageMaterial!: THREE.ShaderMaterial;
+  scroll!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -36,7 +39,7 @@ class DistortImage extends Base {
     await preloadImages();
     this.createImageDOMMeshObjs();
     this.setImagesPosition();
-    this.createPlane();
+    this.listenScroll();
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
@@ -96,14 +99,17 @@ class DistortImage extends Base {
       obj.setPosition();
     });
   }
-  // 创建平面
-  createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(200, 400, 10, 10);
-    const material = this.distortImageMaterial;
-    this.createMesh({
-      geometry,
-      material,
+  // 监听滚动
+  listenScroll() {
+    const scroll = new LocomotiveScroll();
+    scroll.on("scroll", () => {
+      this.setImagesPosition();
     });
+    this.scroll = scroll;
+  }
+  // 停止滚动
+  stopScroll() {
+    this.scroll.stop();
   }
   // 动画
   update() {

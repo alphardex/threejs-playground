@@ -220,6 +220,7 @@ h1 {
 header img {
   max-width: 100%;
   display: block;
+  opacity: 0;
 }
 h1,
 h2 {
@@ -248,6 +249,7 @@ h2 {
 .item img {
   width: 100%;
   display: block;
+  opacity: 0;
 }
 .item__image {
   position: relative;
