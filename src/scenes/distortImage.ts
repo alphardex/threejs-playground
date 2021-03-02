@@ -1,15 +1,15 @@
 import * as THREE from "three";
-import ky from "kyouka";
 import * as dat from "dat.gui";
+import ky from "kyouka";
 import { Base } from "./base";
 // @ts-ignore
-import distortImageVertexShader from "../shaders/distortImage/vertex.glsl";
+import distortImageMouseWaveVertexShader from "../shaders/distortImage/mousewave/vertex.glsl";
 // @ts-ignore
-import distortImageFragmentShader from "../shaders/distortImage/fragment.glsl";
-import { distortImageTextureUrl } from "@/consts/distortImage";
+import distortImageMouseWaveFragmentShader from "../shaders/distortImage/mousewave/fragment.glsl";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
+import gsap from "gsap";
 
 class DistortImage extends Base {
   clock!: THREE.Clock;
@@ -18,6 +18,9 @@ class DistortImage extends Base {
   distortImageMaterial!: THREE.ShaderMaterial;
   materials!: THREE.ShaderMaterial[];
   scroll!: any;
+  shaderConfig!: any;
+  shaderNames!: string[];
+  params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -31,6 +34,16 @@ class DistortImage extends Base {
     this.images = [...document.querySelectorAll("img")];
     this.imageDOMMeshObjs = [];
     this.materials = [];
+    this.shaderConfig = {
+      mousewave: {
+        vertexShader: distortImageMouseWaveVertexShader,
+        fragmentShader: distortImageMouseWaveFragmentShader,
+      },
+    };
+    this.shaderNames = Object.keys(this.shaderConfig);
+    this.params = {
+      shaderName: "mousewave",
+    };
   }
   // 初始化
   async init() {
@@ -45,6 +58,7 @@ class DistortImage extends Base {
     this.createLight();
     this.createRaycaster();
     this.createOrbitControls();
+    this.createDebugPanel();
     this.addListeners();
     this.onMousemove();
     this.setLoop();
@@ -58,20 +72,23 @@ class DistortImage extends Base {
   // 创建材质
   createDistortImageMaterial() {
     const distortImageMaterial = new THREE.ShaderMaterial({
-      vertexShader: distortImageVertexShader,
-      fragmentShader: distortImageFragmentShader,
+      vertexShader: distortImageMouseWaveVertexShader,
+      fragmentShader: distortImageMouseWaveFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
           value: 0,
         },
-        uMouse: {
-          value: new THREE.Vector2(0, 0),
-        },
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uTexture: {
+          value: 0,
+        },
+        uHoverUv: {
+          value: new THREE.Vector2(0.5, 0.5),
+        },
+        uHoverState: {
           value: 0,
         },
       },
@@ -80,11 +97,23 @@ class DistortImage extends Base {
   }
   // 创建图片DOM物体
   createImageDOMMeshObjs() {
-    const { images, scene } = this;
+    const { images, scene, distortImageMaterial } = this;
     const imageDOMMeshObjs = images.map((image) => {
       const texture = new THREE.Texture(image);
       texture.needsUpdate = true;
-      const material = this.distortImageMaterial.clone();
+      const material = distortImageMaterial.clone();
+      image.addEventListener("mouseenter", () => {
+        gsap.to(material.uniforms.uHoverState, {
+          value: 1,
+          duration: 1,
+        });
+      });
+      image.addEventListener("mouseleave", () => {
+        gsap.to(material.uniforms.uHoverState, {
+          value: 0,
+          duration: 1,
+        });
+      });
       material.uniforms.uTexture.value = texture;
       this.materials.push(material);
       const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
@@ -115,18 +144,27 @@ class DistortImage extends Base {
   onMousemove() {
     window.addEventListener("mousemove", () => {
       const intersect = this.getInterSects()[0];
+      if (intersect) {
+        const obj = intersect.object as any;
+        obj.material.uniforms.uHoverUv.value = intersect.uv;
+      }
     });
   }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
     if (!ky.isEmpty(this.materials)) {
       this.materials.forEach((material) => {
         material.uniforms.uTime.value = elapsedTime;
-        material.uniforms.uMouse.value = mousePos;
       });
     }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    gui.add(this.params, "shaderName", this.shaderNames).onFinishChange(() => {
+      this.createDistortImageMaterial();
+    });
   }
 }
 
