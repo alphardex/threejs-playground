@@ -57,10 +57,10 @@ class DistortImage extends Base {
     this.listenScroll();
     this.createLight();
     this.createRaycaster();
+    this.createMouseWaveEffect();
     this.createOrbitControls();
     this.createDebugPanel();
     this.addListeners();
-    this.onMousemove();
     this.setLoop();
   }
   // 获取跟屏幕同像素的fov角度
@@ -102,18 +102,6 @@ class DistortImage extends Base {
       const texture = new THREE.Texture(image);
       texture.needsUpdate = true;
       const material = distortImageMaterial.clone();
-      image.addEventListener("mouseenter", () => {
-        gsap.to(material.uniforms.uHoverState, {
-          value: 1,
-          duration: 1,
-        });
-      });
-      image.addEventListener("mouseleave", () => {
-        gsap.to(material.uniforms.uHoverState, {
-          value: 0,
-          duration: 1,
-        });
-      });
       material.uniforms.uTexture.value = texture;
       this.materials.push(material);
       const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
@@ -136,12 +124,25 @@ class DistortImage extends Base {
     });
     this.scroll = scroll;
   }
-  // 停止滚动
-  stopScroll() {
-    this.scroll.stop();
-  }
-  // 监听鼠标位置
-  onMousemove() {
+  // 创建mousewave特效
+  createMouseWaveEffect() {
+    const { imageDOMMeshObjs } = this;
+    imageDOMMeshObjs.forEach((obj) => {
+      const { el, mesh } = obj;
+      const material = mesh.material as any;
+      el.addEventListener("mouseenter", () => {
+        gsap.to(material.uniforms.uHoverState, {
+          value: 1,
+          duration: 1,
+        });
+      });
+      el.addEventListener("mouseleave", () => {
+        gsap.to(material.uniforms.uHoverState, {
+          value: 0,
+          duration: 1,
+        });
+      });
+    });
     window.addEventListener("mousemove", () => {
       const intersect = this.getInterSects()[0];
       if (intersect) {
