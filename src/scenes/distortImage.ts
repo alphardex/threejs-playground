@@ -73,7 +73,6 @@ class DistortImage extends Base {
     this.listenScroll();
     this.createLight();
     this.createRaycaster();
-    this.createMouseWaveEffect();
     this.createPostprocessingEffect();
     this.createOrbitControls();
     this.createDebugPanel();
@@ -85,6 +84,7 @@ class DistortImage extends Base {
     this.createDistortImageMaterial();
     this.createImageDOMMeshObjs();
     this.setImagesPosition();
+    this.createMouseWaveEffect();
   }
   // 获取跟屏幕同像素的fov角度
   getScreenFov() {
@@ -187,7 +187,9 @@ class DistortImage extends Base {
       const intersect = this.getInterSects()[0];
       if (intersect) {
         const obj = intersect.object as any;
-        obj.material.uniforms.uHoverUv.value = intersect.uv;
+        if (obj.material.uniforms) {
+          obj.material.uniforms.uHoverUv.value = intersect.uv;
+        }
       }
     });
   }
