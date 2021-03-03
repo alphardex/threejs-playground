@@ -10,6 +10,10 @@ import distortImageMouseWaveFragmentShader from "../shaders/distortImage/mousewa
 import distortImagePostprocessingVertexShader from "../shaders/distortImage/postprocessing/vertex.glsl";
 // @ts-ignore
 import distortImagePostprocessingFragmentShader from "../shaders/distortImage/postprocessing/fragment.glsl";
+// @ts-ignore
+import distortImageHoverWaveVertexShader from "../shaders/distortImage/hoverwave/vertex.glsl";
+// @ts-ignore
+import distortImageHoverWaveFragmentShader from "../shaders/distortImage/hoverwave/fragment.glsl";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
@@ -17,7 +21,6 @@ import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 class DistortImage extends Base {
   clock!: THREE.Clock;
@@ -29,6 +32,8 @@ class DistortImage extends Base {
   shaderConfig!: any;
   shaderNames!: string[];
   params!: any;
+  customPass!: ShaderPass;
+  scrollSpeedTarget!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -47,21 +52,24 @@ class DistortImage extends Base {
         vertexShader: distortImageMouseWaveVertexShader,
         fragmentShader: distortImageMouseWaveFragmentShader,
       },
+      hoverwave: {
+        vertexShader: distortImageHoverWaveVertexShader,
+        fragmentShader: distortImageHoverWaveFragmentShader,
+      },
     };
     this.shaderNames = Object.keys(this.shaderConfig);
     this.params = {
       shaderName: "mousewave",
     };
+    this.scrollSpeedTarget = 0;
   }
   // 初始化
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createDistortImageMaterial();
     await preloadImages();
-    this.createImageDOMMeshObjs();
-    this.setImagesPosition();
+    this.createEverything();
     this.listenScroll();
     this.createLight();
     this.createRaycaster();
@@ -72,6 +80,12 @@ class DistortImage extends Base {
     this.addListeners();
     this.setLoop();
   }
+  // 创建一切
+  createEverything() {
+    this.createDistortImageMaterial();
+    this.createImageDOMMeshObjs();
+    this.setImagesPosition();
+  }
   // 获取跟屏幕同像素的fov角度
   getScreenFov() {
     return ky.rad2deg(
@@ -80,9 +94,10 @@ class DistortImage extends Base {
   }
   // 创建材质
   createDistortImageMaterial() {
+    const shaderConfig = this.shaderConfig[this.params.shaderName];
     const distortImageMaterial = new THREE.ShaderMaterial({
-      vertexShader: distortImageMouseWaveVertexShader,
-      fragmentShader: distortImageMouseWaveFragmentShader,
+      vertexShader: shaderConfig.vertexShader,
+      fragmentShader: shaderConfig.fragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -106,6 +121,11 @@ class DistortImage extends Base {
   }
   // 创建图片DOM物体
   createImageDOMMeshObjs() {
+    this.materials = [];
+    this.imageDOMMeshObjs.forEach((obj) => {
+      const { mesh } = obj;
+      this.scene.remove(mesh);
+    });
     const { images, scene, distortImageMaterial } = this;
     const imageDOMMeshObjs = images.map((image) => {
       const texture = new THREE.Texture(image);
@@ -125,11 +145,22 @@ class DistortImage extends Base {
       obj.setPosition();
     });
   }
+  // 设置滚动速度
+  setScrollSpeed() {
+    const scrollSpeed = this.scroll.scroll.instance.speed;
+    if (scrollSpeed) {
+      const scrollSpeedDelta = (scrollSpeed - this.scrollSpeedTarget) * 0.2;
+      this.scrollSpeedTarget += scrollSpeedDelta;
+    }
+  }
   // 监听滚动
   listenScroll() {
-    const scroll = new LocomotiveScroll();
+    const scroll = new LocomotiveScroll({
+      getSpeed: true,
+    });
     scroll.on("scroll", () => {
       this.setImagesPosition();
+      this.setScrollSpeed();
     });
     this.scroll = scroll;
   }
@@ -172,11 +203,15 @@ class DistortImage extends Base {
         tDiffuse: {
           value: null,
         },
+        uScrollSpeed: {
+          value: 0,
+        },
       },
     });
     customPass.renderToScreen = true;
     composer.addPass(customPass);
     this.composer = composer;
+    this.customPass = customPass;
   }
   // 动画
   update() {
@@ -186,12 +221,16 @@ class DistortImage extends Base {
         material.uniforms.uTime.value = elapsedTime;
       });
     }
+    if (this.customPass) {
+      const { scrollSpeedTarget } = this;
+      this.customPass.uniforms.uScrollSpeed.value = scrollSpeedTarget;
+    }
   }
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
     gui.add(this.params, "shaderName", this.shaderNames).onFinishChange(() => {
-      this.createDistortImageMaterial();
+      this.createEverything();
     });
   }
 }
