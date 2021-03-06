@@ -8,8 +8,8 @@ varying float vNoise;
 
 void main(){
     vec2 newUv=vUv;
-    vec4 oceanTexture=texture2D(uTexture,newUv);
-    vec3 color=oceanTexture.rgb;
+    vec4 texture=texture2D(uTexture,newUv);
+    vec3 color=texture.rgb;
     color.rgb+=.1*vNoise;
     gl_FragColor=vec4(color,1.);
 }

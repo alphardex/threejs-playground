@@ -9,7 +9,6 @@ varying vec2 vUv;
 
 void main(){
     vec2 pivot=vec2(.5);
-    float aspect=uResolution.x/uResolution.y;
     vec2 d=vUv-pivot;
     float rDist=length(d);
     float gr=pow(rDist/uRadius,uPower);
