@@ -121,14 +121,6 @@ class TwistedGallery extends Base {
       obj.setPosition();
     });
   }
-  // 设置滚动速度
-  setScrollSpeed() {
-    const scrollSpeed = this.scroll.scroll.instance.speed || 0;
-    gsap.to(this, {
-      scrollSpeed: Math.min(Math.abs(scrollSpeed), 2),
-      duration: 1,
-    });
-  }
   // 监听滚动
   listenScroll() {
     const scroll = new LocomotiveScroll({
@@ -195,6 +187,14 @@ class TwistedGallery extends Base {
     composer.addPass(customPass);
     this.composer = composer;
     this.customPass = customPass;
+  }
+  // 设置滚动速度
+  setScrollSpeed() {
+    const scrollSpeed = this.scroll.scroll.instance.speed || 0;
+    gsap.to(this, {
+      scrollSpeed: Math.min(Math.abs(scrollSpeed), 2),
+      duration: 1,
+    });
   }
   // 动画
   update() {

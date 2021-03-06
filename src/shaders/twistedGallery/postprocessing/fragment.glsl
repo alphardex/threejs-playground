@@ -1,6 +1,3 @@
-uniform float uTime;
-uniform vec2 uMouse;
-uniform vec2 uResolution;
 uniform sampler2D tDiffuse;
 uniform float uRadius;
 uniform float uPower;
