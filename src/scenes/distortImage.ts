@@ -3,17 +3,21 @@ import * as dat from "dat.gui";
 import ky from "kyouka";
 import { Base } from "./base";
 // @ts-ignore
-import distortImageMouseWaveVertexShader from "../shaders/distortImage/mousewave/vertex.glsl";
+import distortImageMouseWaveVertexShader from "../shaders/distortImage/main/mousewave/vertex.glsl";
 // @ts-ignore
-import distortImageMouseWaveFragmentShader from "../shaders/distortImage/mousewave/fragment.glsl";
+import distortImageMouseWaveFragmentShader from "../shaders/distortImage/main/mousewave/fragment.glsl";
 // @ts-ignore
-import distortImagePostprocessingVertexShader from "../shaders/distortImage/postprocessing/vertex.glsl";
+import distortImageScrollVertexShader from "../shaders/distortImage/postprocessing/scroll/vertex.glsl";
 // @ts-ignore
-import distortImagePostprocessingFragmentShader from "../shaders/distortImage/postprocessing/fragment.glsl";
+import distortImageScrollFragmentShader from "../shaders/distortImage/postprocessing/scroll/fragment.glsl";
 // @ts-ignore
-import distortImageHoverWaveVertexShader from "../shaders/distortImage/hoverwave/vertex.glsl";
+import distortImageHoverWaveVertexShader from "../shaders/distortImage/main/hoverwave/vertex.glsl";
 // @ts-ignore
-import distortImageHoverWaveFragmentShader from "../shaders/distortImage/hoverwave/fragment.glsl";
+import distortImageHoverWaveFragmentShader from "../shaders/distortImage/main/hoverwave/fragment.glsl";
+// @ts-ignore
+import distortImageNoiseVertexShader from "../shaders/distortImage/postprocessing/noise/vertex.glsl";
+// @ts-ignore
+import distortImageNoiseFragmentShader from "../shaders/distortImage/postprocessing/noise/fragment.glsl";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
@@ -31,6 +35,8 @@ class DistortImage extends Base {
   scroll!: any;
   shaderConfig!: any;
   shaderNames!: string[];
+  postprocessingShaderConfig!: any;
+  postprocessingShaderNames!: string[];
   params!: any;
   customPass!: ShaderPass;
   scrollSpeedTarget!: number;
@@ -58,8 +64,22 @@ class DistortImage extends Base {
       },
     };
     this.shaderNames = Object.keys(this.shaderConfig);
+    this.postprocessingShaderConfig = {
+      scroll: {
+        vertexShader: distortImageScrollVertexShader,
+        fragmentShader: distortImageScrollFragmentShader,
+      },
+      noise: {
+        vertexShader: distortImageNoiseVertexShader,
+        fragmentShader: distortImageNoiseFragmentShader,
+      },
+    };
+    this.postprocessingShaderNames = Object.keys(
+      this.postprocessingShaderConfig
+    );
     this.params = {
       shaderName: "mousewave",
+      postprocessing: "noise",
     };
     this.scrollSpeedTarget = 0;
   }
@@ -73,7 +93,6 @@ class DistortImage extends Base {
     this.listenScroll();
     this.createLight();
     this.createRaycaster();
-    this.createPostprocessingEffect();
     this.createOrbitControls();
     this.createDebugPanel();
     this.addListeners();
@@ -85,6 +104,7 @@ class DistortImage extends Base {
     this.createImageDOMMeshObjs();
     this.setImagesPosition();
     this.createMouseWaveEffect();
+    this.createPostprocessingEffect();
   }
   // 获取跟屏幕同像素的fov角度
   getScreenFov() {
@@ -198,14 +218,20 @@ class DistortImage extends Base {
     const composer = new EffectComposer(this.renderer);
     const renderPass = new RenderPass(this.scene, this.camera);
     composer.addPass(renderPass);
+    const shaderConfig = this.postprocessingShaderConfig[
+      this.params.postprocessing
+    ];
     const customPass = new ShaderPass({
-      vertexShader: distortImagePostprocessingVertexShader,
-      fragmentShader: distortImagePostprocessingFragmentShader,
+      vertexShader: shaderConfig.vertexShader,
+      fragmentShader: shaderConfig.fragmentShader,
       uniforms: {
         tDiffuse: {
           value: null,
         },
         uScrollSpeed: {
+          value: 0,
+        },
+        uTime: {
           value: 0,
         },
       },
@@ -226,6 +252,7 @@ class DistortImage extends Base {
     if (this.customPass) {
       const { scrollSpeedTarget } = this;
       this.customPass.uniforms.uScrollSpeed.value = scrollSpeedTarget;
+      this.customPass.uniforms.uTime.value = elapsedTime;
     }
   }
   // 创建调试面板
@@ -234,6 +261,11 @@ class DistortImage extends Base {
     gui.add(this.params, "shaderName", this.shaderNames).onFinishChange(() => {
       this.createEverything();
     });
+    gui
+      .add(this.params, "postprocessing", this.postprocessingShaderNames)
+      .onFinishChange(() => {
+        this.createEverything();
+      });
   }
 }
 
