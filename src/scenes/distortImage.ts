@@ -79,7 +79,7 @@ class DistortImage extends Base {
     );
     this.params = {
       shaderName: "mousewave",
-      postprocessing: "noise",
+      postprocessing: "scroll",
     };
     this.scrollSpeedTarget = 0;
   }
