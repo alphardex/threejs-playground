@@ -51,6 +51,11 @@
       <li>
         <router-link :to="{ name: 'DistortImage' }">DistortImage</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'TwistedGallery' }"
+          >TwistedGallery</router-link
+        >
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

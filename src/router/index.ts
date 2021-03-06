@@ -17,6 +17,7 @@ import KineticText from "../views/KineticText.vue";
 import LineWave from "../views/LineWave.vue";
 import RayMarching from "../views/RayMarching.vue";
 import DistortImage from "../views/DistortImage.vue";
+import TwistedGallery from "../views/TwistedGallery.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -103,6 +104,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/distort-image",
     name: "DistortImage",
     component: DistortImage,
+  },
+  {
+    path: "/twisted-gallery",
+    name: "TwistedGallery",
+    component: TwistedGallery,
   },
   {
     path: "/:pathMatch(.*)*",

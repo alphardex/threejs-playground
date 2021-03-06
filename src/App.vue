@@ -6,13 +6,8 @@
 import "@alphardex/aqua.css/dist/aqua.min.css";
 import "pannellum/build/pannellum.css";
 import { defineComponent } from "vue";
-import VConsole from "vconsole";
 
-export default defineComponent({
-  setup() {
-    new VConsole();
-  },
-});
+export default defineComponent({});
 </script>
 
 <style lang="scss">
@@ -183,6 +178,16 @@ a {
       }
     }
   }
+}
+
+// utils
+
+.w-240 {
+  width: 60rem;
+}
+
+.h-120 {
+  height: 30rem;
 }
 
 // animations
