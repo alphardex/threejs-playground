@@ -103,7 +103,7 @@ class DistortImage extends Base {
     this.createDistortImageMaterial();
     this.createImageDOMMeshObjs();
     this.setImagesPosition();
-    this.createMouseWaveEffect();
+    this.createMainEffect();
     this.createPostprocessingEffect();
   }
   // 获取跟屏幕同像素的fov角度
@@ -184,8 +184,8 @@ class DistortImage extends Base {
     });
     this.scroll = scroll;
   }
-  // 创建mousewave特效
-  createMouseWaveEffect() {
+  // 创建主要特效
+  createMainEffect() {
     const { imageDOMMeshObjs } = this;
     imageDOMMeshObjs.forEach((obj) => {
       const { el, mesh } = obj;
