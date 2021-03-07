@@ -172,9 +172,6 @@ class TwistedGallery extends Base {
         tDiffuse: {
           value: null,
         },
-        uTime: {
-          value: 0,
-        },
         uRadius: {
           value: 0.75,
         },
@@ -192,7 +189,7 @@ class TwistedGallery extends Base {
   setScrollSpeed() {
     const scrollSpeed = this.scroll.scroll.instance.speed || 0;
     gsap.to(this, {
-      scrollSpeed: Math.min(Math.abs(scrollSpeed), 2),
+      scrollSpeed: Math.min(Math.abs(scrollSpeed) * 1.25, 2),
       duration: 1,
     });
   }
