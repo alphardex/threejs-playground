@@ -18,6 +18,7 @@ import LineWave from "../views/LineWave.vue";
 import RayMarching from "../views/RayMarching.vue";
 import DistortImage from "../views/DistortImage.vue";
 import TwistedGallery from "../views/TwistedGallery.vue";
+import TwistedColorfulSphere from "../views/TwistedColorfulSphere.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -109,6 +110,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/twisted-gallery",
     name: "TwistedGallery",
     component: TwistedGallery,
+  },
+  {
+    path: "/twisted-colorful-sphere",
+    name: "TwistedColorfulSphere",
+    component: TwistedColorfulSphere,
   },
   {
     path: "/:pathMatch(.*)*",

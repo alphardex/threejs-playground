@@ -56,6 +56,11 @@
           >TwistedGallery</router-link
         >
       </li>
+      <li>
+        <router-link :to="{ name: 'TwistedColorfulSphere' }"
+          >TwistedColorfulSphere</router-link
+        >
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
