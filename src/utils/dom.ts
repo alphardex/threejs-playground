@@ -11,18 +11,26 @@ const getNormalizedMousePos = (e: MouseEvent | Touch) => {
 class DOMMeshObject {
   el!: Element;
   rect!: DOMRect;
-  mesh!: THREE.Mesh;
+  mesh!: THREE.Mesh | THREE.Points;
   constructor(
     el: Element,
     scene: THREE.Scene,
-    material: THREE.Material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    material: THREE.Material = new THREE.MeshBasicMaterial({ color: 0xff0000 }),
+    isPoints = false
   ) {
     this.el = el;
     const rect = el.getBoundingClientRect();
     this.rect = rect;
     const { width, height } = rect;
-    const geometry = new THREE.PlaneBufferGeometry(width, height, 10, 10);
-    const mesh = new THREE.Mesh(geometry, material);
+    const geometry = new THREE.PlaneBufferGeometry(
+      width,
+      height,
+      width,
+      height
+    );
+    const mesh = isPoints
+      ? new THREE.Points(geometry, material)
+      : new THREE.Mesh(geometry, material);
     scene.add(mesh);
     this.mesh = mesh;
   }

@@ -1,4 +1,7 @@
 <template>
+  <div class="absolute w-screen h-screen flex-center opacity-0">
+    <img src="../assets/particle-explode/1.jpg" class="w-60" alt="" />
+  </div>
   <div class="particle-explode w-full h-full bg-black"></div>
 </template>
 

@@ -6,28 +6,48 @@ import { Base } from "./base";
 import particleExplodeVertexShader from "../shaders/particleExplode/vertex.glsl";
 // @ts-ignore
 import particleExplodeFragmentShader from "../shaders/particleExplode/fragment.glsl";
-import { particleExplodeVideo1FirstUrl } from "@/consts/particleExplode";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { DOMMeshObject, preloadImages } from "@/utils/dom";
+import gsap from "gsap";
 
 class ParticleExplode extends Base {
   clock!: THREE.Clock;
   particleExplodeMaterial!: THREE.ShaderMaterial;
+  params!: any;
+  bloomPass!: UnrealBloomPass;
+  imageDOMMeshObj!: DOMMeshObject;
+  image!: Element;
+  isOpen!: boolean;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1500);
+    const fov = this.getScreenFov();
     this.perspectiveCameraParams = {
-      fov: 75,
+      fov,
       near: 0.1,
       far: 5000,
     };
+    this.params = {
+      exposure: 1,
+      bloomStrength: 0,
+      bloomThreshold: 0,
+      bloomRadius: 0,
+    };
+    this.isOpen = false;
   }
   // 初始化
-  init() {
+  async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createParticleExplodeMaterial();
+    await preloadImages();
     this.createPoints();
+    this.createPostprocessingEffect();
+    this.createClickEffect();
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
@@ -35,10 +55,14 @@ class ParticleExplode extends Base {
     this.addListeners();
     this.setLoop();
   }
+  // 获取跟屏幕同像素的fov角度
+  getScreenFov() {
+    return ky.rad2deg(
+      2 * Math.atan(window.innerHeight / 2 / this.cameraPosition.z)
+    );
+  }
   // 创建材质
   createParticleExplodeMaterial() {
-    const loader = new THREE.TextureLoader();
-    const texture = loader.load(particleExplodeVideo1FirstUrl);
     const particleExplodeMaterial = new THREE.ShaderMaterial({
       vertexShader: particleExplodeVertexShader,
       fragmentShader: particleExplodeFragmentShader,
@@ -57,7 +81,7 @@ class ParticleExplode extends Base {
           value: 0,
         },
         uTexture: {
-          value: texture,
+          value: null,
         },
       },
     });
@@ -65,36 +89,86 @@ class ParticleExplode extends Base {
   }
   // 创建点
   createPoints() {
-    const ratio = 0.3;
-    const geometry = new THREE.PlaneBufferGeometry(
-      480 * 1.5,
-      820 * 1.5,
-      480 * ratio,
-      820 * ratio
+    const image = document.querySelector("img")!;
+    this.image = image;
+    const texture = new THREE.Texture(image);
+    texture.needsUpdate = true;
+    const material = this.particleExplodeMaterial.clone();
+    material.uniforms.uTexture.value = texture;
+    const imageDOMMeshObj = new DOMMeshObject(
+      image,
+      this.scene,
+      material,
+      true
     );
-    const material = this.particleExplodeMaterial;
-    const points = new THREE.Points(geometry, material);
-    this.scene.add(points);
+    imageDOMMeshObj.setPosition();
+    this.imageDOMMeshObj = imageDOMMeshObj;
+  }
+  // 创建后期特效
+  createPostprocessingEffect() {
+    const renderScene = new RenderPass(this.scene, this.camera);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.5,
+      0.4,
+      0.85
+    );
+    bloomPass.threshold = this.params.bloomThreshold;
+    bloomPass.strength = this.params.bloomStrength;
+    bloomPass.radius = this.params.bloomRadius;
+    this.bloomPass = bloomPass;
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(renderScene);
+    this.composer.addPass(bloomPass);
+  }
+  // 创建点击效果
+  createClickEffect() {
+    const material = this.imageDOMMeshObj.mesh.material as any;
+    const image = this.image;
+    image.addEventListener("click", () => {
+      if (!this.isOpen) {
+        gsap.to(material.uniforms.uProgress, {
+          value: 3,
+          duration: 1,
+        });
+        this.isOpen = true;
+      } else {
+        gsap.to(material.uniforms.uProgress, {
+          value: 0,
+          duration: 1,
+        });
+        this.isOpen = false;
+      }
+    });
   }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.particleExplodeMaterial) {
-      this.particleExplodeMaterial.uniforms.uTime.value = elapsedTime;
-      this.particleExplodeMaterial.uniforms.uMouse.value = mousePos;
+    if (this.imageDOMMeshObj) {
+      const material = this.imageDOMMeshObj.mesh.material as any;
+      material.uniforms.uTime.value = elapsedTime;
+      material.uniforms.uMouse.value = mousePos;
     }
+    this.bloomPass.strength = this.params.bloomStrength;
   }
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
-    const uniforms = this.particleExplodeMaterial.uniforms;
+    const material = this.imageDOMMeshObj.mesh.material as any;
+    const uniforms = material.uniforms;
+    const params = this.params;
     gui
       .add(uniforms.uProgress, "value")
       .min(0)
-      .max(1)
+      .max(3)
       .step(0.01)
       .name("progress");
+    gui
+      .add(params, "bloomStrength")
+      .min(0)
+      .max(10)
+      .step(0.01);
   }
 }
 
