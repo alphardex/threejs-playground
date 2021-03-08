@@ -6,6 +6,7 @@ import { Base } from "./base";
 import travellingParticlesVertexShader from "../shaders/travellingParticles/vertex.glsl";
 // @ts-ignore
 import travellingParticlesFragmentShader from "../shaders/travellingParticles/fragment.glsl";
+import { getPointsInPath } from "@/utils/dom";
 
 interface Line {
   points: THREE.Vector3[];
@@ -83,29 +84,23 @@ class TravellingParticles extends Base {
       ...document.querySelectorAll(".svg-particles path"),
     ] as unknown) as SVGPathElement[];
     paths.forEach((path) => {
-      const pathLength = path.getTotalLength();
-      const pointCount = Math.floor(pathLength / this.pointSize);
-      const points = [];
-      for (let i = 0; i < pointCount; i++) {
-        // 获取点距离路径原点的距离，进而获取其坐标
-        const distance = (pathLength * i) / pointCount;
-        const point = path.getPointAtLength(distance);
-        if (point) {
-          let { x, y } = point;
-          // 使点在屏幕正中央
-          x -= this.params.mapOffsetX;
-          y -= this.params.mapOffsetY;
-          // 加点随机性
-          const randX = ky.randomNumberInRange(-1.5, 1.5);
-          const randY = ky.randomNumberInRange(-1.5, 1.5);
-          x += randX;
-          y += randY;
-          points.push(new THREE.Vector3(x, y, 0));
-        }
-      }
+      const points: THREE.Vector3[] = [];
+      const pathPoints = getPointsInPath(path, this.pointSize);
+      pathPoints.forEach((point) => {
+        let { x, y } = point;
+        // 使点在屏幕正中央
+        x -= this.params.mapOffsetX;
+        y -= this.params.mapOffsetY;
+        // 加点随机性
+        const randX = ky.randomNumberInRange(-1.5, 1.5);
+        const randY = ky.randomNumberInRange(-1.5, 1.5);
+        x += randX;
+        y += randY;
+        points.push(new THREE.Vector3(x, y, 0));
+      });
       const line = {
         points,
-        pointCount,
+        pointCount: points.length,
         currentPos: 0,
       } as Line;
       this.lines.push(line);
