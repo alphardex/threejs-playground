@@ -19,6 +19,8 @@ import RayMarching from "../views/RayMarching.vue";
 import DistortImage from "../views/DistortImage.vue";
 import TwistedGallery from "../views/TwistedGallery.vue";
 import TwistedColorfulSphere from "../views/TwistedColorfulSphere.vue";
+import ParticleExplode from "../views/ParticleExplode.vue";
+import component from "../views/Home.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -115,6 +117,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/twisted-colorful-sphere",
     name: "TwistedColorfulSphere",
     component: TwistedColorfulSphere,
+  },
+  {
+    path: "/particle-explode",
+    name: "ParticleExplode",
+    component: ParticleExplode,
   },
   {
     path: "/:pathMatch(.*)*",
