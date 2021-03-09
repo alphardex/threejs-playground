@@ -66,6 +66,11 @@
           >ParticleExplode</router-link
         >
       </li>
+      <li>
+        <router-link :to="{ name: 'GridIcosahedron' }"
+          >GridIcosahedron</router-link
+        >
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
