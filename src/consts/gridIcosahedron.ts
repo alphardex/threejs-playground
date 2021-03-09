@@ -1,3 +1,3 @@
-const gridIcosahedronTextureUrl = "./static/textures/ocean.jpg";
+const gridIcosahedronTextureUrl = "./static/textures/sky.jpg";
 
 export { gridIcosahedronTextureUrl };

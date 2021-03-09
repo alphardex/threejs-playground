@@ -18,6 +18,7 @@ import { gridIcosahedronTextureUrl } from "@/consts/gridIcosahedron";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import gsap from "gsap/all";
 
 class GridIcosahedron extends Base {
   clock!: THREE.Clock;
@@ -31,7 +32,7 @@ class GridIcosahedron extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
-      uNoiseDensity: 0.7,
+      uNoiseDensity: 0,
     };
     this.mouseSpeed = 0;
   }
@@ -173,14 +174,27 @@ class GridIcosahedron extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
+    const mouseSpeed = this.mouseSpeed * 5;
     if (this.gridIcosahedronShapeMaterial) {
       this.gridIcosahedronShapeMaterial.uniforms.uTime.value = elapsedTime;
       this.gridIcosahedronShapeMaterial.uniforms.uMouse.value = mousePos;
       this.scene.rotation.x = elapsedTime / 15;
       this.scene.rotation.y = elapsedTime / 15;
+      gsap.to(this.gridIcosahedronShapeMaterial.uniforms.uNoiseDensity, {
+        value: mouseSpeed,
+        duration: 2,
+      });
+      gsap.to(this.gridIcosahedronEdgeMaterial.uniforms.uNoiseDensity, {
+        value: mouseSpeed,
+        duration: 2,
+      });
     }
     if (this.customPass) {
       this.customPass.uniforms.uTime.value = elapsedTime;
+      gsap.to(this.customPass.uniforms.uRGBShift, {
+        value: mouseSpeed / 10,
+        duration: 2,
+      });
     }
   }
   // 追踪鼠标速度
@@ -201,6 +215,9 @@ class GridIcosahedron extends Base {
       }
       lastMouseX = mousex;
       lastMouseY = mousey;
+    });
+    document.addEventListener("mouseleave", () => {
+      this.mouseSpeed = 0;
     });
   }
   // 创建调试
