@@ -10,7 +10,7 @@ export default defineComponent({
   name: "GridIcosahedron",
   setup() {
     const start = () => {
-      const gridIcosahedron = new GridIcosahedron(".grid-icosahedron", true);
+      const gridIcosahedron = new GridIcosahedron(".grid-icosahedron", false);
       gridIcosahedron.init();
     };
     onMounted(() => {

@@ -49,7 +49,6 @@ class GridIcosahedron extends Base {
     this.createLight();
     this.trackMouseSpeed();
     this.createOrbitControls();
-    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -219,17 +218,6 @@ class GridIcosahedron extends Base {
     document.addEventListener("mouseleave", () => {
       this.mouseSpeed = 0;
     });
-  }
-  // 创建调试
-  createDebugPanel() {
-    const gui = new dat.GUI();
-    const uniforms = this.customPass.uniforms;
-    gui
-      .add(uniforms.uRGBShift, "value")
-      .min(0)
-      .max(1)
-      .step(0.01)
-      .name("RGBShift");
   }
 }
 
