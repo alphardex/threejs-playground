@@ -1,4 +1,5 @@
-#pragma glslify:edgeFactorTri=require(../../../shaders/modules/edgeFactorTri)
+#pragma glslify:edgeFactorTri=require(../../modules/edgeFactorTri)
+#pragma glslify:invert=require(../../modules/invert.glsl)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -7,10 +8,6 @@ uniform float uWidth;
 
 varying vec2 vUv;
 varying vec3 vCenter;
-
-float invert(float n){
-    return 1.-n;
-}
 
 void main(){
     float line=invert(edgeFactorTri(vCenter,uWidth));

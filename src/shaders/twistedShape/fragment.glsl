@@ -1,7 +1,7 @@
 varying vec3 vNormal;
 
 void main(){
-    vec3 view_nv=normalize(vNormal);
-    vec3 nv_color=view_nv*.5+.5;
-    gl_FragColor=vec4(nv_color,1.);
+    // https://stackoverflow.com/questions/47710377/how-to-implement-meshnormalmaterial-in-three-js-by-glsl
+    vec3 color=.5*vNormal+.5;
+    gl_FragColor=vec4(color,1.);
 }

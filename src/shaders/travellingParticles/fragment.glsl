@@ -1,10 +1,8 @@
+#pragma glslify:invert=require(../modules/invert.glsl)
+
 varying float vOpacity;
 
 uniform vec3 uColor;
-
-float invert(float n){
-    return 1.-n;
-}
 
 void main(){
     vec2 uv=vec2(gl_PointCoord.x,invert(gl_PointCoord.y));

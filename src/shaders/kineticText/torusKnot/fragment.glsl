@@ -1,3 +1,5 @@
+#pragma glslify:invert=require(../../modules/invert.glsl)
+
 uniform sampler2D uTexture;
 uniform float uTime;
 uniform float uVelocity;
@@ -5,10 +7,6 @@ uniform float uShadow;
 
 varying vec2 vUv;
 varying vec3 vPosition;
-
-vec3 invert(vec3 n){
-    return 1.-n;
-}
 
 void main(){
     vec2 repeat=vec2(12.,3.);

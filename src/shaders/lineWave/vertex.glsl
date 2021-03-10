@@ -1,19 +1,7 @@
 #pragma glslify:snoise=require(glsl-noise/simplex/3d)
+#pragma glslify:invert=require(../modules/invert.glsl)
+#pragma glslify:readDepth=require(../modules/readDepth.glsl)
 
-// From: three.js\src\renderers\shaders\ShaderChunk\packing.glsl.js
-float viewZToPerspectiveDepth(const in float viewZ,const in float near,const in float far){
-    return((near+viewZ)*far)/((far-near)*viewZ);
-}
-
-float viewZToOrthographicDepth(const in float viewZ,const in float near,const in float far){
-    return(viewZ+near)/(near-far);
-}
-
-float perspectiveDepthToViewZ(const in float invClipZ,const in float near,const in float far){
-    return(near*far)/((far-near)*invClipZ-far);
-}
-
-// From: three.js\examples\webgl_depth_texture.html
 uniform float cameraNear;
 uniform float cameraFar;
 uniform sampler2D uDepth;
@@ -24,19 +12,9 @@ varying float vDepth;
 
 attribute float aY;
 
-float readDepth(sampler2D depthSampler,vec2 coord){
-    float fragCoordZ=texture2D(depthSampler,coord).x;
-    float viewZ=perspectiveDepthToViewZ(fragCoordZ,cameraNear,cameraFar);
-    return viewZToOrthographicDepth(viewZ,cameraNear,cameraFar);
-}
-
-float invert(float n){
-    return 1.-n;
-}
-
 void main(){
     vec2 newUv=vec2(uv.x,aY);
-    float depth=readDepth(uDepth,newUv);
+    float depth=readDepth(uDepth,newUv,cameraNear,cameraFar);
     vec3 pos=position;
     pos.z+=invert(depth)*uDepthScale;
     pos.y+=.01*snoise(vec3(newUv*30.,uTime/2.));

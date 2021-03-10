@@ -1,5 +1,5 @@
 #pragma glslify:cnoise=require(glsl-noise/classic/3d)
-#pragma glslify:getEyeVector=require(../../../shaders/modules/getEyeVector)
+#pragma glslify:getEyeVector=require(../../modules/getEyeVector)
 
 varying vec2 vUv;
 varying vec3 vNormal;

@@ -1,3 +1,5 @@
+#pragma glslify:cosPalette=require(../modules/cosPalette)
+
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
@@ -10,12 +12,6 @@ uniform vec3 uPhase;
 varying vec2 vUv;
 varying vec3 vNormal;
 varying float vNoise;
-
-// https://iquilezles.org/www/articles/palettes/palettes.htm
-vec3 cosPalette(in float t,in vec3 a,in vec3 b,in vec3 c,in vec3 d)
-{
-    return a+b*cos(6.28318*(c*t+d));
-}
 
 void main(){
     float noise=vNoise*uIntensity;

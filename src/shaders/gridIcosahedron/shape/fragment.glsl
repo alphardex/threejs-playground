@@ -1,13 +1,13 @@
-#pragma glslify:fresnel=require(../../../shaders/modules/fresnel)
+#pragma glslify:computeNormal=require(../../modules/computeNormal)
+#pragma glslify:hash22=require(../../modules/hash22)
+#pragma glslify:fresnel=require(../../modules/fresnel)
+#pragma glslify:invert=require(../../modules/invert.glsl)
 
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
 uniform sampler2D uTexture;
 uniform float uRefractionStrength;
-
-#pragma glslify:computeNormal=require(../../../shaders/modules/computeNormal)
-#pragma glslify:hash22=require(../../../shaders/modules/hash22)
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -23,6 +23,6 @@ void main(){
     uv+=refraction.xy;
     vec4 color=texture2D(uTexture,uv);
     float F=fresnel(0.,1.,2.,vEyeVector,cNormal);
-    color*=(1.-F);
+    color*=invert(F);
     gl_FragColor=color;
 }

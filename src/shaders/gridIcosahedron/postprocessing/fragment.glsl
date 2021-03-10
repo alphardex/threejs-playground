@@ -1,5 +1,5 @@
-#pragma glslify:hash=require(../../../shaders/modules/hash)
-#pragma glslify:RGBShift=require(../../../shaders/modules/RGBShift)
+#pragma glslify:hash=require(../../modules/hash)
+#pragma glslify:RGBShift=require(../../modules/RGBShift)
 
 uniform float uTime;
 uniform vec2 uMouse;
