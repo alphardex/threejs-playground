@@ -1,33 +1,17 @@
+#pragma glslify:fresnel=require(../../../shaders/modules/fresnel)
+
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
 uniform sampler2D uTexture;
 uniform float uRefractionStrength;
 
+#pragma glslify:computeNormal=require(../../../shaders/modules/computeNormal)
+#pragma glslify:hash22=require(../../../shaders/modules/hash22)
+
 varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vEyeVector;
-
-// https://community.khronos.org/t/getting-the-normal-with-dfdx-and-dfdy/70177
-vec3 computeNormal(vec3 normal){
-    vec3 X=dFdx(normal);
-    vec3 Y=dFdy(normal);
-    vec3 cNormal=normalize(cross(X,Y));
-    return cNormal;
-}
-
-// http://glslsandbox.com/e#47182.0
-vec2 hash22(vec2 p){
-    p=fract(p*vec2(5.3983,5.4427));
-    p+=dot(p.yx,p.xy+vec2(21.5351,14.3137));
-    return fract(vec2(p.x*p.y*95.4337,p.x*p.y*97.597));
-}
-
-// https://www.shadertoy.com/view/4scSW4
-float fresnel(float bias,float scale,float power,vec3 I,vec3 N)
-{
-    return bias+scale*pow(1.+dot(I,N),power);
-}
 
 void main(){
     vec3 cNormal=computeNormal(vNormal);

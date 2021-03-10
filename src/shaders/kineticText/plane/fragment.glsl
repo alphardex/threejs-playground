@@ -1,3 +1,5 @@
+#pragma glslify:map=require(glsl-map)
+
 uniform sampler2D uTexture;
 uniform float uTime;
 uniform float uVelocity;
@@ -9,13 +11,6 @@ varying float vWave;
 
 vec3 invert(vec3 n){
     return 1.-n;
-}
-
-// map函数：将本身的范围转换为另一个范围
-// https://gist.github.com/companje/29408948f1e8be54dd5733a74ca49bb9
-// https://stackoverflow.com/questions/17134839/how-does-the-map-function-in-processing-work
-float map(float value,float min1,float max1,float min2,float max2){
-    return min2+(value-min1)*(max2-min2)/(max1-min1);
 }
 
 void main(){

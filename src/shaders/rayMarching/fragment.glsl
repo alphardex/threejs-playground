@@ -1,3 +1,10 @@
+#pragma glslify:rotate=require(glsl-rotate)
+#pragma glslify:sdSphere=require('glsl-sdf-primitives/sdSphere')
+#pragma glslify:sdBox=require('glsl-sdf-primitives/sdBox')
+#pragma glslify:smin=require(glsl-smooth-min)
+#pragma glslify:matcap=require(matcap)
+#pragma glslify:fresnel=require(../../shaders/modules/fresnel)
+
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
@@ -13,47 +20,10 @@ varying vec2 vUv;
 const float EPSILON=.0001;
 const float PI=3.14159265359;
 
-// https://gist.github.com/yiwenl/3f804e80d0930e34a0b33359259b556c
-mat4 rotationMatrix(vec3 axis,float angle){
-    axis=normalize(axis);
-    float s=sin(angle);
-    float c=cos(angle);
-    float oc=1.-c;
-    
-    return mat4(oc*axis.x*axis.x+c,oc*axis.x*axis.y-axis.z*s,oc*axis.z*axis.x+axis.y*s,0.,
-        oc*axis.x*axis.y+axis.z*s,oc*axis.y*axis.y+c,oc*axis.y*axis.z-axis.x*s,0.,
-        oc*axis.z*axis.x-axis.y*s,oc*axis.y*axis.z+axis.x*s,oc*axis.z*axis.z+c,0.,
-    0.,0.,0.,1.);
-}
-
-vec3 rotate(vec3 v,vec3 axis,float angle){
-    mat4 m=rotationMatrix(axis,angle);
-    return(m*vec4(v,1.)).xyz;
-}
-
 vec3 background(vec2 uv){
     float dist=length(uv-vec2(.5));
     vec3 bg=mix(vec3(.3),vec3(.0),dist);
     return bg;
-}
-
-// https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
-float sdSphere(vec3 p,float r)
-{
-    return length(p)-r;
-}
-
-float sdBox(vec3 p,vec3 b)
-{
-    vec3 q=abs(p)-b;
-    return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.);
-}
-
-// https://www.iquilezles.org/www/articles/smin/smin.htm
-float smin(float a,float b,float k)
-{
-    float h=clamp(.5+.5*(b-a)/k,0.,1.);
-    return mix(b,a,h)-k*h*(1.-h);
 }
 
 float movingSphere(vec3 p,float shape){
@@ -93,16 +63,7 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     return depth;
 }
 
-vec2 centerUv(vec2 uv){
-    uv=2.*uv-1.;
-    float aspect=uResolution.x/uResolution.y;
-    uv.x*=aspect;
-    return uv;
-}
-
-// https://www.iquilezles.org/www/articles/normalsSDF/normalsSDF.htm
-vec3 calcNormal(in vec3 p)
-{
+vec3 calcNormal(in vec3 p){
     const float eps=.0001;
     const vec2 h=vec2(eps,0);
     return normalize(vec3(sdf(p+h.xyy)-sdf(p-h.xyy),
@@ -110,17 +71,11 @@ vec3 calcNormal(in vec3 p)
     sdf(p+h.yyx)-sdf(p-h.yyx)));
 }
 
-// https://github.com/hughsk/matcap/blob/master/matcap.glsl
-vec2 matcap(vec3 eye,vec3 normal){
-    vec3 reflected=reflect(eye,normal);
-    float m=2.8284271247461903*sqrt(reflected.z+1.);
-    return reflected.xy/m+.5;
-}
-
-// https://www.shadertoy.com/view/4scSW4
-float fresnel(float bias,float scale,float power,vec3 I,vec3 N)
-{
-    return bias+scale*pow(1.+dot(I,N),power);
+vec2 centerUv(vec2 uv){
+    uv=2.*uv-1.;
+    float aspect=uResolution.x/uResolution.y;
+    uv.x*=aspect;
+    return uv;
 }
 
 void main(){

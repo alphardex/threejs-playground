@@ -18,7 +18,7 @@ import { gridIcosahedronTextureUrl } from "@/consts/gridIcosahedron";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import gsap from "gsap/all";
+import gsap from "gsap";
 
 class GridIcosahedron extends Base {
   clock!: THREE.Clock;
