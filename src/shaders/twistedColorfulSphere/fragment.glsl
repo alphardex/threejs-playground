@@ -1,4 +1,4 @@
-#pragma glslify:cosPalette=require(../modules/cosPalette)
+#pragma glslify:cosPalette=require(glsl-cos-palette)
 
 uniform float uTime;
 uniform vec2 uMouse;

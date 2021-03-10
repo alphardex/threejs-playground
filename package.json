@@ -12,6 +12,7 @@
     "cannon-es": "^0.16.0",
     "core-js": "^3.6.5",
     "dat.gui": "^0.7.7",
+    "glsl-cos-palette": "^1.0.0",
     "glsl-map": "^1.0.1",
     "glsl-noise": "0.0.0",
     "glsl-rotate": "^1.1.0",
