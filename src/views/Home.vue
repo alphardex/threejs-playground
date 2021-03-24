@@ -71,6 +71,9 @@
           >GridIcosahedron</router-link
         >
       </li>
+      <li>
+        <router-link :to="{ name: 'Sun' }">Sun</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
@@ -96,5 +99,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

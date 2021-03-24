@@ -21,6 +21,7 @@ import TwistedGallery from "../views/TwistedGallery.vue";
 import TwistedColorfulSphere from "../views/TwistedColorfulSphere.vue";
 import ParticleExplode from "../views/ParticleExplode.vue";
 import GridIcosahedron from "../views/GridIcosahedron.vue";
+import Sun from "../views/Sun.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -127,6 +128,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/grid-icosahedron",
     name: "GridIcosahedron",
     component: GridIcosahedron,
+  },
+  {
+    path: "/sun",
+    name: "Sun",
+    component: Sun,
   },
   {
     path: "/:pathMatch(.*)*",
