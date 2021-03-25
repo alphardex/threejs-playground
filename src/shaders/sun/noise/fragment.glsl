@@ -23,9 +23,9 @@ float fbm4d(vec4 p){
 }
 
 void main(){
-    vec4 p=vec4(vPosition*3.,uTime*.05);
+    vec4 p=vec4(vPosition*4.,uTime*.025);
     float noise=fbm4d(p);
-    vec4 p1=vec4(vPosition*2.,uTime*.05);
+    vec4 p1=vec4(vPosition*2.,uTime*.25);
     float spot=max(snoise4(p1),0.);
     vec4 color=vec4(noise);
     color*=mix(1.,spot,.7);
