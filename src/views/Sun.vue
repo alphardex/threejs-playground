@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Sun",
   setup() {
     const start = () => {
-      const sun = new Sun(".sun", true);
+      const sun = new Sun(".sun", false);
       sun.init();
     };
     onMounted(() => {
