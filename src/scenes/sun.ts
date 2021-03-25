@@ -58,7 +58,7 @@ class Sun extends Base {
     });
     this.sunNoiseMaterial = sunNoiseMaterial;
   }
-  // 创建立方体渲染目标，将其作为太阳本体的噪声材质
+  // 创建立方体离屏渲染目标，将其作为太阳本体的噪声贴图
   createCubeRt() {
     const cubeRt = new THREE.WebGLCubeRenderTarget(256);
     this.cubeRt = cubeRt;
@@ -94,6 +94,15 @@ class Sun extends Base {
         },
         uNoiseTexture: {
           value: null,
+        },
+        uVelocity: {
+          value: 0.05,
+        },
+        uBrightness: {
+          value: 0.33,
+        },
+        uStagger: {
+          value: 16,
         },
       },
     });
