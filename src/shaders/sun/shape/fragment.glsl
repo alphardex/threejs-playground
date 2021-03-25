@@ -1,4 +1,5 @@
 #pragma glslify:fresnel=require(../../modules/fresnel)
+#pragma glslify:firePalette=require(../../modules/firePalette)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -23,16 +24,12 @@ float layerSum(){
     return sum;
 }
 
-vec3 sunColor(float brightness){
-    brightness*=.25;
-    return vec3(brightness,pow(brightness,2.),pow(brightness,4.))/.25*.8;
-}
-
 void main(){
     float brightness=layerSum();
     brightness=4.*brightness+1.;
     float F=fresnel(0.,1.,2.,vEyeVector,vNormal);
     brightness+=F;
-    vec4 color=vec4(sunColor(brightness),1.);
+    brightness*=.5;
+    vec4 color=vec4(firePalette(brightness),1.);
     gl_FragColor=color;
 }

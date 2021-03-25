@@ -10,11 +10,16 @@ import sunNoiseFragmentShader from "../shaders/sun/noise/fragment.glsl";
 import sunShapeVertexShader from "../shaders/sun/shape/vertex.glsl";
 // @ts-ignore
 import sunShapeFragmentShader from "../shaders/sun/shape/fragment.glsl";
+// @ts-ignore
+import sunRingVertexShader from "../shaders/sun/ring/vertex.glsl";
+// @ts-ignore
+import sunRingFragmentShader from "../shaders/sun/ring/fragment.glsl";
 
 class Sun extends Base {
   clock!: THREE.Clock;
   sunNoiseMaterial!: THREE.ShaderMaterial;
   sunShapeMaterial!: THREE.ShaderMaterial;
+  sunRingMaterial!: THREE.ShaderMaterial;
   cubeRt!: THREE.WebGLCubeRenderTarget;
   cubeCamera!: THREE.CubeCamera;
   cubeScene!: THREE.Scene;
@@ -32,6 +37,8 @@ class Sun extends Base {
     this.createCubeRt();
     this.createSunShapeMaterial();
     this.createSun();
+    this.createSunRingMaterial();
+    this.createSunRing();
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
@@ -117,6 +124,35 @@ class Sun extends Base {
       material,
     });
   }
+  // 创建太阳环材质
+  createSunRingMaterial() {
+    const sunRingMaterial = new THREE.ShaderMaterial({
+      vertexShader: sunRingVertexShader,
+      fragmentShader: sunRingFragmentShader,
+      side: THREE.BackSide,
+      uniforms: {
+        uTime: {
+          value: 0,
+        },
+        uMouse: {
+          value: new THREE.Vector2(0, 0),
+        },
+        uResolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+      },
+    });
+    this.sunRingMaterial = sunRingMaterial;
+  }
+  // 创建太阳环
+  createSunRing() {
+    const geometry = new THREE.SphereBufferGeometry(1.2, 100, 100);
+    const material = this.sunRingMaterial;
+    this.createMesh({
+      geometry,
+      material,
+    });
+  }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
@@ -128,6 +164,8 @@ class Sun extends Base {
       this.sunShapeMaterial.uniforms.uTime.value = elapsedTime;
       this.sunShapeMaterial.uniforms.uMouse.value = mousePos;
       this.sunShapeMaterial.uniforms.uNoiseTexture.value = this.cubeRt.texture;
+      this.sunRingMaterial.uniforms.uTime.value = elapsedTime;
+      this.sunRingMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }

@@ -23,8 +23,8 @@ void main(){
     
     vec3 pos=position;
     float displacement1=uVelocity*uTime;
-    float displacement2=uVelocity*(uTime+uStagger*1.);
-    float displacement3=uVelocity*(uTime+uStagger*2.);
+    float displacement2=uVelocity*(uTime*1.5+uStagger*1.);
+    float displacement3=uVelocity*(uTime*2.+uStagger*2.);
     vec3 xy=vec3(1.,1.,0.);
     vec3 xz=vec3(1.,0.,1.);
     vec3 yz=vec3(0.,1.,1.);
