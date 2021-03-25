@@ -1,4 +1,3 @@
-#pragma glslify:fresnel=require(../../modules/fresnel)
 #pragma glslify:invert=require(../../modules/invert)
 #pragma glslify:firePalette=require(../../modules/firePalette)
 
