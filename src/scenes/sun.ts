@@ -31,7 +31,7 @@ class Sun extends Base {
     this.createSunNoiseMaterial();
     this.createCubeRt();
     this.createSunShapeMaterial();
-    this.createSphere();
+    this.createSun();
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
@@ -58,22 +58,25 @@ class Sun extends Base {
     });
     this.sunNoiseMaterial = sunNoiseMaterial;
   }
-  // 创建立方体渲染目标
+  // 创建立方体渲染目标，将其作为太阳本体的噪声材质
   createCubeRt() {
-    // https://threejs.org/examples/?q=cubemap#webgl_materials_cubemap_dynamic
-    const cubeRt = new THREE.WebGLCubeRenderTarget(256, {
-      format: THREE.RGBFormat,
-      generateMipmaps: true,
-      minFilter: THREE.LinearMipmapLinearFilter,
-      encoding: THREE.sRGBEncoding, // temporary -- to prevent the material's shader from recompiling every frame
-    });
+    const cubeRt = new THREE.WebGLCubeRenderTarget(256);
     this.cubeRt = cubeRt;
     const cubeCamera = new THREE.CubeCamera(0.1, 10, cubeRt);
     this.cubeCamera = cubeCamera;
     const cubeScene = new THREE.Scene();
+    const geometry = new THREE.SphereBufferGeometry(1, 100, 100);
+    const material = this.sunNoiseMaterial;
+    this.createMesh(
+      {
+        geometry,
+        material,
+      },
+      cubeScene
+    );
     this.cubeScene = cubeScene;
   }
-  // 创建球体材质
+  // 创建太阳本体材质
   createSunShapeMaterial() {
     const sunShapeMaterial = new THREE.ShaderMaterial({
       vertexShader: sunShapeVertexShader,
@@ -89,15 +92,15 @@ class Sun extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        uTexture: {
+        uNoiseTexture: {
           value: null,
         },
       },
     });
     this.sunShapeMaterial = sunShapeMaterial;
   }
-  // 创建球体
-  createSphere() {
+  // 创建太阳
+  createSun() {
     const geometry = new THREE.SphereBufferGeometry(1, 100, 100);
     const material = this.sunShapeMaterial;
     this.createMesh({
@@ -110,10 +113,12 @@ class Sun extends Base {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
     if (this.sunNoiseMaterial && this.sunShapeMaterial) {
-      this.cubeCamera.update(this.renderer, this.scene);
+      this.cubeCamera.update(this.renderer, this.cubeScene);
       this.sunNoiseMaterial.uniforms.uTime.value = elapsedTime;
       this.sunNoiseMaterial.uniforms.uMouse.value = mousePos;
-      this.sunShapeMaterial.uniforms.uTexture.value = this.cubeRt.texture;
+      this.sunShapeMaterial.uniforms.uTime.value = elapsedTime;
+      this.sunShapeMaterial.uniforms.uMouse.value = mousePos;
+      this.sunShapeMaterial.uniforms.uNoiseTexture.value = this.cubeRt.texture;
     }
   }
 }
