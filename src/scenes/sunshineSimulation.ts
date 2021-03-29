@@ -29,6 +29,7 @@ class SunshineSimulation extends Base {
     this.createBuilding();
     this.createSunLight();
     this.getSunshineInfo(new Date(), { lat: 120.75224, lng: 31.65381 });
+    this.setSunPosition();
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
@@ -95,22 +96,46 @@ class SunshineSimulation extends Base {
     const times = SunCalc.getTimes(date, lat, lng);
     const sunriseStr = `${times.sunrise.getHours()}:${times.sunrise.getMinutes()}`;
     const sunrisePos = SunCalc.getPosition(times.sunrise, lat, lng);
+    const sunrisePosCalc = this.calcSunPos(sunrisePos);
+    const sunsetStr = `${times.sunset.getHours()}:${times.sunset.getMinutes()}`;
+    const sunsetPos = SunCalc.getPosition(times.sunset, lat, lng);
+    const sunsetPosCalc = this.calcSunPos(sunsetPos);
     const sunshineInfo = {
       times,
       sunriseStr,
       sunrisePos,
+      sunrisePosCalc,
+      sunsetStr,
+      sunsetPos,
+      sunsetPosCalc,
     };
     this.sunshineInfo = sunshineInfo;
     console.log(sunshineInfo);
     return sunshineInfo;
   }
+  // 计算太阳位置
+  calcSunPos(pos: any) {
+    const { azimuth, altitude } = pos;
+    const z = Math.sin(altitude);
+    const L = Math.sqrt(1 - z ** 2);
+    const x = -L * Math.sin(azimuth);
+    const y = -L * Math.cos(azimuth);
+    return { L, x, y, z };
+  }
+  // 设置太阳位置
+  setSunPosition() {
+    const { sunshineInfo } = this;
+    const { sunrisePosCalc } = sunshineInfo;
+    const { x, y, z } = sunrisePosCalc;
+    this.dirLight.position.set(x, y, z);
+  }
   // 动画
   update() {
     const delta = this.clock.getDelta();
     const elapsedTime = this.clock.getElapsedTime();
-    const { dirLight, dirGroup } = this;
-    dirGroup.rotation.y += 0.7 * delta;
-    dirLight.position.z = 17 + Math.sin(elapsedTime * 0.001) * 5;
+    // const { dirLight, dirGroup } = this;
+    // dirGroup.rotation.y += 0.7 * delta;
+    // dirLight.position.z = 17 + Math.sin(elapsedTime * 0.001) * 5;
   }
 }
 
