@@ -1,5 +1,5 @@
 <template>
-  <div class="sunshine-simulation w-full h-full bg-blue-grad-1"></div>
+  <div class="sunshine-simulation w-full h-full bg-blue-2"></div>
 </template>
 
 <script lang="ts">

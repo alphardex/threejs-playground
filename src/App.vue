@@ -42,6 +42,7 @@ body {
   --black-color-transparent-2: #{transparentize(black, 0.5)};
   --orange-color-1: #f6b64c;
   --blue-color-1: #2c3e50;
+  --blue-color-2: #91a2aa;
 }
 
 // reset
@@ -86,6 +87,10 @@ a {
 
 .bg-blue-1 {
   background: var(--blue-color-1);
+}
+
+.bg-blue-2 {
+  background: var(--blue-color-2);
 }
 
 // common
