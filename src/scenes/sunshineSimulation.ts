@@ -10,13 +10,13 @@ import SunCalc from "suncalc";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;
-  templateMaterial!: THREE.ShaderMaterial;
   sunshineInfo!: any;
   dirLight!: THREE.DirectionalLight;
+  dirGroup!: THREE.Group;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 5, 15);
+    this.cameraPosition = new THREE.Vector3(8, 6, 4);
   }
   // 初始化
   init() {
@@ -24,67 +24,19 @@ class SunshineSimulation extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.enableShadow();
-    this.createSunshineSimulationMaterial();
+    this.useVSMShadowMap();
     this.createGround();
     this.createBuilding();
-    this.getSunshineInfo(new Date(), { lat: 120.75224, lng: 31.65381 });
     this.createSunLight();
+    this.getSunshineInfo(new Date(), { lat: 120.75224, lng: 31.65381 });
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
-  // 创建材质
-  createSunshineSimulationMaterial() {
-    const templateMaterial = new THREE.ShaderMaterial({
-      vertexShader: templateVertexShader,
-      fragmentShader: templateFragmentShader,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: {
-          value: 0,
-        },
-        uMouse: {
-          value: new THREE.Vector2(0, 0),
-        },
-        uResolution: {
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-        },
-      },
-    });
-    this.templateMaterial = templateMaterial;
-  }
-  // 创建平面
-  createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
-    const material = this.templateMaterial;
-    this.createMesh({
-      geometry,
-      material,
-    });
-  }
-  // 创建太阳光
-  createSunLight() {
-    const dirLight = new THREE.DirectionalLight(
-      new THREE.Color("#ffffff"),
-      0.5
-    );
-    dirLight.position.set(3, 12, 17);
-    dirLight.castShadow = true;
-    dirLight.shadow.camera.near = 0.1;
-    dirLight.shadow.camera.far = 500;
-    dirLight.shadow.camera.right = 17;
-    dirLight.shadow.camera.left = -17;
-    dirLight.shadow.camera.top = 17;
-    dirLight.shadow.camera.bottom = -17;
-    dirLight.shadow.mapSize.width = 512;
-    dirLight.shadow.mapSize.height = 512;
-    dirLight.shadow.radius = 4;
-    dirLight.shadow.bias = -0.0005;
-    this.dirLight = dirLight;
-    this.scene.add(dirLight);
-    const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.4);
-    this.scene.add(ambiLight);
+  // 使用VSM
+  useVSMShadowMap() {
+    this.renderer.shadowMap.type = THREE.VSMShadowMap;
   }
   // 创建地面
   createGround() {
@@ -110,6 +62,33 @@ class SunshineSimulation extends Base {
     mesh.receiveShadow = true;
     mesh.castShadow = true;
   }
+  // 创建太阳光
+  createSunLight() {
+    const dirLight = new THREE.DirectionalLight(
+      new THREE.Color("#ffffff"),
+      0.5
+    );
+    dirLight.position.set(3, 12, 17);
+    dirLight.castShadow = true;
+    dirLight.shadow.camera.near = 0.1;
+    dirLight.shadow.camera.far = 500;
+    dirLight.shadow.camera.right = 17;
+    dirLight.shadow.camera.left = -17;
+    dirLight.shadow.camera.top = 17;
+    dirLight.shadow.camera.bottom = -17;
+    dirLight.shadow.mapSize.width = 512;
+    dirLight.shadow.mapSize.height = 512;
+    dirLight.shadow.radius = 4;
+    dirLight.shadow.bias = -0.0005;
+    this.dirLight = dirLight;
+    this.scene.add(dirLight);
+    const dirGroup = new THREE.Group();
+    dirGroup.add(dirLight);
+    this.dirGroup = dirGroup;
+    this.scene.add(dirGroup);
+    const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.4);
+    this.scene.add(ambiLight);
+  }
   // 获取某时某点的光照信息
   getSunshineInfo(date = new Date(), coord: any) {
     const { lat, lng } = coord;
@@ -127,12 +106,11 @@ class SunshineSimulation extends Base {
   }
   // 动画
   update() {
+    const delta = this.clock.getDelta();
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
-    if (this.templateMaterial) {
-      this.templateMaterial.uniforms.uTime.value = elapsedTime;
-      this.templateMaterial.uniforms.uMouse.value = mousePos;
-    }
+    const { dirLight, dirGroup } = this;
+    dirGroup.rotation.y += 0.7 * delta;
+    dirLight.position.z = 17 + Math.sin(elapsedTime * 0.001) * 5;
   }
 }
 
