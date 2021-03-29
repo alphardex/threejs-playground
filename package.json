@@ -22,7 +22,7 @@
     "glslify": "^7.1.1",
     "gsap": "^3.5.1",
     "imagesloaded": "^4.1.4",
-    "kyouka": "^1.2.2",
+    "kyouka": "^1.2.5",
     "load-bmfont": "^1.4.1",
     "locomotive-scroll": "^4.1.0",
     "matcap": "0.0.2",
@@ -82,7 +82,8 @@
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-this-alias": "off",
-      "@typescript-eslint/no-var-requires": "off"
+      "@typescript-eslint/no-var-requires": "off",
+      "prefer-const": "off"
     }
   },
   "browserslist": [

@@ -2,21 +2,23 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
-// @ts-ignore
-import templateVertexShader from "../shaders/template/vertex.glsl";
-// @ts-ignore
-import templateFragmentShader from "../shaders/template/fragment.glsl";
 import SunCalc from "suncalc";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;
-  sunshineInfo!: any;
   dirLight!: THREE.DirectionalLight;
   dirGroup!: THREE.Group;
+  params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(8, 6, 4);
+    this.params = {
+      coord: { lat: 120.75224, lng: 31.65381 },
+      beginDate: new Date("2021-03-29"),
+      endDate: new Date("2021-03-30"),
+      interval: 5,
+    };
   }
   // 初始化
   init() {
@@ -28,8 +30,7 @@ class SunshineSimulation extends Base {
     this.createGround();
     this.createBuilding();
     this.createSunLight();
-    this.getSunshineInfo(new Date(), { lat: 120.75224, lng: 31.65381 });
-    this.setSunPosition();
+    this.moveSun(this.params.interval);
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
@@ -93,24 +94,12 @@ class SunshineSimulation extends Base {
   // 获取某时某点的光照信息
   getSunshineInfo(date = new Date(), coord: any) {
     const { lat, lng } = coord;
-    const times = SunCalc.getTimes(date, lat, lng);
-    const sunriseStr = `${times.sunrise.getHours()}:${times.sunrise.getMinutes()}`;
-    const sunrisePos = SunCalc.getPosition(times.sunrise, lat, lng);
-    const sunrisePosCalc = this.calcSunPos(sunrisePos);
-    const sunsetStr = `${times.sunset.getHours()}:${times.sunset.getMinutes()}`;
-    const sunsetPos = SunCalc.getPosition(times.sunset, lat, lng);
-    const sunsetPosCalc = this.calcSunPos(sunsetPos);
+    const sunshinePos = SunCalc.getPosition(date, lat, lng);
+    const sunshinePosCalc = this.calcSunPos(sunshinePos);
     const sunshineInfo = {
-      times,
-      sunriseStr,
-      sunrisePos,
-      sunrisePosCalc,
-      sunsetStr,
-      sunsetPos,
-      sunsetPosCalc,
+      sunshinePos,
+      sunshinePosCalc,
     };
-    this.sunshineInfo = sunshineInfo;
-    console.log(sunshineInfo);
     return sunshineInfo;
   }
   // 计算太阳位置
@@ -123,19 +112,27 @@ class SunshineSimulation extends Base {
     return { L, x, y, z };
   }
   // 设置太阳位置
-  setSunPosition() {
-    const { sunshineInfo } = this;
-    const { sunrisePosCalc } = sunshineInfo;
-    const { x, y, z } = sunrisePosCalc;
+  setSunPosition(sunshineInfo: any) {
+    const { sunshinePosCalc } = sunshineInfo;
+    const { x, y, z } = sunshinePosCalc;
     this.dirLight.position.set(x, y, z);
+    this.dirLight.position.multiplyScalar(50);
+  }
+  // 移动太阳，分钟为单位
+  async moveSun(interval = 1) {
+    const { params } = this;
+    let { beginDate, endDate } = params;
+    while (beginDate <= endDate) {
+      beginDate = ky.addMinutesToDate(beginDate, interval);
+      const sunshineInfo = this.getSunshineInfo(beginDate, this.params.coord);
+      this.setSunPosition(sunshineInfo);
+      await ky.sleep(1000);
+    }
   }
   // 动画
   update() {
     const delta = this.clock.getDelta();
     const elapsedTime = this.clock.getElapsedTime();
-    // const { dirLight, dirGroup } = this;
-    // dirGroup.rotation.y += 0.7 * delta;
-    // dirLight.position.z = 17 + Math.sin(elapsedTime * 0.001) * 5;
   }
 }
 
