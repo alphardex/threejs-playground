@@ -22,6 +22,7 @@ import TwistedColorfulSphere from "../views/TwistedColorfulSphere.vue";
 import ParticleExplode from "../views/ParticleExplode.vue";
 import GridIcosahedron from "../views/GridIcosahedron.vue";
 import Sun from "../views/Sun.vue";
+import SunshineSimulation from "../views/SunshineSimulation.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -133,6 +134,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/sun",
     name: "Sun",
     component: Sun,
+  },
+  {
+    path: "/sunshine-simulation",
+    name: "SunshineSimulation",
+    component: SunshineSimulation,
   },
   {
     path: "/:pathMatch(.*)*",

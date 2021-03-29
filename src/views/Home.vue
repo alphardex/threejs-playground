@@ -74,6 +74,11 @@
       <li>
         <router-link :to="{ name: 'Sun' }">Sun</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'SunshineSimulation' }">
+          SunshineSimulation
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
