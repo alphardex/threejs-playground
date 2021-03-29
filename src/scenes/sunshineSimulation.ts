@@ -16,7 +16,7 @@ class SunshineSimulation extends Base {
     this.params = {
       coord: { lat: 120.75224, lng: 31.65381 },
       date: new Date("2021-03-29"),
-      interval: 60, // 经过时间，1分钟为基础单位
+      interval: 30, // 经过时间，1分钟为基础单位
       freq: 1000, // 更新频率，1毫秒为基础单位
       timeScale: 0.01, // 时间变化幅度
     };
@@ -130,7 +130,7 @@ class SunshineSimulation extends Base {
     let currentTime = sunrise;
     while (currentTime <= sunset) {
       currentTime = ky.addMinutesToDate(currentTime, interval * timeScale);
-      console.log(currentTime);
+      console.log(`${currentTime.getHours()}:${currentTime.getMinutes()}`);
       const sunshineInfo = this.getSunshineInfoOneTime(
         currentTime,
         this.params.coord
@@ -138,6 +138,11 @@ class SunshineSimulation extends Base {
       this.setSunPosition(sunshineInfo);
       await ky.sleep(freq * timeScale);
     }
+  }
+  // 动画
+  update() {
+    const elapsedTime = this.clock.getElapsedTime();
+    const mousePos = this.mousePos;
   }
 }
 
