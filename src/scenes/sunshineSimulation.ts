@@ -9,6 +9,7 @@ class SunshineSimulation extends Base {
   dirLight!: THREE.DirectionalLight;
   sunshineTimes!: any;
   sunPosTotal!: any[];
+  currentSunPos!: any;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -31,7 +32,7 @@ class SunshineSimulation extends Base {
     };
   }
   // 初始化
-  init() {
+  async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
@@ -40,11 +41,14 @@ class SunshineSimulation extends Base {
     this.createGround();
     this.createBuilding();
     this.createSunLight();
-    this.simulateSun();
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
+    while (this.params) {
+      this.simulateSun();
+      await ky.sleep(8000);
+    }
   }
   // 使用VSM阴影
   useVSMShadowMap() {
@@ -181,8 +185,9 @@ class SunshineSimulation extends Base {
     const { sunPosTotal, params } = this;
     const { freq, timeScale } = params;
     let i = 0;
-    while (i < sunPosTotal.length) {
+    while (i <= sunPosTotal.length) {
       const currentSunPos = sunPosTotal[i];
+      this.currentSunPos = currentSunPos;
       const { pos, time } = currentSunPos;
       console.log(time);
       this.setSunPosition(pos);
@@ -194,6 +199,13 @@ class SunshineSimulation extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
+  }
+  // 状态
+  get status() {
+    const { currentSunPos } = this;
+    return {
+      currentSunPos,
+    };
   }
 }
 
