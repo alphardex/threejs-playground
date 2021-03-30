@@ -8,17 +8,26 @@ class SunshineSimulation extends Base {
   clock!: THREE.Clock;
   dirLight!: THREE.DirectionalLight;
   sunshineTimes!: any;
+  sunPosTotal!: any[];
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(8, 12, 4);
+    this.perspectiveCameraParams = {
+      fov: 75,
+      near: 0.1,
+      far: 1000,
+    };
+    this.cameraPosition = new THREE.Vector3(0, -250, 400);
     this.params = {
-      coord: { lat: 120.75224, lng: 31.65381 },
-      date: new Date("2021-03-29"),
-      interval: 30, // 经过时间，1分钟为基础单位
+      coord: { lat: 34.827203, lng: 117.348048 },
+      date: new Date(),
+      interval: 1, // 经过时间，1分钟为基础单位
       freq: 1000, // 更新频率，1毫秒为基础单位
       timeScale: 0.01, // 时间变化幅度
+      radius: 250,
+      radiusScale: 2,
+      useHelper: false,
     };
   }
   // 初始化
@@ -31,23 +40,21 @@ class SunshineSimulation extends Base {
     this.createGround();
     this.createBuilding();
     this.createSunLight();
-    this.getSunshineInfoOneDay();
-    this.moveSun();
+    this.simulateSun();
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
-  // 使用VSM
+  // 使用VSM阴影
   useVSMShadowMap() {
     this.renderer.shadowMap.type = THREE.VSMShadowMap;
   }
   // 创建地面
   createGround() {
-    const geometry = new THREE.PlaneGeometry(200, 200);
+    const geometry = new THREE.PlaneGeometry(400, 400);
     const material = new THREE.MeshPhongMaterial({
       color: 0x999999,
-      shininess: 0,
       specular: 0x111111,
       side: THREE.DoubleSide,
     });
@@ -55,13 +62,12 @@ class SunshineSimulation extends Base {
       geometry,
       material,
     });
-    mesh.rotation.x = -Math.PI / 2;
     mesh.receiveShadow = true;
   }
   // 创建大楼
   createBuilding() {
-    const geometry = new THREE.BoxBufferGeometry(2, 4, 2);
-    const position = new THREE.Vector3(0, 2, 0);
+    const geometry = new THREE.BoxBufferGeometry(50, 50, 200);
+    const position = new THREE.Vector3(0, 0, 100);
     const mesh = this.createMesh({ geometry, position });
     mesh.receiveShadow = true;
     mesh.castShadow = true;
@@ -69,22 +75,37 @@ class SunshineSimulation extends Base {
   // 创建太阳光
   createSunLight() {
     const dirLight = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 1);
-    dirLight.position.set(3, 12, 17);
+    dirLight.position.set(-483, 53, 150);
     dirLight.castShadow = true;
-    dirLight.shadow.camera.near = 0.1;
-    dirLight.shadow.camera.far = 500;
-    dirLight.shadow.camera.right = 17;
-    dirLight.shadow.camera.left = -17;
-    dirLight.shadow.camera.top = 17;
-    dirLight.shadow.camera.bottom = -17;
-    dirLight.shadow.mapSize.width = 512;
-    dirLight.shadow.mapSize.height = 512;
-    dirLight.shadow.radius = 4;
-    dirLight.shadow.bias = -0.0005;
+    dirLight.shadow.camera.near = 0.5;
+    dirLight.shadow.camera.far = 10000;
+    const d = this.params.radius;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    dirLight.shadow.bias = -0.0001;
     this.dirLight = dirLight;
     this.scene.add(dirLight);
+    if (this.params.useHelper) {
+      const dirLightHelper = new THREE.DirectionalLightHelper(dirLight);
+      this.scene.add(dirLightHelper);
+      const dirLightShadowHelper = new THREE.CameraHelper(
+        dirLight.shadow.camera
+      );
+      this.scene.add(dirLightShadowHelper);
+    }
     const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.4);
     this.scene.add(ambiLight);
+  }
+  // 模拟太阳
+  simulateSun() {
+    this.getSunshineInfoOneDay();
+    this.getAllSunPositions();
+    this.updateCameraPositionNoon();
+    this.moveSun();
   }
   // 获取全天光照信息
   getSunshineInfoOneDay() {
@@ -94,6 +115,15 @@ class SunshineSimulation extends Base {
     const sunshineTimes = SunCalc.getTimes(date, lat, lng);
     this.sunshineTimes = sunshineTimes;
     return sunshineTimes;
+  }
+  // 计算太阳位置
+  calcSunPos(pos: any) {
+    const { azimuth, altitude } = pos;
+    const z = Math.sin(altitude);
+    const L = Math.sqrt(1 - z ** 2);
+    const x = -L * Math.sin(azimuth);
+    const y = -L * Math.cos(azimuth);
+    return { L, x, y, z };
   }
   // 获取某时某点的光照信息
   getSunshineInfoOneTime(date = new Date(), coord: any) {
@@ -106,36 +136,57 @@ class SunshineSimulation extends Base {
     };
     return sunshineInfo;
   }
-  // 计算太阳位置
-  calcSunPos(pos: any) {
-    const { azimuth, altitude } = pos;
-    const z = Math.sin(altitude);
-    const L = Math.sqrt(1 - z ** 2);
-    const x = -L * Math.sin(azimuth);
-    const y = -L * Math.cos(azimuth);
-    return { L, x, y, z };
+  // 获取全天的太阳位置
+  getAllSunPositions() {
+    const sunPosTotal = [];
+    const { params, sunshineTimes } = this;
+    const { interval } = params;
+    const { sunrise, sunset } = sunshineTimes;
+    let currentTime = sunrise;
+    while (currentTime <= sunset) {
+      currentTime = ky.addMinutesToDate(currentTime, interval);
+      const time = `${currentTime.getHours()}:${currentTime.getMinutes()}`;
+      const pos = this.getSunshineInfoOneTime(currentTime, this.params.coord);
+      sunPosTotal.push({
+        pos,
+        time,
+      });
+    }
+    console.log(sunPosTotal);
+    this.sunPosTotal = sunPosTotal;
+  }
+  // 将相机位置设为中午时的太阳位置
+  updateCameraPositionNoon() {
+    const { sunPosTotal } = this;
+    const middleId = Math.floor(sunPosTotal.length / 2);
+    const noonPos = sunPosTotal[middleId].pos;
+    const { sunshinePosCalc } = noonPos;
+    const { x, y, z } = sunshinePosCalc;
+    this.camera.position.set(x, y, z);
+    this.camera.position.multiplyScalar(
+      this.params.radius * this.params.radiusScale
+    );
   }
   // 设置太阳位置
   setSunPosition(sunshineInfo: any) {
     const { sunshinePosCalc } = sunshineInfo;
     const { x, y, z } = sunshinePosCalc;
-    this.dirLight.position.set(x, y + 1, z);
-    this.dirLight.position.multiplyScalar(50);
+    this.dirLight.position.set(x, y, z);
+    this.dirLight.position.multiplyScalar(
+      this.params.radius * this.params.radiusScale
+    );
   }
   // 移动太阳
   async moveSun() {
-    const { params, sunshineTimes } = this;
-    const { interval, freq, timeScale } = params;
-    const { sunrise, sunset } = sunshineTimes;
-    let currentTime = sunrise;
-    while (currentTime <= sunset) {
-      currentTime = ky.addMinutesToDate(currentTime, interval * timeScale);
-      console.log(`${currentTime.getHours()}:${currentTime.getMinutes()}`);
-      const sunshineInfo = this.getSunshineInfoOneTime(
-        currentTime,
-        this.params.coord
-      );
-      this.setSunPosition(sunshineInfo);
+    const { sunPosTotal, params } = this;
+    const { freq, timeScale } = params;
+    let i = 0;
+    while (i < sunPosTotal.length) {
+      const currentSunPos = sunPosTotal[i];
+      const { pos, time } = currentSunPos;
+      console.log(time);
+      this.setSunPosition(pos);
+      i += 1;
       await ky.sleep(freq * timeScale);
     }
   }
