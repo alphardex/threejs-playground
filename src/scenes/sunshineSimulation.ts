@@ -102,13 +102,13 @@ class SunshineSimulation extends Base {
   }
   // 模拟太阳
   simulateSun() {
-    this.getSunshineInfoOneDay();
+    this.getSunshineTimesOneDay();
     this.getAllSunPositions();
     this.updateCameraPositionNoon();
     this.moveSun();
   }
-  // 获取全天光照信息
-  getSunshineInfoOneDay() {
+  // 获取全天的光照时间
+  getSunshineTimesOneDay() {
     const { params } = this;
     const { coord, date } = params;
     const { lat, lng } = coord;
@@ -125,8 +125,8 @@ class SunshineSimulation extends Base {
     const y = -L * Math.cos(azimuth);
     return { L, x, y, z };
   }
-  // 获取某时某点的光照信息
-  getSunshineInfoOneTime(date = new Date(), coord: any) {
+  // 获取某时某点的光照位置
+  getSunshinePosOneTime(date = new Date(), coord: any) {
     const { lat, lng } = coord;
     const sunshinePos = SunCalc.getPosition(date, lat, lng);
     const sunshinePosCalc = this.calcSunPos(sunshinePos);
@@ -136,17 +136,17 @@ class SunshineSimulation extends Base {
     };
     return sunshineInfo;
   }
-  // 获取全天的太阳位置
+  // 获取全天的光照位置
   getAllSunPositions() {
     const sunPosTotal = [];
     const { params, sunshineTimes } = this;
-    const { interval } = params;
+    const { interval, coord } = params;
     const { sunrise, sunset } = sunshineTimes;
     let currentTime = sunrise;
     while (currentTime <= sunset) {
       currentTime = ky.addMinutesToDate(currentTime, interval);
       const time = `${currentTime.getHours()}:${currentTime.getMinutes()}`;
-      const pos = this.getSunshineInfoOneTime(currentTime, this.params.coord);
+      const pos = this.getSunshinePosOneTime(currentTime, coord);
       sunPosTotal.push({
         pos,
         time,
@@ -155,7 +155,7 @@ class SunshineSimulation extends Base {
     console.log(sunPosTotal);
     this.sunPosTotal = sunPosTotal;
   }
-  // 将相机位置设为中午时的太阳位置
+  // 将相机位置设为中午时的光照位置
   updateCameraPositionNoon() {
     const { sunPosTotal } = this;
     const middleId = Math.floor(sunPosTotal.length / 2);
@@ -167,9 +167,9 @@ class SunshineSimulation extends Base {
       this.params.radius * this.params.radiusScale
     );
   }
-  // 设置太阳位置
-  setSunPosition(sunshineInfo: any) {
-    const { sunshinePosCalc } = sunshineInfo;
+  // 将太阳光位置设置为光照位置
+  setSunPosition(pos: any) {
+    const { sunshinePosCalc } = pos;
     const { x, y, z } = sunshinePosCalc;
     this.dirLight.position.set(x, y, z);
     this.dirLight.position.multiplyScalar(
