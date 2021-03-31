@@ -154,6 +154,7 @@ class SunshineSimulation extends Base {
       });
     }
     this.sunshineInfoTotal = sunshineInfoTotal;
+    this.currentSunshineInfo = sunshineInfoTotal[0];
   }
   // 将相机位置设为中午时的光照位置
   updateCameraPositionNoon() {
@@ -194,14 +195,6 @@ class SunshineSimulation extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-  }
-  // 状态
-  get status() {
-    const { sunshineInfoTotal, currentSunshineInfo } = this;
-    return {
-      sunshineInfoTotal,
-      currentSunshineInfo,
-    };
   }
 }
 
