@@ -11,6 +11,7 @@ class SunshineSimulation extends Base {
   sunshineTimes!: any;
   sunshineInfoTotal!: SunshineInfo[];
   currentSunshineInfo!: SunshineInfo;
+  currentSunshineInfoId!: number;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -47,6 +48,7 @@ class SunshineSimulation extends Base {
     this.addListeners();
     this.setLoop();
     this.getAllSunshineData();
+    this.setSunshineInfoById();
     this.updateCameraPositionNoon();
   }
   // 使用VSM阴影
@@ -154,7 +156,6 @@ class SunshineSimulation extends Base {
       });
     }
     this.sunshineInfoTotal = sunshineInfoTotal;
-    this.currentSunshineInfo = sunshineInfoTotal[0];
   }
   // 将相机位置设为中午时的光照位置
   updateCameraPositionNoon() {
@@ -178,7 +179,7 @@ class SunshineSimulation extends Base {
     );
   }
   // 根据ID设置当前的光照信息
-  setSunshineInfoById(id: number) {
+  setSunshineInfoById(id: number = this.currentSunshineInfoId) {
     const { sunshineInfoTotal } = this;
     const currentSunshineInfo = sunshineInfoTotal[id];
     this.currentSunshineInfo = currentSunshineInfo;

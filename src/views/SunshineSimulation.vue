@@ -38,14 +38,15 @@ export default defineComponent({
         true
       );
       sunshineSimulation.init();
-      console.log(sunshineSimulation);
       state.sunshineSimulation = sunshineSimulation;
     };
     const updateSunPos = () => {
       if (state.sunshineSimulation) {
         const { currentSunshineInfoId } = state;
-        state.sunshineSimulation.setSunshineInfoById(currentSunshineInfoId);
+        state.sunshineSimulation.currentSunshineInfoId = currentSunshineInfoId;
+        state.sunshineSimulation.setSunshineInfoById();
         state.sunshineSimulation.setSunPosition();
+        console.log(state.sunshineSimulation);
       }
     };
     watchEffect(() => {
