@@ -169,13 +169,19 @@ class SunshineSimulation extends Base {
     );
   }
   // 将太阳光位置设置为光照位置
-  setSunPosition(pos: SunshinePos) {
+  setSunPosition(pos: SunshinePos = this.currentSunshineInfo.pos) {
     const { sunshinePosCalc } = pos;
     const { x, y, z } = sunshinePosCalc;
     this.dirLight.position.set(x, y, z);
     this.dirLight.position.multiplyScalar(
       this.params.radius * this.params.radiusScale
     );
+  }
+  // 根据ID设置当前的光照信息
+  setSunshineInfoById(id: number) {
+    const { sunshineInfoTotal } = this;
+    const currentSunshineInfo = sunshineInfoTotal[id];
+    this.currentSunshineInfo = currentSunshineInfo;
   }
   // 移动太阳
   async moveSun() {

@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, toRefs, watchEffect } from "vue";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
@@ -41,6 +41,16 @@ export default defineComponent({
       console.log(sunshineSimulation);
       state.sunshineSimulation = sunshineSimulation;
     };
+    const updateSunPos = () => {
+      if (state.sunshineSimulation) {
+        const { currentSunshineInfoId } = state;
+        state.sunshineSimulation.setSunshineInfoById(currentSunshineInfoId);
+        state.sunshineSimulation.setSunPosition();
+      }
+    };
+    watchEffect(() => {
+      updateSunPos();
+    });
     onMounted(() => {
       start();
     });
