@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
-import { defineComponent, onMounted, reactive, toRefs, watch } from "vue";
+import { defineComponent, onMounted, reactive, toRefs, watchEffect } from "vue";
 import ky from "kyouka";
 
 interface State {
@@ -74,15 +74,10 @@ export default defineComponent({
         await ky.sleep(freq * timeScale);
       }
     };
-    watch(
-      () => {
-        updateSunPos();
-        updateDate();
-      },
-      {
-        immediate: false,
-      }
-    );
+    watchEffect(() => {
+      updateSunPos();
+      updateDate();
+    });
     onMounted(() => {
       start();
       moveSun();
