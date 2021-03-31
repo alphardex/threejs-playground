@@ -1,21 +1,58 @@
 <template>
   <div class="sunshine-simulation w-full h-full bg-blue-2"></div>
-  <div class="fixed top-4 h-center" v-if="status && status.currentSunPos">
-    <span>当前时间：</span>
-    <span>{{ status.currentSunPos.time }}</span>
+  <div class="fixed top-4 h-center" v-if="status">
+    <div>
+      <span>当前时间：</span>
+      <span>{{ currentSunPos.time }}</span>
+    </div>
+    <div>
+      <input
+        type="range"
+        class="form-control-range"
+        :max="status.sunPosTotal.length - 1"
+        v-model.number="currentPosId"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  watchEffect,
+} from "vue";
 import ky from "kyouka";
+
+interface State {
+  status: any;
+  currentPosId: number;
+  sunshineSimulation: SunshineSimulation | null;
+}
 
 export default defineComponent({
   name: "SunshineSimulation",
   setup() {
-    const state = reactive<any>({
+    const state = reactive<State>({
       status: null,
+      currentPosId: 0,
+      sunshineSimulation: null,
+    });
+    const currentSunPos = computed(() => {
+      return state.status ? state.status.sunPosTotal[state.currentPosId] : null;
+    });
+    const moveSunToOnePos = (currentSunPos: any) => {
+      if (currentSunPos) {
+        const { pos } = currentSunPos;
+        state.sunshineSimulation.setSunPosition(pos);
+      }
+    };
+    watchEffect(() => {
+      moveSunToOnePos(currentSunPos.value);
     });
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
@@ -23,15 +60,13 @@ export default defineComponent({
         true
       );
       sunshineSimulation.init();
-      while (sunshineSimulation) {
-        state.status = { ...sunshineSimulation.status };
-        await ky.sleep(1);
-      }
+      state.sunshineSimulation = sunshineSimulation;
+      state.status = { ...sunshineSimulation.status };
     };
     onMounted(() => {
       start();
     });
-    return { ...toRefs(state) };
+    return { ...toRefs(state), currentSunPos };
   },
 });
 </script>

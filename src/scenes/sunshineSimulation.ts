@@ -45,7 +45,7 @@ class SunshineSimulation extends Base {
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
-    this.simulateSun();
+    this.getAllSunshineData();
   }
   // 使用VSM阴影
   useVSMShadowMap() {
@@ -101,12 +101,11 @@ class SunshineSimulation extends Base {
     const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.4);
     this.scene.add(ambiLight);
   }
-  // 模拟太阳
-  simulateSun() {
+  // 获取光照全部数据
+  getAllSunshineData() {
     this.getSunshineTimesOneDay();
     this.getAllSunPositions();
     this.updateCameraPositionNoon();
-    this.moveSun();
   }
   // 获取全天的光照时间
   getSunshineTimesOneDay() {
@@ -198,8 +197,9 @@ class SunshineSimulation extends Base {
   }
   // 状态
   get status() {
-    const { currentSunPos } = this;
+    const { sunPosTotal, currentSunPos } = this;
     return {
+      sunPosTotal,
       currentSunPos,
     };
   }
