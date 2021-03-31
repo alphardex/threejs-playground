@@ -189,6 +189,16 @@ class SunshineSimulation extends Base {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
   }
+  // 状态
+  get status() {
+    const length = this.sunshineInfoTotal.length - 1;
+    const sunriseTime = this.sunshineInfoTotal[0].time;
+    const sunsetTime = this.sunshineInfoTotal[length].time;
+    return {
+      sunriseTime,
+      sunsetTime,
+    };
+  }
 }
 
 export default SunshineSimulation;
