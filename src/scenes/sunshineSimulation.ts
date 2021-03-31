@@ -37,6 +37,7 @@ class SunshineSimulation extends Base {
   init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.setCameraUpZ();
     this.createRenderer();
     this.enableShadow();
     this.useVSMShadowMap();
@@ -50,6 +51,10 @@ class SunshineSimulation extends Base {
     this.getAllSunshineData();
     this.setSunshineInfoById();
     this.updateCameraPositionNoon();
+  }
+  // 将相机的方向设为z轴
+  setCameraUpZ() {
+    this.camera.up.set(0, 0, 1);
   }
   // 使用VSM阴影
   useVSMShadowMap() {
