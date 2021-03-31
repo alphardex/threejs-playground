@@ -18,3 +18,19 @@ export interface MeshObject {
   material?: THREE.Material;
   position?: THREE.Vector3;
 }
+
+export interface Point3D {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface SunshineInfo {
+  time: string;
+  pos: SunshinePos;
+}
+
+export interface SunshinePos {
+  sunshinePos: any;
+  sunshinePosCalc: Point3D;
+}

@@ -3,13 +3,14 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 import SunCalc from "suncalc";
+import { SunshineInfo, SunshinePos } from "@/types";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;
   dirLight!: THREE.DirectionalLight;
   sunshineTimes!: any;
-  sunPosTotal!: any[];
-  currentSunPos!: any;
+  sunshineInfoTotal!: SunshineInfo[];
+  currentSunshineInfo!: SunshineInfo;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -46,6 +47,7 @@ class SunshineSimulation extends Base {
     this.addListeners();
     this.setLoop();
     this.getAllSunshineData();
+    this.updateCameraPositionNoon();
   }
   // 使用VSM阴影
   useVSMShadowMap() {
@@ -104,8 +106,7 @@ class SunshineSimulation extends Base {
   // 获取光照全部数据
   getAllSunshineData() {
     this.getSunshineTimesOneDay();
-    this.getAllSunPositions();
-    this.updateCameraPositionNoon();
+    this.getAllSunshineInfo();
   }
   // 获取全天的光照时间
   getSunshineTimesOneDay() {
@@ -136,9 +137,9 @@ class SunshineSimulation extends Base {
     };
     return sunshineInfo;
   }
-  // 获取全天的光照位置
-  getAllSunPositions() {
-    const sunPosTotal = [];
+  // 获取全天的光照信息（信息包括时间和位置）
+  getAllSunshineInfo() {
+    const sunshineInfoTotal = [];
     const { params, sunshineTimes } = this;
     const { interval, coord } = params;
     const { sunrise, sunset } = sunshineTimes;
@@ -147,19 +148,18 @@ class SunshineSimulation extends Base {
       currentTime = ky.addMinutesToDate(currentTime, interval);
       const time = `${currentTime.getHours()}:${currentTime.getMinutes()}`;
       const pos = this.getSunshinePosOneTime(currentTime, coord);
-      sunPosTotal.push({
+      sunshineInfoTotal.push({
         pos,
         time,
       });
     }
-    console.log(sunPosTotal);
-    this.sunPosTotal = sunPosTotal;
+    this.sunshineInfoTotal = sunshineInfoTotal;
   }
   // 将相机位置设为中午时的光照位置
   updateCameraPositionNoon() {
-    const { sunPosTotal } = this;
-    const middleId = Math.floor(sunPosTotal.length / 2);
-    const noonPos = sunPosTotal[middleId].pos;
+    const { sunshineInfoTotal } = this;
+    const middleId = Math.floor(sunshineInfoTotal.length / 2);
+    const noonPos = sunshineInfoTotal[middleId].pos;
     const { sunshinePosCalc } = noonPos;
     const { x, y, z } = sunshinePosCalc;
     this.camera.position.set(x, y, z);
@@ -168,7 +168,7 @@ class SunshineSimulation extends Base {
     );
   }
   // 将太阳光位置设置为光照位置
-  setSunPosition(pos: any) {
+  setSunPosition(pos: SunshinePos) {
     const { sunshinePosCalc } = pos;
     const { x, y, z } = sunshinePosCalc;
     this.dirLight.position.set(x, y, z);
@@ -178,13 +178,13 @@ class SunshineSimulation extends Base {
   }
   // 移动太阳
   async moveSun() {
-    const { sunPosTotal, params } = this;
+    const { sunshineInfoTotal, params } = this;
     const { freq, timeScale } = params;
     let i = 0;
-    while (i < sunPosTotal.length) {
-      const currentSunPos = sunPosTotal[i];
-      this.currentSunPos = currentSunPos;
-      const { pos } = currentSunPos;
+    while (i < sunshineInfoTotal.length) {
+      const currentSunshineInfo = sunshineInfoTotal[i];
+      this.currentSunshineInfo = currentSunshineInfo;
+      const { pos } = currentSunshineInfo;
       this.setSunPosition(pos);
       i += 1;
       await ky.sleep(freq * timeScale);
@@ -197,10 +197,10 @@ class SunshineSimulation extends Base {
   }
   // 状态
   get status() {
-    const { sunPosTotal, currentSunPos } = this;
+    const { sunshineInfoTotal, currentSunshineInfo } = this;
     return {
-      sunPosTotal,
-      currentSunPos,
+      sunshineInfoTotal,
+      currentSunshineInfo,
     };
   }
 }

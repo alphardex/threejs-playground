@@ -3,14 +3,14 @@
   <div class="fixed top-4 h-center" v-if="status">
     <div>
       <span>当前时间：</span>
-      <span>{{ currentSunPos.time }}</span>
+      <span>{{ currentSunshineInfo.time }}</span>
     </div>
     <div>
       <input
         type="range"
         class="form-control-range"
-        :max="status.sunPosTotal.length - 1"
-        v-model.number="currentPosId"
+        :max="status.sunshineInfoTotal.length - 1"
+        v-model.number="currentSunshineInfoId"
       />
     </div>
   </div>
@@ -26,11 +26,10 @@ import {
   toRefs,
   watchEffect,
 } from "vue";
-import ky from "kyouka";
 
 interface State {
   status: any;
-  currentPosId: number;
+  currentSunshineInfoId: number;
   sunshineSimulation: SunshineSimulation | null;
 }
 
@@ -39,20 +38,22 @@ export default defineComponent({
   setup() {
     const state = reactive<State>({
       status: null,
-      currentPosId: 0,
+      currentSunshineInfoId: 0,
       sunshineSimulation: null,
     });
-    const currentSunPos = computed(() => {
-      return state.status ? state.status.sunPosTotal[state.currentPosId] : null;
+    const currentSunshineInfo = computed(() => {
+      return state.status
+        ? state.status.sunshineInfoTotal[state.currentSunshineInfoId]
+        : null;
     });
-    const moveSunToOnePos = (currentSunPos: any) => {
-      if (currentSunPos) {
-        const { pos } = currentSunPos;
+    const moveSunToOnePos = (currentSunshineInfo: any) => {
+      if (currentSunshineInfo) {
+        const { pos } = currentSunshineInfo;
         state.sunshineSimulation.setSunPosition(pos);
       }
     };
     watchEffect(() => {
-      moveSunToOnePos(currentSunPos.value);
+      moveSunToOnePos(currentSunshineInfo.value);
     });
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
@@ -66,7 +67,7 @@ export default defineComponent({
     onMounted(() => {
       start();
     });
-    return { ...toRefs(state), currentSunPos };
+    return { ...toRefs(state), currentSunshineInfo };
   },
 });
 </script>
