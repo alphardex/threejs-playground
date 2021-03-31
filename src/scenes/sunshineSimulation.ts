@@ -184,20 +184,6 @@ class SunshineSimulation extends Base {
     const currentSunshineInfo = sunshineInfoTotal[id];
     this.currentSunshineInfo = currentSunshineInfo;
   }
-  // 移动太阳
-  async moveSun() {
-    const { sunshineInfoTotal, params } = this;
-    const { freq, timeScale } = params;
-    let i = 0;
-    while (i < sunshineInfoTotal.length) {
-      const currentSunshineInfo = sunshineInfoTotal[i];
-      this.currentSunshineInfo = currentSunshineInfo;
-      const { pos } = currentSunshineInfo;
-      this.setSunPosition(pos);
-      i += 1;
-      await ky.sleep(freq * timeScale);
-    }
-  }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();

@@ -19,6 +19,7 @@
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
 import { defineComponent, onMounted, reactive, toRefs, watchEffect } from "vue";
+import ky from "kyouka";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
@@ -49,11 +50,21 @@ export default defineComponent({
         console.log(state.sunshineSimulation);
       }
     };
+    const moveSun = async () => {
+      const { sunshineSimulation } = state;
+      const { sunshineInfoTotal, params } = sunshineSimulation;
+      const { freq, timeScale } = params;
+      while (state.currentSunshineInfoId < sunshineInfoTotal.length - 1) {
+        state.currentSunshineInfoId += 1;
+        await ky.sleep(freq * timeScale);
+      }
+    };
     watchEffect(() => {
       updateSunPos();
     });
     onMounted(() => {
       start();
+      moveSun();
     });
     return { ...toRefs(state) };
   },
