@@ -1,6 +1,6 @@
 <template>
   <div class="sunshine-simulation w-full h-full bg-blue-2"></div>
-  <div class="fixed top-4 h-center" v-if="status">
+  <div class="fixed top-4 h-center" v-if="status && status.currentSunPos">
     <span>当前时间：</span>
     <span>{{ status.currentSunPos.time }}</span>
   </div>

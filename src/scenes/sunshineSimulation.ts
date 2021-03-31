@@ -32,7 +32,7 @@ class SunshineSimulation extends Base {
     };
   }
   // 初始化
-  async init() {
+  init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
@@ -45,10 +45,7 @@ class SunshineSimulation extends Base {
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
-    while (this.params) {
-      this.simulateSun();
-      await ky.sleep(8000);
-    }
+    this.simulateSun();
   }
   // 使用VSM阴影
   useVSMShadowMap() {
@@ -185,11 +182,10 @@ class SunshineSimulation extends Base {
     const { sunPosTotal, params } = this;
     const { freq, timeScale } = params;
     let i = 0;
-    while (i <= sunPosTotal.length) {
+    while (i < sunPosTotal.length) {
       const currentSunPos = sunPosTotal[i];
       this.currentSunPos = currentSunPos;
-      const { pos, time } = currentSunPos;
-      console.log(time);
+      const { pos } = currentSunPos;
       this.setSunPosition(pos);
       i += 1;
       await ky.sleep(freq * timeScale);
