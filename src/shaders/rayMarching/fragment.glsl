@@ -3,7 +3,8 @@
 #pragma glslify:sdBox=require('glsl-sdf-primitives/sdBox')
 #pragma glslify:smin=require(glsl-smooth-min)
 #pragma glslify:matcap=require(matcap)
-#pragma glslify:fresnel=require(../../shaders/modules/fresnel)
+#pragma glslify:centerUv=require(../modules/centerUv)
+#pragma glslify:fresnel=require(../modules/fresnel)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -34,7 +35,7 @@ float movingSphere(vec3 p,float shape){
     return smin(shape,gotoCenter,.3);
 }
 
-float sdf(vec3 p){
+vec2 sdf(vec3 p){
     vec3 p1=rotate(p,vec3(1.),uTime*uVelocityBox);
     float box=sdBox(p1,vec3(.3));
     float sphere=sdSphere(p,.3);
@@ -45,7 +46,9 @@ float sdf(vec3 p){
     vec2 mousePos=uMouse;
     mousePos.x*=aspect;
     float mouseSphere=sdSphere(p-vec3(mousePos,0.),.15);
-    return smin(mixedBox,mouseSphere,.1);
+    float result=smin(mixedBox,mouseSphere,.1);
+    float objType=1.;
+    return vec2(result,objType);
 }
 
 // http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
@@ -54,7 +57,7 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     float depth=0.;
     for(int i=0;i<maxIter;i++){
         vec3 pos=eye+depth*ray;
-        float dist=sdf(pos);
+        float dist=sdf(pos).x;
         depth+=dist;
         if(dist<EPSILON||dist>=end){
             break;
@@ -63,23 +66,10 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     return depth;
 }
 
-vec3 calcNormal(in vec3 p){
-    const float eps=.0001;
-    const vec2 h=vec2(eps,0);
-    return normalize(vec3(sdf(p+h.xyy)-sdf(p-h.xyy),
-    sdf(p+h.yxy)-sdf(p-h.yxy),
-    sdf(p+h.yyx)-sdf(p-h.yyx)));
-}
-
-vec2 centerUv(vec2 uv){
-    uv=2.*uv-1.;
-    float aspect=uResolution.x/uResolution.y;
-    uv.x*=aspect;
-    return uv;
-}
+#pragma glslify:getNormal=require('glsl-sdf-normal',map=sdf)
 
 void main(){
-    vec2 cUv=centerUv(vUv);
+    vec2 cUv=centerUv(vUv,uResolution);
     vec3 eye=vec3(0.,0.,2.5);
     vec3 ray=normalize(vec3(cUv,-eye.z));
     vec3 bg=background(vUv);
@@ -89,7 +79,7 @@ void main(){
     float depth=rayMarch(eye,ray,end,maxIter);
     if(depth<end){
         vec3 pos=eye+depth*ray;
-        vec3 normal=calcNormal(pos);
+        vec3 normal=getNormal(pos);
         vec2 matcapUv=matcap(ray,normal);
         color=texture2D(uTexture,matcapUv).rgb;
         float F=fresnel(0.,.4,3.2,ray,normal);
