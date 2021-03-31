@@ -191,9 +191,14 @@ class SunshineSimulation extends Base {
   }
   // 状态
   get status() {
-    const length = this.sunshineInfoTotal.length - 1;
-    const sunriseTime = this.sunshineInfoTotal[0].time;
-    const sunsetTime = this.sunshineInfoTotal[length].time;
+    const { sunshineInfoTotal } = this;
+    let sunriseTime = "";
+    let sunsetTime = "";
+    if (!ky.isEmpty(sunshineInfoTotal)) {
+      const length = sunshineInfoTotal.length - 1;
+      sunriseTime = sunshineInfoTotal[0].time;
+      sunsetTime = sunshineInfoTotal[length].time;
+    }
     return {
       sunriseTime,
       sunsetTime,

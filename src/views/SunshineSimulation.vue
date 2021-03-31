@@ -3,7 +3,9 @@
   <div class="fixed top-4 h-center space-y-2" v-if="sunshineSimulation">
     <div>
       <span>当前时间：</span>
-      <span>{{ sunshineSimulation.currentSunshineInfo.time }}</span>
+      <span v-if="sunshineSimulation.currentSunshineInfo">
+        {{ sunshineSimulation.currentSunshineInfo.time }}
+      </span>
     </div>
     <div class="flex items-center space-x-4">
       <div>{{ sunshineSimulation.status.sunriseTime }}</div>
@@ -15,17 +17,21 @@
       />
       <div>{{ sunshineSimulation.status.sunsetTime }}</div>
     </div>
+    <div>
+      <input type="date" v-model="currentDate" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
-import { defineComponent, onMounted, reactive, toRefs, watchEffect } from "vue";
+import { defineComponent, onMounted, reactive, toRefs, watch } from "vue";
 import ky from "kyouka";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
   currentSunshineInfoId: number;
+  currentDate: string;
 }
 
 export default defineComponent({
@@ -34,6 +40,7 @@ export default defineComponent({
     const state = reactive<State>({
       sunshineSimulation: null,
       currentSunshineInfoId: 0,
+      currentDate: "2021-03-31",
     });
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
@@ -49,7 +56,13 @@ export default defineComponent({
         state.sunshineSimulation.currentSunshineInfoId = currentSunshineInfoId;
         state.sunshineSimulation.setSunshineInfoById();
         state.sunshineSimulation.setSunPosition();
-        console.log(state.sunshineSimulation);
+      }
+    };
+    const updateDate = () => {
+      if (state.sunshineSimulation) {
+        const { currentDate } = state;
+        state.sunshineSimulation.params.date = new Date(currentDate);
+        state.sunshineSimulation.getAllSunshineData();
       }
     };
     const moveSun = async () => {
@@ -61,9 +74,15 @@ export default defineComponent({
         await ky.sleep(freq * timeScale);
       }
     };
-    watchEffect(() => {
-      updateSunPos();
-    });
+    watch(
+      () => {
+        updateSunPos();
+        updateDate();
+      },
+      {
+        immediate: false,
+      }
+    );
     onMounted(() => {
       start();
       moveSun();
