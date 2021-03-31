@@ -18,20 +18,32 @@
       <div>{{ sunshineSimulation.status.sunsetTime }}</div>
     </div>
     <div>
-      <input type="date" v-model="currentDate" />
+      <input type="date" class="form-control" v-model="currentDate" />
+    </div>
+    <div class="form-check">
+      <input type="checkbox" class="form-switch" id="pause" v-model="pause" />
+      <label for="pause" class="form-check-label">暂停</label>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import SunshineSimulation from "@/scenes/sunshineSimulation";
-import { defineComponent, onMounted, reactive, toRefs, watchEffect } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  watchEffect,
+  computed,
+} from "vue";
 import ky from "kyouka";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
   currentSunshineInfoId: number;
   currentDate: string;
+  pause: boolean;
 }
 
 export default defineComponent({
@@ -41,6 +53,12 @@ export default defineComponent({
       sunshineSimulation: null,
       currentSunshineInfoId: 0,
       currentDate: "2021-03-31",
+      pause: false,
+    });
+    const sunshineInfoTotalLength = computed(() => {
+      return state.sunshineSimulation
+        ? state.sunshineSimulation.sunshineInfoTotal.length - 1
+        : 0;
     });
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
@@ -67,10 +85,15 @@ export default defineComponent({
     };
     const moveSun = async () => {
       const { sunshineSimulation } = state;
-      const { sunshineInfoTotal, params } = sunshineSimulation;
+      const { params } = sunshineSimulation;
       const { freq, timeScale } = params;
-      while (state.currentSunshineInfoId < sunshineInfoTotal.length - 1) {
-        state.currentSunshineInfoId += 1;
+      while (state.currentSunshineInfoId <= sunshineInfoTotalLength.value + 1) {
+        if (!state.pause) {
+          state.currentSunshineInfoId += 1;
+        }
+        if (state.currentSunshineInfoId === sunshineInfoTotalLength.value + 1) {
+          state.currentSunshineInfoId = 0;
+        }
         await ky.sleep(freq * timeScale);
       }
     };
