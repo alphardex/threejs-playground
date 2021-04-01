@@ -14,6 +14,7 @@ uniform vec3 uContrast;
 uniform vec3 uOscilation;
 uniform vec3 uPhase;
 uniform float uOscilationPower;
+uniform float uScale;
 
 varying vec2 vUv;
 
@@ -28,16 +29,12 @@ vec3 sphereColor(vec3 p){
 
 vec2 sdf(vec3 p){
     float sphere=sdSphere(p,1.);
-    float scale=12.;
-    float pattern=invert(SineEggCarton(scale*p))/scale;
-    float fungus=opI(sphere,pattern);
-    float result=fungus;
+    float pattern=invert(SineEggCarton(uScale*p))/uScale;
+    float result=opI(sphere,pattern);
     float objType=1.;
     return vec2(result,objType);
 }
 
-// http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
-// https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
 float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     float depth=0.;
     for(int i=0;i<maxIter;i++){

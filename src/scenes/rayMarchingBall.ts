@@ -83,6 +83,9 @@ class RayMarchingBall extends Base {
         uOscilationPower: {
           value: this.params.oscilationPower,
         },
+        uScale: {
+          value: 12,
+        },
       },
     });
     this.rayMarchingBallMaterial = rayMarchingBallMaterial;
@@ -127,6 +130,12 @@ class RayMarchingBall extends Base {
       .max(3)
       .step(0.01)
       .name("oscilationPower");
+    gui
+      .add(uniforms.uScale, "value")
+      .min(0)
+      .max(20)
+      .step(0.1)
+      .name("scale");
   }
 }
 
