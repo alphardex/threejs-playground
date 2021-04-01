@@ -1,35 +1,31 @@
 #pragma glslify:rotate=require(glsl-rotate)
 #pragma glslify:sdSphere=require('glsl-sdf-primitives/sdSphere')
-#pragma glslify:sdBox=require('glsl-sdf-primitives/sdBox')
-#pragma glslify:smin=require(glsl-smooth-min)
-#pragma glslify:matcap=require(matcap)
 #pragma glslify:centerUv=require(../modules/centerUv)
-#pragma glslify:fresnel=require(../modules/fresnel)
+#pragma glslify:SineEggCarton=require(../modules/SineEggCarton)
+#pragma glslify:opI=require(glsl-sdf-ops/intersection)
+#pragma glslify:invert=require(../modules/invert)
 
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
-uniform float uVelocityBox;
-uniform float uProgress;
-uniform float uAngle;
-uniform float uDistance;
-uniform float uVelocitySphere;
-uniform sampler2D uTexture;
 
 varying vec2 vUv;
 
 const float EPSILON=.0001;
 const float PI=3.14159265359;
 
-vec3 background(vec2 uv){
-    float dist=length(uv-vec2(.5));
-    vec3 bg=mix(vec3(.3),vec3(.0),dist);
-    return bg;
+vec3 sphereColor(vec3 p){
+    float amount=clamp((1.5-length(p))/2.,0.,1.);
+    vec3 col=.5+.5*cos(6.28319*(vec3(.2,0.,0.)+amount*(3.*.6)*vec3(1.,.9,.8)));
+    return col*amount;
 }
 
 vec2 sdf(vec3 p){
-    float sphere=sdSphere(p,.3);
-    float result=sphere;
+    float sphere=sdSphere(p,1.);
+    float scale=12.;
+    float pattern=invert(SineEggCarton(scale*p))/scale;
+    float fungus=opI(sphere,pattern);
+    float result=fungus;
     float objType=1.;
     return vec2(result,objType);
 }
@@ -45,27 +41,17 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
         if(dist<EPSILON||dist>=end){
             break;
         }
+        gl_FragColor.rgb+=.1*sphereColor(pos);
     }
     return depth;
 }
 
-#pragma glslify:getNormal=require('glsl-sdf-normal',map=sdf)
-
 void main(){
     vec2 cUv=centerUv(vUv,uResolution);
-    vec3 eye=vec3(0.,0.,2.5);
+    vec3 eye=vec3(0.,0.,8.);
     vec3 ray=normalize(vec3(cUv,-eye.z));
-    vec3 bg=background(vUv);
-    vec3 color=bg;
-    float end=5.;
+    vec3 color=vec3(0.,0.,0.);
+    float end=8.;
     int maxIter=256;
     float depth=rayMarch(eye,ray,end,maxIter);
-    if(depth<end){
-        vec3 pos=eye+depth*ray;
-        vec3 normal=getNormal(pos);
-        color=normal;
-        float F=fresnel(0.,.4,3.2,ray,normal);
-        color=mix(color,bg,F);
-    }
-    gl_FragColor=vec4(color,1.);
 }

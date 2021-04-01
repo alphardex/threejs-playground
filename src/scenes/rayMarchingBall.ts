@@ -6,6 +6,7 @@ import { Base } from "./base";
 import rayMarchingBallVertexShader from "../shaders/rayMarchingBall/vertex.glsl";
 // @ts-ignore
 import rayMarchingBallFragmentShader from "../shaders/rayMarchingBall/fragment.glsl";
+import { rayMarchingBallTextureUrl } from "@/consts/rayMarchingBall";
 
 class RayMarchingBall extends Base {
   clock!: THREE.Clock;
@@ -39,6 +40,8 @@ class RayMarchingBall extends Base {
   }
   // 创建材质
   createRayMarchingBallMaterial() {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(rayMarchingBallTextureUrl);
     const rayMarchingBallMaterial = new THREE.ShaderMaterial({
       vertexShader: rayMarchingBallVertexShader,
       fragmentShader: rayMarchingBallFragmentShader,
@@ -52,6 +55,9 @@ class RayMarchingBall extends Base {
         },
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTexture: {
+          value: texture,
         },
       },
     });
