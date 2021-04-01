@@ -27,6 +27,24 @@
     <div>
       <input type="date" class="form-control" v-model="currentDate" />
     </div>
+    <div class="flex items-center space-x-2">
+      <div v-for="(item, i) in availableJieQis" :key="i">
+        <input
+          type="radio"
+          class="hidden"
+          :id="item"
+          :value="item"
+          v-model="currentJieQi"
+        />
+        <label
+          class="jieqi-item tag bg-white cursor-pointer"
+          :class="{ active: item === currentJieQi }"
+          :for="item"
+        >
+          {{ item }}
+        </label>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,6 +60,7 @@ import {
 } from "vue";
 import ky from "kyouka";
 import { Lunar } from "lunar-typescript";
+import { availableJieQis } from "@/consts/sunshineSimulation";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
@@ -49,6 +68,8 @@ interface State {
   currentDate: string;
   pause: boolean;
   jieQi: any;
+  availableJieQis: string[];
+  currentJieQi: string;
 }
 
 export default defineComponent({
@@ -60,6 +81,8 @@ export default defineComponent({
       currentDate: "2021-03-31",
       pause: false,
       jieQi: null,
+      availableJieQis,
+      currentJieQi: "",
     });
     // 光照信息总数
     const sunshineInfoTotalLength = computed(() => {
@@ -101,6 +124,17 @@ export default defineComponent({
         getJieQi(date);
       }
     };
+    // 更新节气
+    const updateJieQi = () => {
+      if (state.sunshineSimulation) {
+        const { currentJieQi } = state;
+        if (currentJieQi) {
+          const date = state.jieQi.table[currentJieQi]._calendar;
+          const dateStr = date.toISOString().slice(0, 10);
+          state.currentDate = dateStr;
+        }
+      }
+    };
     // 移动太阳
     const moveSun = async () => {
       const { sunshineSimulation } = state;
@@ -118,6 +152,7 @@ export default defineComponent({
     };
     watchEffect(() => {
       updateSunPos();
+      updateJieQi();
       updateDate();
     });
     onMounted(() => {
@@ -129,4 +164,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.jieqi-item {
+  &.active {
+    color: var(--primary-color-darker) !important;
+    background: var(--primary-color-lighter) !important;
+    border-color: var(--primary-color-lighter) !important;
+  }
+}
+</style>
