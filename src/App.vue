@@ -97,6 +97,14 @@ a {
 
 // common
 
+.tag {
+  --tag-color: white;
+
+  &-primary {
+    --tag-color: var(--primary-color-lighter);
+  }
+}
+
 #app {
   width: 100%;
   height: 100%;

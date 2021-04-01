@@ -37,8 +37,8 @@
           v-model="currentJieQi"
         />
         <label
-          class="jieqi-item tag bg-white cursor-pointer"
-          :class="{ active: item === currentJieQi }"
+          class="tag cursor-pointer"
+          :class="{ 'tag-primary': item === currentJieQi }"
           :for="item"
         >
           {{ item }}
@@ -165,12 +165,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.jieqi-item {
-  &.active {
-    color: var(--primary-color-darker) !important;
-    background: var(--primary-color-lighter) !important;
-    border-color: var(--primary-color-lighter) !important;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
