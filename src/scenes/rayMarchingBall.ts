@@ -13,12 +13,21 @@ class RayMarchingBall extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
+    this.cameraPosition = new THREE.Vector3(0, 0, 0);
+    this.orthographicCameraParams = {
+      left: -1,
+      right: 1,
+      top: 1,
+      bottom: -1,
+      near: 0,
+      far: 1,
+      zoom: 1,
+    };
   }
   // 初始化
   init() {
     this.createScene();
-    this.createPerspectiveCamera();
+    this.createOrthographicCamera();
     this.createRenderer();
     this.createRayMarchingBallMaterial();
     this.createPlane();
@@ -50,7 +59,7 @@ class RayMarchingBall extends Base {
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
     const material = this.rayMarchingBallMaterial;
     this.createMesh({
       geometry,
