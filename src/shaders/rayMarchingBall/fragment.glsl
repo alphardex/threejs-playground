@@ -17,6 +17,7 @@ uniform float uOscilationPower;
 uniform float uScale;
 uniform float uScaleUv;
 uniform float uEye;
+uniform float uVelocity;
 
 varying vec2 vUv;
 
@@ -30,8 +31,9 @@ vec3 sphereColor(vec3 p){
 }
 
 vec2 sdf(vec3 p){
-    float sphere=sdSphere(p,1.);
-    float pattern=invert(SineEggCarton(uScale*p))/uScale;
+    vec3 p1=rotate(p,vec3(0.,1.,1.),2.*uTime*uVelocity);
+    float sphere=sdSphere(p1,1.);
+    float pattern=invert(SineEggCarton(uScale*p1))/uScale;
     float result=opI(sphere,pattern);
     float objType=1.;
     return vec2(result,objType);

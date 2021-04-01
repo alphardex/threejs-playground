@@ -28,8 +28,8 @@ class RayMarchingBall extends Base {
     this.params = {
       brightness: "#808080",
       contrast: "#808080",
-      oscilation: "#ffe6cc",
-      phase: "#330000",
+      oscilation: "#d9fcfb",
+      phase: "#3c4f82",
       oscilationPower: 1.8,
     };
   }
@@ -91,6 +91,9 @@ class RayMarchingBall extends Base {
         },
         uEye: {
           value: 8,
+        },
+        uVelocity: {
+          value: 0.1,
         },
       },
     });
@@ -154,6 +157,12 @@ class RayMarchingBall extends Base {
       .max(8)
       .step(0.01)
       .name("eye");
+    gui
+      .add(uniforms.uVelocity, "value")
+      .min(0)
+      .max(2)
+      .step(0.01)
+      .name("velocity");
   }
 }
 
