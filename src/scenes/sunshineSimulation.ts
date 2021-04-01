@@ -75,9 +75,12 @@ class SunshineSimulation extends Base {
     mesh.receiveShadow = true;
   }
   // 创建大楼
-  createBuilding() {
-    const geometry = new THREE.BoxBufferGeometry(50, 50, 200);
-    const position = new THREE.Vector3(0, 0, 100);
+  createBuilding(
+    size = new THREE.Vector3(50, 50, 200),
+    position = new THREE.Vector3(0, 0, 0)
+  ) {
+    const geometry = new THREE.BoxBufferGeometry(size.x, size.y, size.z);
+    position.z = size.z / 2;
     const mesh = this.createMesh({ geometry, position });
     mesh.receiveShadow = true;
     mesh.castShadow = true;
