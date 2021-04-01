@@ -27,6 +27,7 @@
     "kyouka": "^1.2.5",
     "load-bmfont": "^1.4.1",
     "locomotive-scroll": "^4.1.0",
+    "lunar-typescript": "^1.0.6",
     "matcap": "0.0.2",
     "pannellum": "^2.5.6",
     "suncalc": "^1.8.0",

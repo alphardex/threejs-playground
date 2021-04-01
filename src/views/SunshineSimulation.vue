@@ -41,12 +41,14 @@ import {
   computed,
 } from "vue";
 import ky from "kyouka";
+import { Lunar } from "lunar-typescript";
 
 interface State {
   sunshineSimulation: SunshineSimulation | null;
   currentSunshineInfoId: number;
   currentDate: string;
   pause: boolean;
+  jieQi: any;
 }
 
 export default defineComponent({
@@ -57,12 +59,15 @@ export default defineComponent({
       currentSunshineInfoId: 0,
       currentDate: "2021-03-31",
       pause: false,
+      jieQi: null,
     });
+    // 光照信息总数
     const sunshineInfoTotalLength = computed(() => {
       return state.sunshineSimulation
         ? state.sunshineSimulation.sunshineInfoTotal.length - 1
         : 0;
     });
+    // 开始模拟
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
         ".sunshine-simulation",
@@ -71,6 +76,13 @@ export default defineComponent({
       sunshineSimulation.init();
       state.sunshineSimulation = sunshineSimulation;
     };
+    // 获取节气
+    const getJieQi = (date = new Date()) => {
+      const lunar = Lunar.fromDate(date);
+      const jieQi = lunar.getJieQiTable();
+      state.jieQi = jieQi;
+    };
+    // 更新太阳位置
     const updateSunPos = () => {
       if (state.sunshineSimulation) {
         const { currentSunshineInfoId } = state;
@@ -79,13 +91,17 @@ export default defineComponent({
         state.sunshineSimulation.setSunPosition();
       }
     };
+    // 更新日期
     const updateDate = () => {
       if (state.sunshineSimulation) {
         const { currentDate } = state;
-        state.sunshineSimulation.params.date = new Date(currentDate);
+        const date = new Date(currentDate);
+        state.sunshineSimulation.params.date = date;
         state.sunshineSimulation.getAllSunshineData();
+        getJieQi(date);
       }
     };
+    // 移动太阳
     const moveSun = async () => {
       const { sunshineSimulation } = state;
       const { params } = sunshineSimulation;
