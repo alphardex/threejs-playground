@@ -3,13 +3,13 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
-import {{name}}VertexShader from "../shaders/{{name}}/vertex.glsl";
+import rayMarchingBallVertexShader from "../shaders/rayMarchingBall/vertex.glsl";
 // @ts-ignore
-import {{name}}FragmentShader from "../shaders/{{name}}/fragment.glsl";
+import rayMarchingBallFragmentShader from "../shaders/rayMarchingBall/fragment.glsl";
 
-class {{nameUpper}} extends Base {
+class RayMarchingBall extends Base {
   clock!: THREE.Clock;
-  {{name}}Material!: THREE.ShaderMaterial;
+  rayMarchingBallMaterial!: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -20,7 +20,7 @@ class {{nameUpper}} extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.create{{nameUpper}}Material();
+    this.createRayMarchingBallMaterial();
     this.createPlane();
     this.createLight();
     this.trackMousePos();
@@ -29,10 +29,10 @@ class {{nameUpper}} extends Base {
     this.setLoop();
   }
   // 创建材质
-  create{{nameUpper}}Material() {
-    const {{name}}Material = new THREE.ShaderMaterial({
-      vertexShader: {{name}}VertexShader,
-      fragmentShader: {{name}}FragmentShader,
+  createRayMarchingBallMaterial() {
+    const rayMarchingBallMaterial = new THREE.ShaderMaterial({
+      vertexShader: rayMarchingBallVertexShader,
+      fragmentShader: rayMarchingBallFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -46,12 +46,12 @@ class {{nameUpper}} extends Base {
         },
       },
     });
-    this.{{name}}Material = {{name}}Material;
+    this.rayMarchingBallMaterial = rayMarchingBallMaterial;
   }
   // 创建平面
   createPlane() {
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
-    const material = this.{{name}}Material;
+    const material = this.rayMarchingBallMaterial;
     this.createMesh({
       geometry,
       material,
@@ -61,11 +61,11 @@ class {{nameUpper}} extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.{{name}}Material) {
-      this.{{name}}Material.uniforms.uTime.value = elapsedTime;
-      this.{{name}}Material.uniforms.uMouse.value = mousePos;
+    if (this.rayMarchingBallMaterial) {
+      this.rayMarchingBallMaterial.uniforms.uTime.value = elapsedTime;
+      this.rayMarchingBallMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }
 
-export default {{nameUpper}};
+export default RayMarchingBall;

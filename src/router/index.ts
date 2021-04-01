@@ -23,6 +23,7 @@ import ParticleExplode from "../views/ParticleExplode.vue";
 import GridIcosahedron from "../views/GridIcosahedron.vue";
 import Sun from "../views/Sun.vue";
 import SunshineSimulation from "../views/SunshineSimulation.vue";
+import RayMarchingBall from "../views/RayMarchingBall.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -139,6 +140,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/sunshine-simulation",
     name: "SunshineSimulation",
     component: SunshineSimulation,
+  },
+  {
+    path: "/ray-marching-ball",
+    name: "RayMarchingBall",
+    component: RayMarchingBall,
   },
   {
     path: "/:pathMatch(.*)*",

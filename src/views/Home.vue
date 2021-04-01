@@ -79,6 +79,11 @@
           SunshineSimulation
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'RayMarchingBall' }">
+          RayMarchingBall
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
