@@ -86,6 +86,12 @@ class RayMarchingBall extends Base {
         uScale: {
           value: 12,
         },
+        uScaleUv: {
+          value: 1.5,
+        },
+        uEye: {
+          value: 8,
+        },
       },
     });
     this.rayMarchingBallMaterial = rayMarchingBallMaterial;
@@ -136,6 +142,18 @@ class RayMarchingBall extends Base {
       .max(20)
       .step(0.1)
       .name("scale");
+    gui
+      .add(uniforms.uScaleUv, "value")
+      .min(0)
+      .max(5)
+      .step(0.01)
+      .name("scaleUv");
+    gui
+      .add(uniforms.uEye, "value")
+      .min(0)
+      .max(8)
+      .step(0.01)
+      .name("eye");
   }
 }
 

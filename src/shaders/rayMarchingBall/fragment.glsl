@@ -15,6 +15,8 @@ uniform vec3 uOscilation;
 uniform vec3 uPhase;
 uniform float uOscilationPower;
 uniform float uScale;
+uniform float uScaleUv;
+uniform float uEye;
 
 varying vec2 vUv;
 
@@ -50,10 +52,9 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
 }
 
 void main(){
-    vec2 cUv=centerUv(vUv,uResolution);
-    vec3 eye=vec3(0.,0.,8.);
+    vec2 cUv=centerUv(vUv,uResolution)*uScaleUv;
+    vec3 eye=vec3(0.,0.,uEye);
     vec3 ray=normalize(vec3(cUv,-eye.z));
-    vec3 color=vec3(0.,0.,0.);
     float end=8.;
     int maxIter=256;
     float depth=rayMarch(eye,ray,end,maxIter);
