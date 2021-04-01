@@ -1,0 +1,23 @@
+<template>
+  <div class="{{nameKecab}} w-full h-full bg-black"></div>
+</template>
+
+<script lang="ts">
+import {{nameUpper}} from "@/scenes/{{name}}";
+import { defineComponent, onMounted } from "vue";
+
+export default defineComponent({
+  name: "{{nameUpper}}",
+  setup() {
+    const start = () => {
+      const {{name}} = new {{nameUpper}}(".{{nameKecab}}", true);
+      {{name}}.init();
+    };
+    onMounted(() => {
+      start();
+    });
+  },
+});
+</script>
+
+<style lang="scss" scoped></style>
