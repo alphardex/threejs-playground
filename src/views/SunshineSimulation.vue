@@ -1,12 +1,6 @@
 <template>
   <div class="sunshine-simulation w-full h-full bg-blue-2"></div>
   <div class="fixed top-4 h-center space-y-2" v-if="sunshineSimulation">
-    <div>
-      <span>当前时间：</span>
-      <span v-if="sunshineSimulation.currentSunshineInfo">
-        {{ sunshineSimulation.currentSunshineInfo.time }}
-      </span>
-    </div>
     <div class="flex items-center space-x-4">
       <div>{{ sunshineSimulation.status.sunriseTime }}</div>
       <input
@@ -16,13 +10,22 @@
         v-model.number="currentSunshineInfoId"
       />
       <div>{{ sunshineSimulation.status.sunsetTime }}</div>
+      <div class="form-check">
+        <input type="checkbox" class="hidden" id="pause" v-model="pause" />
+        <label for="pause" class="cursor-pointer">
+          <i class="gg gg-play-button-o" v-if="pause"></i>
+          <i class="gg gg-play-pause-o" v-else></i>
+        </label>
+      </div>
+      <span
+        class="w-10 text-center"
+        v-if="sunshineSimulation.currentSunshineInfo"
+      >
+        {{ sunshineSimulation.currentSunshineInfo.time }}
+      </span>
     </div>
     <div>
       <input type="date" class="form-control" v-model="currentDate" />
-    </div>
-    <div class="form-check">
-      <input type="checkbox" class="form-switch" id="pause" v-model="pause" />
-      <label for="pause" class="form-check-label">暂停</label>
     </div>
   </div>
 </template>

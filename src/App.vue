@@ -4,6 +4,8 @@
 
 <script lang="ts">
 import "@alphardex/aqua.css/dist/aqua.min.css";
+import "css.gg/icons/scss/play-button-o.scss";
+import "css.gg/icons/scss/play-pause-o.scss";
 import "pannellum/build/pannellum.css";
 import { defineComponent } from "vue";
 
