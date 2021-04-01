@@ -127,8 +127,9 @@ export default defineComponent({
     // 更新节气
     const updateJieQi = () => {
       if (state.sunshineSimulation) {
-        const { currentJieQi } = state;
+        let { currentJieQi } = state;
         if (currentJieQi) {
+          currentJieQi = currentJieQi === "冬至" ? "DONG_ZHI" : currentJieQi;
           const date = state.jieQi.table[currentJieQi]._calendar;
           const dateStr = date.toISOString().slice(0, 10);
           state.currentDate = dateStr;
