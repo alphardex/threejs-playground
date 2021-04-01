@@ -4,10 +4,16 @@
 #pragma glslify:SineEggCarton=require(../modules/SineEggCarton)
 #pragma glslify:opI=require(glsl-sdf-ops/intersection)
 #pragma glslify:invert=require(../modules/invert)
+#pragma glslify:cosPalette=require(glsl-cos-palette)
 
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
+uniform vec3 uBrightness;
+uniform vec3 uContrast;
+uniform vec3 uOscilation;
+uniform vec3 uPhase;
+uniform float uOscilationPower;
 
 varying vec2 vUv;
 
@@ -16,7 +22,7 @@ const float PI=3.14159265359;
 
 vec3 sphereColor(vec3 p){
     float amount=clamp((1.5-length(p))/2.,0.,1.);
-    vec3 col=.5+.5*cos(6.28319*(vec3(.2,0.,0.)+amount*(3.*.6)*vec3(1.,.9,.8)));
+    vec3 col=cosPalette(amount,uBrightness,uContrast,uOscilationPower*uOscilation,uPhase);
     return col*amount;
 }
 

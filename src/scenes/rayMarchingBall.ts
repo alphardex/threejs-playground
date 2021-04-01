@@ -11,6 +11,7 @@ import { rayMarchingBallTextureUrl } from "@/consts/rayMarchingBall";
 class RayMarchingBall extends Base {
   clock!: THREE.Clock;
   rayMarchingBallMaterial!: THREE.ShaderMaterial;
+  params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -24,6 +25,13 @@ class RayMarchingBall extends Base {
       far: 1,
       zoom: 1,
     };
+    this.params = {
+      brightness: "#808080",
+      contrast: "#808080",
+      oscilation: "#ffe6cc",
+      phase: "#330000",
+      oscilationPower: 1.8,
+    };
   }
   // 初始化
   init() {
@@ -35,6 +43,7 @@ class RayMarchingBall extends Base {
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -59,6 +68,21 @@ class RayMarchingBall extends Base {
         uTexture: {
           value: texture,
         },
+        uBrightness: {
+          value: new THREE.Color(this.params.brightness),
+        },
+        uContrast: {
+          value: new THREE.Color(this.params.contrast),
+        },
+        uOscilation: {
+          value: new THREE.Color(this.params.oscilation),
+        },
+        uPhase: {
+          value: new THREE.Color(this.params.phase),
+        },
+        uOscilationPower: {
+          value: this.params.oscilationPower,
+        },
       },
     });
     this.rayMarchingBallMaterial = rayMarchingBallMaterial;
@@ -80,6 +104,29 @@ class RayMarchingBall extends Base {
       this.rayMarchingBallMaterial.uniforms.uTime.value = elapsedTime;
       this.rayMarchingBallMaterial.uniforms.uMouse.value = mousePos;
     }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI({ width: 300 });
+    const uniforms = this.rayMarchingBallMaterial.uniforms;
+    gui.addColor(this.params, "brightness").onFinishChange((value) => {
+      uniforms.uBrightness.value.set(value);
+    });
+    gui.addColor(this.params, "contrast").onFinishChange((value) => {
+      uniforms.uContrast.value.set(value);
+    });
+    gui.addColor(this.params, "oscilation").onFinishChange((value) => {
+      uniforms.uOscilation.value.set(value);
+    });
+    gui.addColor(this.params, "phase").onFinishChange((value) => {
+      uniforms.uPhase.value.set(value);
+    });
+    gui
+      .add(uniforms.uOscilationPower, "value")
+      .min(0)
+      .max(3)
+      .step(0.01)
+      .name("oscilationPower");
   }
 }
 
