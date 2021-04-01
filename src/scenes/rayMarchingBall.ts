@@ -31,6 +31,7 @@ class RayMarchingBall extends Base {
       oscilation: "#d9fcfb",
       phase: "#3c4f82",
       oscilationPower: 1.8,
+      bgColor: "#07111d",
     };
   }
   // 初始化
@@ -94,6 +95,9 @@ class RayMarchingBall extends Base {
         },
         uVelocity: {
           value: 0.1,
+        },
+        uBgColor: {
+          value: new THREE.Color(this.params.bgColor),
         },
       },
     });
@@ -163,6 +167,9 @@ class RayMarchingBall extends Base {
       .max(2)
       .step(0.01)
       .name("velocity");
+    gui.addColor(this.params, "bgColor").onFinishChange((value) => {
+      uniforms.uBgColor.value.set(value);
+    });
   }
 }
 

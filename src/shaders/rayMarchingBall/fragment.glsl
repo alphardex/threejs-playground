@@ -1,7 +1,7 @@
 #pragma glslify:rotate=require(glsl-rotate)
 #pragma glslify:sdSphere=require('glsl-sdf-primitives/sdSphere')
 #pragma glslify:centerUv=require(../modules/centerUv)
-#pragma glslify:SineEggCarton=require(../modules/SineEggCarton)
+#pragma glslify:sineEggCarton=require(../modules/sineEggCarton)
 #pragma glslify:opI=require(glsl-sdf-ops/intersection)
 #pragma glslify:invert=require(../modules/invert)
 #pragma glslify:cosPalette=require(glsl-cos-palette)
@@ -18,6 +18,7 @@ uniform float uScale;
 uniform float uScaleUv;
 uniform float uEye;
 uniform float uVelocity;
+uniform vec3 uBgColor;
 
 varying vec2 vUv;
 
@@ -33,7 +34,8 @@ vec3 sphereColor(vec3 p){
 vec2 sdf(vec3 p){
     vec3 p1=rotate(p,vec3(0.,1.,1.),2.*uTime*uVelocity);
     float sphere=sdSphere(p1,1.);
-    float pattern=invert(SineEggCarton(uScale*p1))/uScale;
+    float scale=uScale+sin(.2*uTime);
+    float pattern=invert(sineEggCarton(scale*p1))/scale;
     float result=opI(sphere,pattern);
     float objType=1.;
     return vec2(result,objType);
@@ -53,8 +55,17 @@ float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
     return depth;
 }
 
+void bgColor(){
+    vec3 col=uBgColor;
+    gl_FragColor+=vec4(col,1.);
+}
+
 void main(){
-    vec2 cUv=centerUv(vUv,uResolution)*uScaleUv;
+    bgColor();
+    vec2 newUv=vUv;
+    newUv.x-=(uMouse.x*.02);
+    newUv.y-=(uMouse.y*.02);
+    vec2 cUv=centerUv(newUv,uResolution)*uScaleUv;
     vec3 eye=vec3(0.,0.,uEye);
     vec3 ray=normalize(vec3(cUv,-eye.z));
     float end=8.;

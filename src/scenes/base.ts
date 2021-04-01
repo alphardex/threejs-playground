@@ -327,12 +327,6 @@ class Base {
     window.addEventListener("mousemove", (e) => {
       this.setMousePos(e);
     });
-    window.addEventListener("mouseout", () => {
-      this.clearMousePos();
-    });
-    window.addEventListener("mouseleave", () => {
-      this.clearMousePos();
-    });
     window.addEventListener(
       "touchstart",
       (e: TouchEvent) => {
@@ -343,20 +337,12 @@ class Base {
     window.addEventListener("touchmove", (e: TouchEvent) => {
       this.setMousePos(e.touches[0]);
     });
-    window.addEventListener("touchend", () => {
-      this.clearMousePos();
-    });
   }
   // 设置鼠标位置
   setMousePos(e: MouseEvent | Touch) {
     const { x, y } = getNormalizedMousePos(e);
     this.mousePos.x = x;
     this.mousePos.y = y;
-  }
-  // 清空鼠标位置
-  clearMousePos() {
-    this.mousePos.x = -100000;
-    this.mousePos.y = -100000;
   }
   // 获取点击物
   getInterSects(): THREE.Intersection[] {
