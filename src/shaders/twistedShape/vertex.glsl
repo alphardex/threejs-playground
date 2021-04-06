@@ -1,6 +1,7 @@
 #pragma glslify:rotate=require(glsl-rotate)
 #pragma glslify:invert=require(../modules/invert.glsl)
 #pragma glslify:qinticInOutAbs=require(../modules/qinticInOutAbs.glsl)
+#pragma glslify:PI=require(glsl-constants/PI)
 
 uniform vec3 uAxis;
 uniform float uTime;
@@ -8,8 +9,6 @@ uniform float uVelocity;
 uniform float uDistortion;
 
 varying vec3 vNormal;
-
-const float PI=3.14159265359;
 
 void main(){
     vec3 newPos=position;

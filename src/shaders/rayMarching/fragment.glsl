@@ -5,6 +5,7 @@
 #pragma glslify:matcap=require(matcap)
 #pragma glslify:centerUv=require(../modules/centerUv)
 #pragma glslify:fresnel=require(../modules/fresnel)
+#pragma glslify:PI=require(glsl-constants/PI)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -17,9 +18,6 @@ uniform float uVelocitySphere;
 uniform sampler2D uTexture;
 
 varying vec2 vUv;
-
-const float EPSILON=.0001;
-const float PI=3.14159265359;
 
 vec3 background(vec2 uv){
     float dist=length(uv-vec2(.5));
@@ -53,13 +51,13 @@ vec2 sdf(vec3 p){
 
 // http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
 // https://gist.github.com/sephirot47/f942b8c252eb7d1b7311
-float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
+float rayMarch(vec3 eye,vec3 ray,float end){
     float depth=0.;
-    for(int i=0;i<maxIter;i++){
+    for(int i=0;i<256;i++){
         vec3 pos=eye+depth*ray;
         float dist=sdf(pos).x;
         depth+=dist;
-        if(dist<EPSILON||dist>=end){
+        if(dist<.0001||dist>=end){
             break;
         }
     }
@@ -75,8 +73,7 @@ void main(){
     vec3 bg=background(vUv);
     vec3 color=bg;
     float end=5.;
-    int maxIter=256;
-    float depth=rayMarch(eye,ray,end,maxIter);
+    float depth=rayMarch(eye,ray,end);
     if(depth<end){
         vec3 pos=eye+depth*ray;
         vec3 normal=getNormal(pos);

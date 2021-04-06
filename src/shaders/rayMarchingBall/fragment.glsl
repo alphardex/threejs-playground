@@ -5,6 +5,7 @@
 #pragma glslify:opI=require(glsl-sdf-ops/intersection)
 #pragma glslify:invert=require(../modules/invert)
 #pragma glslify:cosPalette=require(glsl-cos-palette)
+#pragma glslify:PI=require(glsl-constants/PI)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -22,9 +23,6 @@ uniform vec3 uBgColor;
 
 varying vec2 vUv;
 
-const float EPSILON=.0001;
-const float PI=3.14159265359;
-
 vec3 sphereColor(vec3 p){
     float amount=clamp((1.5-length(p))/2.,0.,1.);
     vec3 col=cosPalette(amount,uBrightness,uContrast,uOscilationPower*uOscilation,uPhase);
@@ -41,13 +39,13 @@ vec2 sdf(vec3 p){
     return vec2(result,objType);
 }
 
-float rayMarch(vec3 eye,vec3 ray,float end,int maxIter){
+float rayMarch(vec3 eye,vec3 ray,float end){
     float depth=0.;
-    for(int i=0;i<maxIter;i++){
+    for(int i=0;i<256;i++){
         vec3 pos=eye+depth*ray;
         float dist=sdf(pos).x;
         depth+=dist;
-        if(dist<EPSILON||dist>=end){
+        if(dist<.0001||dist>=end){
             break;
         }
         gl_FragColor.rgb+=.1*sphereColor(pos);
@@ -69,6 +67,5 @@ void main(){
     vec3 eye=vec3(0.,0.,uEye);
     vec3 ray=normalize(vec3(cUv,-eye.z));
     float end=8.;
-    int maxIter=256;
-    float depth=rayMarch(eye,ray,end,maxIter);
+    float depth=rayMarch(eye,ray,end);
 }

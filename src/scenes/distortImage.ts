@@ -15,9 +15,17 @@ import distortImageHoverWaveVertexShader from "../shaders/distortImage/main/hove
 // @ts-ignore
 import distortImageHoverWaveFragmentShader from "../shaders/distortImage/main/hoverwave/fragment.glsl";
 // @ts-ignore
+import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
+// @ts-ignore
+import distortImageDefaultFragmentShader from "../shaders/distortImage/postprocessing/default/fragment.glsl";
+// @ts-ignore
 import distortImageNoiseVertexShader from "../shaders/distortImage/postprocessing/noise/vertex.glsl";
 // @ts-ignore
 import distortImageNoiseFragmentShader from "../shaders/distortImage/postprocessing/noise/fragment.glsl";
+// @ts-ignore
+import distortImageTwistVertexShader from "../shaders/distortImage/main/twist/vertex.glsl";
+// @ts-ignore
+import distortImageTwistFragmentShader from "../shaders/distortImage/main/twist/fragment.glsl";
 import { DOMMeshObject, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
@@ -62,9 +70,17 @@ class DistortImage extends Base {
         vertexShader: distortImageHoverWaveVertexShader,
         fragmentShader: distortImageHoverWaveFragmentShader,
       },
+      twist: {
+        vertexShader: distortImageTwistVertexShader,
+        fragmentShader: distortImageTwistFragmentShader,
+      },
     };
     this.shaderNames = Object.keys(this.shaderConfig);
     this.postprocessingShaderConfig = {
+      default: {
+        vertexShader: distortImageDefaultVertexShader,
+        fragmentShader: distortImageDefaultFragmentShader,
+      },
       scroll: {
         vertexShader: distortImageScrollVertexShader,
         fragmentShader: distortImageScrollFragmentShader,
@@ -78,8 +94,8 @@ class DistortImage extends Base {
       this.postprocessingShaderConfig
     );
     this.params = {
-      shaderName: "mousewave",
-      postprocessing: "scroll",
+      shaderName: "twist",
+      postprocessing: "default",
     };
     this.scrollSpeedTarget = 0;
   }
@@ -167,7 +183,7 @@ class DistortImage extends Base {
   }
   // 设置滚动速度
   setScrollSpeed() {
-    const scrollSpeed = this.scroll.scroll.instance.speed;
+    const scrollSpeed = this.scroll.scroll.instance.speed || 0;
     if (scrollSpeed) {
       const scrollSpeedDelta = (scrollSpeed - this.scrollSpeedTarget) * 0.2;
       this.scrollSpeedTarget += scrollSpeedDelta;
@@ -228,10 +244,10 @@ class DistortImage extends Base {
         tDiffuse: {
           value: null,
         },
-        uScrollSpeed: {
+        uTime: {
           value: 0,
         },
-        uTime: {
+        uScrollSpeedTarget: {
           value: 0,
         },
       },
@@ -244,14 +260,14 @@ class DistortImage extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
+    const { scrollSpeedTarget } = this;
     if (!ky.isEmpty(this.materials)) {
       this.materials.forEach((material) => {
         material.uniforms.uTime.value = elapsedTime;
       });
     }
     if (this.customPass) {
-      const { scrollSpeedTarget } = this;
-      this.customPass.uniforms.uScrollSpeed.value = scrollSpeedTarget;
+      this.customPass.uniforms.uScrollSpeedTarget.value = scrollSpeedTarget;
       this.customPass.uniforms.uTime.value = elapsedTime;
     }
   }

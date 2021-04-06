@@ -1,8 +1,6 @@
 #pragma glslify:rotate=require(glsl-rotate)
 #pragma glslify:getEyeVector=require(../../modules/getEyeVector)
 
-const float HALF_PI=1.570796327;
-
 uniform float uTime;
 uniform float uVelocity;
 uniform float uStagger;
