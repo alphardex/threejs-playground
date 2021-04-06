@@ -84,6 +84,11 @@
           RayMarchingBall
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'GlitchImage' }">
+          GlitchImage
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
