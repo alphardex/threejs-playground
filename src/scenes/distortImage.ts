@@ -3,6 +3,10 @@ import * as dat from "dat.gui";
 import ky from "kyouka";
 import { Base } from "./base";
 // @ts-ignore
+import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
+// @ts-ignore
+import distortImageDefaultFragmentShader from "../shaders/distortImage/postprocessing/default/fragment.glsl";
+// @ts-ignore
 import distortImageMouseWaveVertexShader from "../shaders/distortImage/main/mousewave/vertex.glsl";
 // @ts-ignore
 import distortImageMouseWaveFragmentShader from "../shaders/distortImage/main/mousewave/fragment.glsl";
@@ -14,10 +18,6 @@ import distortImageScrollFragmentShader from "../shaders/distortImage/postproces
 import distortImageHoverWaveVertexShader from "../shaders/distortImage/main/hoverwave/vertex.glsl";
 // @ts-ignore
 import distortImageHoverWaveFragmentShader from "../shaders/distortImage/main/hoverwave/fragment.glsl";
-// @ts-ignore
-import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
-// @ts-ignore
-import distortImageDefaultFragmentShader from "../shaders/distortImage/postprocessing/default/fragment.glsl";
 // @ts-ignore
 import distortImageNoiseVertexShader from "../shaders/distortImage/postprocessing/noise/vertex.glsl";
 // @ts-ignore
