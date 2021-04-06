@@ -24,7 +24,6 @@ import GridIcosahedron from "../views/GridIcosahedron.vue";
 import Sun from "../views/Sun.vue";
 import SunshineSimulation from "../views/SunshineSimulation.vue";
 import RayMarchingBall from "../views/RayMarchingBall.vue";
-import GlitchImage from "../views/GlitchImage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -146,11 +145,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/ray-marching-ball",
     name: "RayMarchingBall",
     component: RayMarchingBall,
-  },
-  {
-    path: "/glitch-image",
-    name: "GlitchImage",
-    component: GlitchImage,
   },
   {
     path: "/:pathMatch(.*)*",
