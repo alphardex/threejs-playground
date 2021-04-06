@@ -14,15 +14,6 @@ class RayMarching extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 0);
-    this.orthographicCameraParams = {
-      left: -1,
-      right: 1,
-      top: 1,
-      bottom: -1,
-      near: 0,
-      far: 1,
-      zoom: 1,
-    };
   }
   // 初始化
   init() {
