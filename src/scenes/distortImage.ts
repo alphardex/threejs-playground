@@ -47,6 +47,7 @@ class DistortImage extends Base {
   postprocessingShaderNames!: string[];
   params!: any;
   customPass!: ShaderPass;
+  scrollSpeed!: number;
   scrollSpeedTarget!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -97,6 +98,7 @@ class DistortImage extends Base {
       shaderName: "twist",
       postprocessing: "default",
     };
+    this.scrollSpeed = 0;
     this.scrollSpeedTarget = 0;
   }
   // 初始化
@@ -151,6 +153,9 @@ class DistortImage extends Base {
         uHoverState: {
           value: 0,
         },
+        uScrollSpeed: {
+          value: 0,
+        },
       },
     });
     this.distortImageMaterial = distortImageMaterial;
@@ -184,6 +189,10 @@ class DistortImage extends Base {
   // 设置滚动速度
   setScrollSpeed() {
     const scrollSpeed = this.scroll.scroll.instance.speed || 0;
+    gsap.to(this, {
+      scrollSpeed: Math.min(Math.abs(scrollSpeed) * 1.25, 2),
+      duration: 1,
+    });
     if (scrollSpeed) {
       const scrollSpeedDelta = (scrollSpeed - this.scrollSpeedTarget) * 0.2;
       this.scrollSpeedTarget += scrollSpeedDelta;
@@ -196,7 +205,6 @@ class DistortImage extends Base {
     });
     scroll.on("scroll", () => {
       this.setImagesPosition();
-      this.setScrollSpeed();
     });
     this.scroll = scroll;
   }
@@ -260,10 +268,12 @@ class DistortImage extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const { scrollSpeedTarget } = this;
+    this.setScrollSpeed();
+    const { scrollSpeedTarget, scrollSpeed } = this;
     if (!ky.isEmpty(this.materials)) {
       this.materials.forEach((material) => {
         material.uniforms.uTime.value = elapsedTime;
+        material.uniforms.uScrollSpeed.value = scrollSpeed;
       });
     }
     if (this.customPass) {
