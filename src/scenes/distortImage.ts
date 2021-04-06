@@ -190,8 +190,8 @@ class DistortImage extends Base {
   setScrollSpeed() {
     const scrollSpeed = this.scroll.scroll.instance.speed || 0;
     gsap.to(this, {
-      scrollSpeed: Math.min(Math.abs(scrollSpeed) * 1.25, 2),
-      duration: 1,
+      scrollSpeed,
+      duration: 0.6,
     });
     if (scrollSpeed) {
       const scrollSpeedDelta = (scrollSpeed - this.scrollSpeedTarget) * 0.2;

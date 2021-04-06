@@ -10,7 +10,10 @@ varying vec2 vUv;
 
 void main(){
     vec2 newUv=vUv;
-    vec4 texture=RGBShift(uTexture,newUv,vec2(.05)*uScrollSpeed,0.);
+    vec2 rOffset=vec2(.02)*uScrollSpeed/1.;
+    vec2 gOffset=vec2(.02)*uScrollSpeed/2.;
+    vec2 bOffset=vec2(.02)*uScrollSpeed/4.;
+    vec4 texture=RGBShift(uTexture,newUv,rOffset,gOffset,bOffset,0.);
     vec3 color=texture.rgb;
     gl_FragColor=vec4(color,1.);
 }
