@@ -7,6 +7,10 @@ import hyperbolicHelicoidColorFragmentShader from "../shaders/hyperbolicHelicoid
 // @ts-ignore
 import hyperbolicHelicoidFunctionFragmentShader from "../shaders/hyperbolicHelicoid/function/fragment.glsl";
 import { helicoid } from "@/utils/math";
+import {
+  hyperbolicHelicoidMatcapTextureUrl1,
+  hyperbolicHelicoidMatcapTextureUrl2,
+} from "@/consts/hyperbolicHelicoid";
 
 class HyperbolicHelicoid extends Base {
   clock!: THREE.Clock;
@@ -21,10 +25,6 @@ class HyperbolicHelicoid extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
-      brightness: "#808080",
-      contrast: "#808080",
-      oscilation: "#ffffff",
-      phase: "#001932",
       ballRadius: 0.2,
       ballRotateRadius: 0.6,
       speed: 0.5,
@@ -33,17 +33,15 @@ class HyperbolicHelicoid extends Base {
       uTime: {
         value: 0,
       },
-      uBrightness: {
-        value: new THREE.Color(this.params.brightness),
+      uTexture1: {
+        value: new THREE.TextureLoader().load(
+          hyperbolicHelicoidMatcapTextureUrl1
+        ),
       },
-      uContrast: {
-        value: new THREE.Color(this.params.contrast),
-      },
-      uOscilation: {
-        value: new THREE.Color(this.params.oscilation),
-      },
-      uPhase: {
-        value: new THREE.Color(this.params.phase),
+      uTexture2: {
+        value: new THREE.TextureLoader().load(
+          hyperbolicHelicoidMatcapTextureUrl2
+        ),
       },
     };
   }
@@ -72,35 +70,39 @@ class HyperbolicHelicoid extends Base {
   createHyperbolicHelicoidMaterial() {
     const hyperbolicHelicoidMaterial = new THREE.MeshPhysicalMaterial({
       roughness: 0,
-      metalness: 0.5,
+      metalness: 0.1,
       clearcoat: 1,
       clearcoatRoughness: 0.4,
       side: THREE.DoubleSide,
     });
     hyperbolicHelicoidMaterial.onBeforeCompile = (shader) => {
-      shader.uniforms.uTime = this.uniforms.uTime;
-      shader.uniforms.uBrightness = this.uniforms.uBrightness;
-      shader.uniforms.uContrast = this.uniforms.uContrast;
-      shader.uniforms.uOscilation = this.uniforms.uOscilation;
-      shader.uniforms.uPhase = this.uniforms.uPhase;
-      const CLIPPING_SHADER = "#include <clipping_planes_pars_fragment>";
-      const MODIFIED_CLIPPING_SHADER = `
-${CLIPPING_SHADER}
-${hyperbolicHelicoidFunctionFragmentShader}`;
-      const LOGDEPTHBUF_SHADER = "#include <logdepthbuf_fragment>";
-      const MODIFIED_LOGDEPTHBUF_SHADER = `
-${LOGDEPTHBUF_SHADER}
-${hyperbolicHelicoidColorFragmentShader}`;
-      shader.fragmentShader = shader.fragmentShader
-        .replace(CLIPPING_SHADER, MODIFIED_CLIPPING_SHADER)
-        .replace(LOGDEPTHBUF_SHADER, MODIFIED_LOGDEPTHBUF_SHADER);
+      shader.uniforms.uTexture = this.uniforms.uTexture1;
+      this.modifyShader(shader);
     };
     this.hyperbolicHelicoidMaterial = hyperbolicHelicoidMaterial;
+  }
+  // 修改shader
+  modifyShader(shader: THREE.Shader) {
+    const CLIPPING_SHADER = "#include <clipping_planes_pars_fragment>";
+    const MODIFIED_CLIPPING_SHADER = `
+${CLIPPING_SHADER}
+${hyperbolicHelicoidFunctionFragmentShader}`;
+    const LOGDEPTHBUF_SHADER = "#include <logdepthbuf_fragment>";
+    const MODIFIED_LOGDEPTHBUF_SHADER = `
+${LOGDEPTHBUF_SHADER}
+${hyperbolicHelicoidColorFragmentShader}`;
+    shader.fragmentShader = shader.fragmentShader
+      .replace(CLIPPING_SHADER, MODIFIED_CLIPPING_SHADER)
+      .replace(LOGDEPTHBUF_SHADER, MODIFIED_LOGDEPTHBUF_SHADER);
   }
   // 创建双曲螺旋体
   createHyperbolicHelicoid() {
     const geometry = new THREE.ParametricGeometry(helicoid, 128, 128);
     const material = this.hyperbolicHelicoidMaterial;
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uTexture = this.uniforms.uTexture1;
+      this.modifyShader(shader);
+    };
     const hyperbolicHelicoid = this.createMesh({
       geometry,
       material,
@@ -113,7 +115,11 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   createTwoBalls() {
     const r = this.params.ballRadius;
     const geometry = new THREE.IcosahedronBufferGeometry(r, 5);
-    const material = this.hyperbolicHelicoidMaterial;
+    const material = this.hyperbolicHelicoidMaterial.clone();
+    material.onBeforeCompile = (shader) => {
+      shader.uniforms.uTexture = this.uniforms.uTexture2;
+      this.modifyShader(shader);
+    };
     const ball1 = this.createMesh({
       geometry,
       material,
@@ -162,19 +168,6 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI({ width: 300 });
-    const uniforms = this.uniforms;
-    gui.addColor(this.params, "brightness").onFinishChange((value) => {
-      uniforms.uBrightness.value.set(value);
-    });
-    gui.addColor(this.params, "contrast").onFinishChange((value) => {
-      uniforms.uContrast.value.set(value);
-    });
-    gui.addColor(this.params, "oscilation").onFinishChange((value) => {
-      uniforms.uOscilation.value.set(value);
-    });
-    gui.addColor(this.params, "phase").onFinishChange((value) => {
-      uniforms.uPhase.value.set(value);
-    });
     gui
       .add(this.params, "ballRotateRadius")
       .min(0)

@@ -1,7 +1,3 @@
-uniform float uTime;
-uniform vec3 uBrightness;
-uniform vec3 uContrast;
-uniform vec3 uOscilation;
-uniform vec3 uPhase;
+uniform sampler2D uTexture;
 
-#pragma glslify:cosPalette=require(glsl-cos-palette)
+#pragma glslify:matcap=require(matcap)
