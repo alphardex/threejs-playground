@@ -19,12 +19,15 @@ class HyperbolicHelicoid extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 3);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
       brightness: "#808080",
       contrast: "#808080",
       oscilation: "#ffffff",
       phase: "#001932",
+      ballRadius: 0.2,
+      ballRotateRadius: 0.6,
+      speed: 0.5,
     };
     this.uniforms = {
       uTime: {
@@ -68,7 +71,6 @@ class HyperbolicHelicoid extends Base {
   // 创建材质
   createHyperbolicHelicoidMaterial() {
     const hyperbolicHelicoidMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
       roughness: 0,
       metalness: 0.5,
       clearcoat: 1,
@@ -109,7 +111,8 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   }
   // 创建双珠
   createTwoBalls() {
-    const geometry = new THREE.IcosahedronBufferGeometry(0.26, 5);
+    const r = this.params.ballRadius;
+    const geometry = new THREE.IcosahedronBufferGeometry(r, 5);
     const material = this.hyperbolicHelicoidMaterial;
     const ball1 = this.createMesh({
       geometry,
@@ -140,15 +143,16 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const speed = 0.5;
+    const speed = this.params.speed;
+    const displacement = elapsedTime * speed;
     this.uniforms.uTime.value = elapsedTime;
     if (this.hyperbolicHelicoid) {
-      this.hyperbolicHelicoid.rotation.y = 2 * Math.PI * elapsedTime * speed;
+      this.hyperbolicHelicoid.rotation.y = ky.deg2rad(360) * displacement;
     }
     if (this.ball1 && this.ball2) {
-      const r = 0.5;
-      const theta1 = 2 * Math.PI * elapsedTime * speed;
-      const theta2 = 2 * Math.PI * elapsedTime * speed + Math.PI;
+      const r = this.params.ballRotateRadius;
+      const theta1 = ky.deg2rad(360) * displacement;
+      const theta2 = ky.deg2rad(360) * displacement + ky.deg2rad(180);
       this.ball1.position.x = r * Math.sin(theta1);
       this.ball1.position.z = r * Math.cos(theta1);
       this.ball2.position.x = r * Math.sin(theta2);
@@ -171,6 +175,16 @@ ${hyperbolicHelicoidColorFragmentShader}`;
     gui.addColor(this.params, "phase").onFinishChange((value) => {
       uniforms.uPhase.value.set(value);
     });
+    gui
+      .add(this.params, "ballRotateRadius")
+      .min(0)
+      .max(1)
+      .step(0.01);
+    gui
+      .add(this.params, "speed")
+      .min(0)
+      .max(1)
+      .step(0.01);
   }
 }
 

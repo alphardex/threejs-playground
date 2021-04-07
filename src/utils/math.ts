@@ -23,7 +23,7 @@ const helicoid = (u: number, v: number, target: THREE.Vector3) => {
   const x = (Math.sinh(v) * Math.cos(tau * u)) / bottom;
   const y = (Math.sinh(v) * Math.sin(tau * u)) / bottom;
   const z = (Math.cosh(v) * Math.sinh(u)) / bottom;
-  target.set(x, z * 1.5, y);
+  target.set(x, z, y);
 };
 
 export { calcAspect, helicoid };
