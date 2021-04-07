@@ -40,7 +40,17 @@ body {
     #3584a7 51%,
     #30d2be 100%
   );
-  --blue-grad-2: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  --grey-grad-1: linear-gradient(
+      to bottom,
+      #323232 0%,
+      #3f3f3f 40%,
+      #1c1c1c 150%
+    ),
+    linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(0, 0, 0, 0.25) 200%
+    );
   --black-color-transparent-1: #{transparentize(black, 0.7)};
   --black-color-transparent-2: #{transparentize(black, 0.5)};
   --orange-color-1: #f6b64c;
@@ -88,8 +98,9 @@ a {
   background: var(--blue-grad-1);
 }
 
-.bg-blue-grad-2 {
-  background: var(--blue-grad-2);
+.bg-grey-grad-1 {
+  background: var(--grey-grad-1);
+  background-blend-mode: multiply;
 }
 
 .bg-blue-1 {
