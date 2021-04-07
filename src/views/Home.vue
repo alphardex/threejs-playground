@@ -84,6 +84,11 @@
           RayMarchingBall
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'HyperbolicHelicoid' }">
+          HyperbolicHelicoid
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

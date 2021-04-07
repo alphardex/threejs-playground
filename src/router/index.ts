@@ -24,6 +24,7 @@ import GridIcosahedron from "../views/GridIcosahedron.vue";
 import Sun from "../views/Sun.vue";
 import SunshineSimulation from "../views/SunshineSimulation.vue";
 import RayMarchingBall from "../views/RayMarchingBall.vue";
+import HyperbolicHelicoid from "../views/HyperbolicHelicoid.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -145,6 +146,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/ray-marching-ball",
     name: "RayMarchingBall",
     component: RayMarchingBall,
+  },
+  {
+    path: "/hyperbolic-helicoid",
+    name: "HyperbolicHelicoid",
+    component: HyperbolicHelicoid,
   },
   {
     path: "/:pathMatch(.*)*",

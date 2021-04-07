@@ -40,6 +40,7 @@ body {
     #3584a7 51%,
     #30d2be 100%
   );
+  --blue-grad-2: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
   --black-color-transparent-1: #{transparentize(black, 0.7)};
   --black-color-transparent-2: #{transparentize(black, 0.5)};
   --orange-color-1: #f6b64c;
@@ -85,6 +86,10 @@ a {
 
 .bg-blue-grad-1 {
   background: var(--blue-grad-1);
+}
+
+.bg-blue-grad-2 {
+  background: var(--blue-grad-2);
 }
 
 .bg-blue-1 {
