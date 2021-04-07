@@ -6,7 +6,7 @@ import { Base } from "./base";
 import hyperbolicHelicoidColorFragmentShader from "../shaders/hyperbolicHelicoid/color/fragment.glsl";
 // @ts-ignore
 import hyperbolicHelicoidFunctionFragmentShader from "../shaders/hyperbolicHelicoid/function/fragment.glsl";
-import { helicoid } from "@/utils/math";
+import { hyperbolicHelicoidFunction } from "@/utils/math";
 import {
   hyperbolicHelicoidMatcapTextureUrl1,
   hyperbolicHelicoidMatcapTextureUrl2,
@@ -97,7 +97,11 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   }
   // 创建双曲螺旋体
   createHyperbolicHelicoid() {
-    const geometry = new THREE.ParametricGeometry(helicoid, 128, 128);
+    const geometry = new THREE.ParametricGeometry(
+      hyperbolicHelicoidFunction,
+      128,
+      128
+    );
     const material = this.hyperbolicHelicoidMaterial;
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uTexture = this.uniforms.uTexture1;

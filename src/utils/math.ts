@@ -15,7 +15,11 @@ const sphere = (u: number, v: number, target: THREE.Vector3) => {
 };
 
 // https://mathworld.wolfram.com/HyperbolicHelicoid.html
-const helicoid = (u: number, v: number, target: THREE.Vector3) => {
+const hyperbolicHelicoidFunction = (
+  u: number,
+  v: number,
+  target: THREE.Vector3
+) => {
   u = Math.PI * 2 * (u - 0.5);
   v = Math.PI * 2 * (v - 0.5);
   const tau = 5;
@@ -26,4 +30,4 @@ const helicoid = (u: number, v: number, target: THREE.Vector3) => {
   target.set(x, z, y);
 };
 
-export { calcAspect, helicoid };
+export { calcAspect, hyperbolicHelicoidFunction };
