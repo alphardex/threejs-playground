@@ -92,7 +92,6 @@ ${hyperbolicHelicoidColorFragmentShader}`;
       shader.fragmentShader = shader.fragmentShader
         .replace(CLIPPING_SHADER, MODIFIED_CLIPPING_SHADER)
         .replace(LOGDEPTHBUF_SHADER, MODIFIED_LOGDEPTHBUF_SHADER);
-      console.log(shader.fragmentShader);
     };
     this.hyperbolicHelicoidMaterial = hyperbolicHelicoidMaterial;
   }
@@ -134,7 +133,6 @@ ${hyperbolicHelicoidColorFragmentShader}`;
     dirLight.shadow.camera.right = 2;
     dirLight.shadow.camera.bottom = -2;
     dirLight.shadow.camera.left = -2;
-    // dirLight.shadow.bias = 0.000001;
     this.scene.add(dirLight);
     const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 1);
     this.scene.add(ambiLight);
