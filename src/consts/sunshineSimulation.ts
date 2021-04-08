@@ -2,7 +2,8 @@ import ky from "kyouka";
 
 const availableJieQis = ["大寒", "春分", "夏至", "秋分", "立冬", "冬至"];
 const buildingModelUrl = "./static/models/building.gltf";
-const gap = 50;
+const xGap = 80;
+const yGap = 60;
 const randomGap = 15;
 const buildingPositions = [
   { x: 0, y: 0, z: 0 },
@@ -17,7 +18,9 @@ const buildingPositions = [
 ];
 buildingPositions.forEach((pos) => {
   Object.entries(pos).forEach(([key, value]) => {
-    pos[key] = value * gap + randomGap * ky.randomNumberInRange(0, 1);
+    pos[key] =
+      value * (key === "x" ? xGap : yGap) +
+      randomGap * ky.randomNumberInRange(0, 1);
   });
 });
 

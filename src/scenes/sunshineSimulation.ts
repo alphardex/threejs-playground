@@ -37,7 +37,7 @@ class SunshineSimulation extends Base {
       radius: 250, // 区域半径
       radiusScale: 2, // 区域半径缩放倍数
       useHelper: true, // 显示太阳
-      height: 75, // 楼高
+      height: 70.2, // 楼高
       testMesh: false, // 使用和建筑模型同大小的方块测试
     };
     this.buildingPositions = buildingPositions;
@@ -101,9 +101,9 @@ class SunshineSimulation extends Base {
     let building;
     if (!this.buildingModel) {
       const model = await this.loadModel(buildingModelUrl);
-      building = model.children[3];
+      building = model.children[0];
       this.buildingModel = building;
-      building.rotation.x = ky.deg2rad(90);
+      building.rotation.x = ky.deg2rad(-90);
       building.traverse((obj) => {
         if (obj.isObject3D) {
           obj.receiveShadow = true;

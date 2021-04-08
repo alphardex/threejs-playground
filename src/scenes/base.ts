@@ -281,6 +281,7 @@ class Base {
         url,
         (gltf) => {
           const model = gltf.scene;
+          console.log(model);
           resolve(model);
         },
         undefined,
