@@ -34,10 +34,11 @@ class SunshineSimulation extends Base {
       interval: 1, // 经过时间，1分钟为基础单位
       freq: 1000, // 更新频率，1毫秒为基础单位
       timeScale: 0.01, // 时间变化幅度
-      radius: 250,
-      radiusScale: 2,
-      useHelper: true,
-      gap: 50,
+      radius: 250, // 区域半径
+      radiusScale: 2, // 区域半径缩放倍数
+      useHelper: true, // 显示太阳
+      height: 75, // 楼高
+      testMesh: true, // 使用和建筑模型同大小的方块测试
     };
     this.buildingPositions = buildingPositions;
   }
@@ -95,6 +96,8 @@ class SunshineSimulation extends Base {
   }
   // 创建大楼模型
   async createBuildingModel(position = new THREE.Vector3(0, 0, 0)) {
+    const { params } = this;
+    const { height, testMesh } = params;
     let building;
     if (!this.buildingModel) {
       const model = await this.loadModel(buildingModelUrl);
@@ -111,16 +114,25 @@ class SunshineSimulation extends Base {
       building = this.buildingModel.clone();
     }
     building.position.set(position.x, position.y, position.z);
-    building.position.z = 37.3;
+    building.position.z = height / 2;
     this.scene.add(building);
+    if (testMesh) {
+      building.visible = false;
+      const mesh = this.createMesh({
+        position,
+        geometry: new THREE.BoxGeometry(25, 20, height),
+      });
+      mesh.position.z = height / 2;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+    }
   }
   // 创建大楼群
   async createBuildingModelGroup(count = 9) {
-    const { buildingPositions, params } = this;
-    const { gap } = params;
+    const { buildingPositions } = this;
     for (let i = 0; i < count; i++) {
       const { x, y, z } = buildingPositions[i];
-      const position = new THREE.Vector3(x * gap, y * gap, z * gap);
+      const position = new THREE.Vector3(x, y, z);
       await this.createBuildingModel(position);
     }
   }
