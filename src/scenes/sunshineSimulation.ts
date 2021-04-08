@@ -38,7 +38,7 @@ class SunshineSimulation extends Base {
       radiusScale: 2, // 区域半径缩放倍数
       useHelper: true, // 显示太阳
       height: 75, // 楼高
-      testMesh: true, // 使用和建筑模型同大小的方块测试
+      testMesh: false, // 使用和建筑模型同大小的方块测试
     };
     this.buildingPositions = buildingPositions;
   }
