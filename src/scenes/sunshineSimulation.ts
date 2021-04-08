@@ -4,6 +4,10 @@ import * as dat from "dat.gui";
 import { Base } from "./base";
 import SunCalc from "suncalc";
 import { SunshineInfo, SunshinePos } from "@/types";
+import {
+  buildingModelUrl,
+  buildingPositions,
+} from "@/consts/sunshineSimulation";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;
@@ -13,6 +17,8 @@ class SunshineSimulation extends Base {
   currentSunshineInfo!: SunshineInfo;
   currentSunshineInfoId!: number;
   params!: any;
+  buildingModel!: THREE.Object3D;
+  buildingPositions!: any[];
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -23,15 +29,17 @@ class SunshineSimulation extends Base {
     };
     this.cameraPosition = new THREE.Vector3(0, -250, 400);
     this.params = {
-      coord: { lat: 34.827203, lng: 117.348048 },
+      coord: { lat: 31.66249, lng: 120.752598 },
       date: new Date(),
       interval: 1, // 经过时间，1分钟为基础单位
       freq: 1000, // 更新频率，1毫秒为基础单位
       timeScale: 0.01, // 时间变化幅度
       radius: 250,
       radiusScale: 2,
-      useHelper: false,
+      useHelper: true,
+      gap: 50,
     };
+    this.buildingPositions = buildingPositions;
   }
   // 初始化
   init() {
@@ -42,7 +50,7 @@ class SunshineSimulation extends Base {
     this.enableShadow();
     this.useVSMShadowMap();
     this.createGround();
-    this.createBuilding();
+    this.createBuildingModelGroup();
     this.createSunLight();
     this.trackMousePos();
     this.createOrbitControls();
@@ -84,6 +92,37 @@ class SunshineSimulation extends Base {
     const mesh = this.createMesh({ geometry, position });
     mesh.receiveShadow = true;
     mesh.castShadow = true;
+  }
+  // 创建大楼模型
+  async createBuildingModel(position = new THREE.Vector3(0, 0, 0)) {
+    let building;
+    if (!this.buildingModel) {
+      const model = await this.loadModel(buildingModelUrl);
+      building = model.children[3];
+      this.buildingModel = building;
+      building.rotation.x = ky.deg2rad(90);
+      building.traverse((obj) => {
+        if (obj.isObject3D) {
+          obj.receiveShadow = true;
+          obj.castShadow = true;
+        }
+      });
+    } else {
+      building = this.buildingModel.clone();
+    }
+    building.position.set(position.x, position.y, position.z);
+    building.position.z = 37.3;
+    this.scene.add(building);
+  }
+  // 创建大楼群
+  async createBuildingModelGroup(count = 9) {
+    const { buildingPositions, params } = this;
+    const { gap } = params;
+    for (let i = 0; i < count; i++) {
+      const { x, y, z } = buildingPositions[i];
+      const position = new THREE.Vector3(x * gap, y * gap, z * gap);
+      await this.createBuildingModel(position);
+    }
   }
   // 创建太阳光
   createSunLight() {
