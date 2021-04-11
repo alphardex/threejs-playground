@@ -12,7 +12,7 @@ export default defineComponent({
     const start = () => {
       const twistedColorfulSphere = new TwistedColorfulSphere(
         ".twisted-colorful-sphere",
-        true
+        false
       );
       twistedColorfulSphere.init();
     };
