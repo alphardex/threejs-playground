@@ -23,7 +23,7 @@ class WavingFlag extends Base {
     this.createFlagMaterial();
     this.createFlag();
     this.createLight();
-    this.createDebug();
+    // this.createDebugPanel();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -63,8 +63,8 @@ class WavingFlag extends Base {
       this.material.uniforms.uTime.value = elapsedTime;
     }
   }
-  // 创建调试
-  createDebug() {
+  // 创建调试面板
+  createDebugPanel() {
     const { material } = this;
     const gui = new dat.GUI();
     gui

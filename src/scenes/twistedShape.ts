@@ -23,7 +23,7 @@ class TwistedShape extends Base {
     this.createTwistedShape();
     this.createLight();
     this.createOrbitControls();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }

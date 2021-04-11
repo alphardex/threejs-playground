@@ -51,7 +51,7 @@ class ParticleExplode extends Base {
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }

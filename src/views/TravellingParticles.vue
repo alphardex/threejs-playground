@@ -65,7 +65,7 @@ export default defineComponent({
     const start = () => {
       const travellingParticles = new TravellingParticles(
         ".travelling-particles",
-        true
+        false
       );
       travellingParticles.init();
     };

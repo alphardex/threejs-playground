@@ -36,7 +36,7 @@ class LineWave extends Base {
     this.createLines();
     this.createLight();
     this.createOrbitControls();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }

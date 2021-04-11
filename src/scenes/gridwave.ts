@@ -39,7 +39,7 @@ class GridWave extends Base {
     this.createGrid();
     this.createLight();
     this.createOrbitControls();
-    this.createDebug();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -97,8 +97,8 @@ class GridWave extends Base {
       geo!.attributes.position.needsUpdate = true;
     }
   }
-  // 创建调试
-  createDebug() {
+  // 创建调试面板
+  createDebugPanel() {
     const gui = new dat.GUI();
     gui
       .add(this.params, "row")

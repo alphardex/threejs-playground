@@ -94,7 +94,7 @@ export default defineComponent({
     const start = async () => {
       const sunshineSimulation = new SunshineSimulation(
         ".sunshine-simulation",
-        true
+        false
       );
       sunshineSimulation.init();
       state.sunshineSimulation = sunshineSimulation;

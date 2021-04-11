@@ -61,7 +61,7 @@ class TravellingParticles extends Base {
     this.createEverything();
     this.createLight();
     this.createOrbitControls();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
