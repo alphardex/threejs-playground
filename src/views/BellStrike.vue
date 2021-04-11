@@ -37,7 +37,7 @@ export default defineComponent({
       },
     });
     const start = async () => {
-      const bellStrike = new BellStrike(".bell-strike", true);
+      const bellStrike = new BellStrike(".bell-strike", false);
       bellStrike.init();
       while (!state.status.startWish) {
         state.status = bellStrike.status;

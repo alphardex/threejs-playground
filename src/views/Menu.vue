@@ -21,7 +21,7 @@ export default defineComponent({
       if (canvas) {
         canvas.remove();
       }
-      const menu = new Menu(".stage", true);
+      const menu = new Menu(".stage", false);
       menu.init();
     };
     const onKeyDown = () => {

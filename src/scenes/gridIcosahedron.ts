@@ -26,7 +26,6 @@ class GridIcosahedron extends Base {
   gridIcosahedronEdgeMaterial!: THREE.ShaderMaterial;
   customPass!: ShaderPass;
   params!: any;
-  mouseSpeed!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -34,7 +33,6 @@ class GridIcosahedron extends Base {
     this.params = {
       uNoiseDensity: 0,
     };
-    this.mouseSpeed = 0;
   }
   // 初始化
   init() {
@@ -129,21 +127,6 @@ class GridIcosahedron extends Base {
       material,
     });
   }
-  // 获取重心坐标系
-  getBaryCoord(bufferGeometry: THREE.BufferGeometry) {
-    // https://gist.github.com/mattdesl/e399418558b2b52b58f5edeafea3c16c
-    const length = bufferGeometry.attributes.position.array.length;
-    const count = length / 3;
-    const bary = [];
-    for (let i = 0; i < count; i++) {
-      bary.push(0, 0, 1, 0, 1, 0, 1, 0, 0);
-    }
-    const aCenter = new Float32Array(bary);
-    bufferGeometry.setAttribute(
-      "aCenter",
-      new THREE.BufferAttribute(aCenter, 3)
-    );
-  }
   // 创建后期处理特效
   createPostprocessingEffect() {
     const composer = new EffectComposer(this.renderer);
@@ -195,29 +178,6 @@ class GridIcosahedron extends Base {
         duration: 2,
       });
     }
-  }
-  // 追踪鼠标速度
-  trackMouseSpeed() {
-    // https://stackoverflow.com/questions/6417036/track-mouse-speed-with-js
-    let lastMouseX = -1;
-    let lastMouseY = -1;
-    let mouseSpeed = 0;
-    window.addEventListener("mousemove", (e) => {
-      const mousex = e.pageX;
-      const mousey = e.pageY;
-      if (lastMouseX > -1) {
-        mouseSpeed = Math.max(
-          Math.abs(mousex - lastMouseX),
-          Math.abs(mousey - lastMouseY)
-        );
-        this.mouseSpeed = mouseSpeed / 100;
-      }
-      lastMouseX = mousex;
-      lastMouseY = mousey;
-    });
-    document.addEventListener("mouseleave", () => {
-      this.mouseSpeed = 0;
-    });
   }
 }
 

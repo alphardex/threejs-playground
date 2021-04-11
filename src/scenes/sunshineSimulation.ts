@@ -61,14 +61,6 @@ class SunshineSimulation extends Base {
     this.setSunshineInfoById();
     this.updateCameraPositionNoon();
   }
-  // 将相机的方向设为z轴
-  setCameraUpZ() {
-    this.camera.up.set(0, 0, 1);
-  }
-  // 使用VSM阴影
-  useVSMShadowMap() {
-    this.renderer.shadowMap.type = THREE.VSMShadowMap;
-  }
   // 创建地面
   createGround() {
     const geometry = new THREE.PlaneGeometry(400, 400);

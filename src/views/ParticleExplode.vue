@@ -17,7 +17,7 @@ export default defineComponent({
   name: "ParticleExplode",
   setup() {
     const start = () => {
-      const particleExplode = new ParticleExplode(".particle-explode", true);
+      const particleExplode = new ParticleExplode(".particle-explode", false);
       particleExplode.init();
     };
     onMounted(() => {

@@ -24,7 +24,8 @@ class RayMarching extends Base {
     this.createPlane();
     this.createLight();
     this.trackMousePos();
-    this.createDebugPanel();
+    this.addListeners();
+    // this.createDebugPanel();
     this.setLoop();
   }
   // 创建光线追踪材质
@@ -66,6 +67,7 @@ class RayMarching extends Base {
       },
     });
     this.rayMarchingMaterial = rayMarchingMaterial;
+    this.shaderMaterial = rayMarchingMaterial;
   }
   // 创建平面
   createPlane() {

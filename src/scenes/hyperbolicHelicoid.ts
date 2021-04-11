@@ -62,10 +62,6 @@ class HyperbolicHelicoid extends Base {
     this.addListeners();
     this.setLoop();
   }
-  // 使用PCFSoft阴影
-  usePCFSoftShadowMap() {
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  }
   // 创建材质
   createHyperbolicHelicoidMaterial() {
     const hyperbolicHelicoidMaterial = new THREE.MeshPhysicalMaterial({

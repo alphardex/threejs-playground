@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Grid",
   setup() {
     const start = () => {
-      const gridWave = new GridWave(".grid-wave", true);
+      const gridWave = new GridWave(".grid-wave", false);
       gridWave.init();
     };
     onMounted(() => {

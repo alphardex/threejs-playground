@@ -56,7 +56,7 @@ export default defineComponent({
   name: "TwistedGallery",
   setup() {
     const start = () => {
-      const twistedGallery = new TwistedGallery(".twisted-gallery", true);
+      const twistedGallery = new TwistedGallery(".twisted-gallery", false);
       twistedGallery.init();
     };
     onMounted(() => {

@@ -10,7 +10,7 @@ export default defineComponent({
   name: "RayMarching",
   setup() {
     const start = () => {
-      const rayMarching = new RayMarching(".ray-marching", true);
+      const rayMarching = new RayMarching(".ray-marching", false);
       rayMarching.init();
     };
     onMounted(() => {

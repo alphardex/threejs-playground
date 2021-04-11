@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import ky from "kyouka";
 import { MeshObject } from "@/types";
 import { calcAspect } from "@/utils/math";
 import { MeshPhysicsObject } from "@/utils/physics";
@@ -27,6 +28,8 @@ class Base {
   sound!: THREE.Audio;
   stats!: Stats;
   composer!: EffectComposer;
+  shaderMaterial!: THREE.ShaderMaterial;
+  mouseSpeed!: number;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -50,6 +53,7 @@ class Base {
       },
     };
     this.mousePos = new THREE.Vector2(0, 0);
+    this.mouseSpeed = 0;
   }
   // 初始化
   init() {
@@ -192,34 +196,40 @@ class Base {
   // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
-      if (this.camera instanceof THREE.PerspectiveCamera) {
-        const aspect = calcAspect(this.container!);
-        const camera = this.camera as THREE.PerspectiveCamera;
-        camera.aspect = aspect;
-        camera.updateProjectionMatrix();
-      } else if (this.camera instanceof THREE.OrthographicCamera) {
-        this.updateOrthographicCameraParams();
-        const camera = this.camera as THREE.OrthographicCamera;
-        const {
-          left,
-          right,
-          top,
-          bottom,
-          near,
-          far,
-        } = this.orthographicCameraParams;
-        camera.left = left;
-        camera.right = right;
-        camera.top = top;
-        camera.bottom = bottom;
-        camera.near = near;
-        camera.far = far;
-        camera.updateProjectionMatrix();
+      if (this.shaderMaterial) {
+        this.shaderMaterial.uniforms.uResolution.value.x = window.innerWidth;
+        this.shaderMaterial.uniforms.uResolution.value.y = window.innerHeight;
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      } else {
+        if (this.camera instanceof THREE.PerspectiveCamera) {
+          const aspect = calcAspect(this.container!);
+          const camera = this.camera as THREE.PerspectiveCamera;
+          camera.aspect = aspect;
+          camera.updateProjectionMatrix();
+        } else if (this.camera instanceof THREE.OrthographicCamera) {
+          this.updateOrthographicCameraParams();
+          const camera = this.camera as THREE.OrthographicCamera;
+          const {
+            left,
+            right,
+            top,
+            bottom,
+            near,
+            far,
+          } = this.orthographicCameraParams;
+          camera.left = left;
+          camera.right = right;
+          camera.top = top;
+          camera.bottom = bottom;
+          camera.near = near;
+          camera.far = far;
+          camera.updateProjectionMatrix();
+        }
+        this.renderer.setSize(
+          this.container!.clientWidth,
+          this.container!.clientHeight
+        );
       }
-      this.renderer.setSize(
-        this.container!.clientWidth,
-        this.container!.clientHeight
-      );
     });
   }
   // 动画
@@ -363,6 +373,62 @@ class Base {
     }
     const { object } = intersect;
     return target === object ? intersect : null;
+  }
+  // 获取跟屏幕同像素的fov角度
+  getScreenFov() {
+    return ky.rad2deg(
+      2 * Math.atan(window.innerHeight / 2 / this.cameraPosition.z)
+    );
+  }
+  // 获取重心坐标系
+  getBaryCoord(bufferGeometry: THREE.BufferGeometry) {
+    // https://gist.github.com/mattdesl/e399418558b2b52b58f5edeafea3c16c
+    const length = bufferGeometry.attributes.position.array.length;
+    const count = length / 3;
+    const bary = [];
+    for (let i = 0; i < count; i++) {
+      bary.push(0, 0, 1, 0, 1, 0, 1, 0, 0);
+    }
+    const aCenter = new Float32Array(bary);
+    bufferGeometry.setAttribute(
+      "aCenter",
+      new THREE.BufferAttribute(aCenter, 3)
+    );
+  }
+  // 追踪鼠标速度
+  trackMouseSpeed() {
+    // https://stackoverflow.com/questions/6417036/track-mouse-speed-with-js
+    let lastMouseX = -1;
+    let lastMouseY = -1;
+    let mouseSpeed = 0;
+    window.addEventListener("mousemove", (e) => {
+      const mousex = e.pageX;
+      const mousey = e.pageY;
+      if (lastMouseX > -1) {
+        mouseSpeed = Math.max(
+          Math.abs(mousex - lastMouseX),
+          Math.abs(mousey - lastMouseY)
+        );
+        this.mouseSpeed = mouseSpeed / 100;
+      }
+      lastMouseX = mousex;
+      lastMouseY = mousey;
+    });
+    document.addEventListener("mouseleave", () => {
+      this.mouseSpeed = 0;
+    });
+  }
+  // 使用PCFSoft阴影
+  usePCFSoftShadowMap() {
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  }
+  // 使用VSM阴影
+  useVSMShadowMap() {
+    this.renderer.shadowMap.type = THREE.VSMShadowMap;
+  }
+  // 将相机的方向设为z轴
+  setCameraUpZ() {
+    this.camera.up.set(0, 0, 1);
   }
 }
 

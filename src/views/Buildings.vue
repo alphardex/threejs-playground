@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Buildings",
   setup() {
     const start = () => {
-      const buildings = new Buildings(".buildings", true);
+      const buildings = new Buildings(".buildings", false);
       buildings.init();
     };
     onMounted(() => {

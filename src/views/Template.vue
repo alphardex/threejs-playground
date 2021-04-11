@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Base",
   setup() {
     const start = () => {
-      const template = new Template(".template", true);
+      const template = new Template(".template", false);
       template.init();
     };
     onMounted(() => {

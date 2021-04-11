@@ -33,7 +33,7 @@ class RayMarchingBall extends Base {
     this.createPlane();
     this.createLight();
     this.trackMousePos();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -86,6 +86,7 @@ class RayMarchingBall extends Base {
       },
     });
     this.rayMarchingBallMaterial = rayMarchingBallMaterial;
+    this.shaderMaterial = rayMarchingBallMaterial;
   }
   // 创建平面
   createPlane() {

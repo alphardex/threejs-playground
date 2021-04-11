@@ -182,7 +182,7 @@ export default defineComponent({
   name: "DistortImage",
   setup() {
     const start = () => {
-      const distortImage = new DistortImage(".distort-image", true);
+      const distortImage = new DistortImage(".distort-image", false);
       distortImage.init();
     };
     onMounted(() => {

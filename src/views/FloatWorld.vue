@@ -10,7 +10,7 @@ export default defineComponent({
   name: "FloatWorld",
   setup() {
     const start = () => {
-      const floatWorld = new FloatWorld(".float-world", true);
+      const floatWorld = new FloatWorld(".float-world", false);
       floatWorld.init();
     };
     onMounted(() => {

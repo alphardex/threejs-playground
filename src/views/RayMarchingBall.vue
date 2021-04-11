@@ -10,7 +10,7 @@ export default defineComponent({
   name: "RayMarchingBall",
   setup() {
     const start = () => {
-      const rayMarchingBall = new RayMarchingBall(".ray-marching-ball", true);
+      const rayMarchingBall = new RayMarchingBall(".ray-marching-ball", false);
       rayMarchingBall.init();
     };
     onMounted(() => {

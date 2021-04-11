@@ -124,12 +124,6 @@ class DistortImage extends Base {
     this.createMainEffect();
     this.createPostprocessingEffect();
   }
-  // 获取跟屏幕同像素的fov角度
-  getScreenFov() {
-    return ky.rad2deg(
-      2 * Math.atan(window.innerHeight / 2 / this.cameraPosition.z)
-    );
-  }
   // 创建材质
   createDistortImageMaterial() {
     const shaderConfig = this.shaderConfig[this.params.shaderName];

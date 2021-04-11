@@ -10,7 +10,7 @@ export default defineComponent({
   name: "Base",
   setup() {
     const start = () => {
-      const base = new Base(".base", true);
+      const base = new Base(".base", false);
       base.init();
     };
     onMounted(() => {

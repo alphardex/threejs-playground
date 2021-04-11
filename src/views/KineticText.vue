@@ -10,7 +10,7 @@ export default defineComponent({
   name: "KineticText",
   setup() {
     const start = () => {
-      const kineticText = new KineticText(".kinetic-text", true);
+      const kineticText = new KineticText(".kinetic-text", false);
       kineticText.init();
     };
     onMounted(() => {
