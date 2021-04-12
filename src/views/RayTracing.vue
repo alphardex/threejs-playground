@@ -1,17 +1,17 @@
 <template>
-  <div class="{{nameKecab}} w-full h-full bg-black"></div>
+  <div class="ray-tracing w-full h-full bg-black"></div>
 </template>
 
 <script lang="ts">
-import {{nameUpper}} from "@/scenes/{{name}}";
+import RayTracing from "@/scenes/rayTracing";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  name: "{{nameUpper}}",
+  name: "RayTracing",
   setup() {
     const start = () => {
-      const {{name}} = new {{nameUpper}}(".{{nameKecab}}", false);
-      {{name}}.init();
+      const rayTracing = new RayTracing(".ray-tracing", false);
+      rayTracing.init();
     };
     onMounted(() => {
       start();

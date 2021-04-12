@@ -25,6 +25,7 @@ import Sun from "../views/Sun.vue";
 import SunshineSimulation from "../views/SunshineSimulation.vue";
 import RayMarchingBall from "../views/RayMarchingBall.vue";
 import HyperbolicHelicoid from "../views/HyperbolicHelicoid.vue";
+import RayTracing from "../views/RayTracing.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -151,6 +152,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/hyperbolic-helicoid",
     name: "HyperbolicHelicoid",
     component: HyperbolicHelicoid,
+  },
+  {
+    path: "/ray-tracing",
+    name: "RayTracing",
+    component: RayTracing,
   },
   {
     path: "/:pathMatch(.*)*",

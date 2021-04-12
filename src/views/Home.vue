@@ -89,6 +89,11 @@
           HyperbolicHelicoid
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'RayTracing' }">
+          RayTracing
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
