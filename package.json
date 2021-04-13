@@ -18,6 +18,7 @@
     "glsl-cos-palette": "^1.0.0",
     "glsl-fast-gaussian-blur": "^1.0.2",
     "glsl-hsv2rgb": "^1.0.0",
+    "glsl-inverse": "^1.0.0",
     "glsl-map": "^1.0.1",
     "glsl-noise": "0.0.0",
     "glsl-random": "0.0.5",

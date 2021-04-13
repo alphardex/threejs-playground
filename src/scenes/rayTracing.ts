@@ -17,17 +17,17 @@ class RayTracing extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1);
     this.params = {
-      refractionPower: 0.77,
-      lightChannelDelta: 0.02,
-      morphPower: 0.99,
-      angle: 0.75 * Math.PI,
+      uRefractionPower: 0.77,
+      uLightChannelDelta: 0.02,
+      uMorphPower: 0.99,
+      uAngle: 0.75 * Math.PI,
     };
   }
   // 初始化
   init() {
     this.createScene();
     this.createOrthographicCamera();
-    this.createRenderer();
+    this.createRenderer(true);
     this.createRayTracingMaterial();
     this.createPlane();
     this.createLight();
@@ -53,17 +53,17 @@ class RayTracing extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        refractionPower: {
-          value: this.params.refractionPower,
+        uRefractionPower: {
+          value: this.params.uRefractionPower,
         },
-        lightChannelDelta: {
-          value: this.params.lightChannelDelta,
+        uLightChannelDelta: {
+          value: this.params.uLightChannelDelta,
         },
-        morphPower: {
-          value: this.params.morphPower,
+        uMorphPower: {
+          value: this.params.uMorphPower,
         },
-        angle: {
-          value: this.params.angle,
+        uAngle: {
+          value: this.params.uAngle,
         },
       },
       defines: {
@@ -84,7 +84,7 @@ class RayTracing extends Base {
   }
   // 动画
   animate() {
-    gsap.to(this.rayTracingMaterial.uniforms.morphPower, {
+    gsap.to(this.rayTracingMaterial.uniforms.uMorphPower, {
       keyframes: [
         { value: 0.01, duration: 1.6, delay: 0.6 },
         { value: 0.99, duration: 1, delay: 0.6 },
@@ -92,7 +92,7 @@ class RayTracing extends Base {
       repeat: -1,
       ease: "sine.out",
     });
-    gsap.to(this.rayTracingMaterial.uniforms.lightChannelDelta, {
+    gsap.to(this.rayTracingMaterial.uniforms.uLightChannelDelta, {
       keyframes: [
         { value: 0.15, duration: 1.6, delay: 0.6 },
         { value: 0.02, duration: 1, delay: 0.6 },
@@ -107,7 +107,7 @@ class RayTracing extends Base {
     if (this.rayTracingMaterial) {
       this.rayTracingMaterial.uniforms.uTime.value = elapsedTime;
       this.rayTracingMaterial.uniforms.uMouse.value = mousePos;
-      this.rayTracingMaterial.uniforms.angle.value += 0.02;
+      this.rayTracingMaterial.uniforms.uAngle.value += 0.02;
     }
   }
   // 创建调试面板
@@ -115,25 +115,25 @@ class RayTracing extends Base {
     const gui = new dat.GUI();
     const uniforms = this.rayTracingMaterial.uniforms;
     gui
-      .add(uniforms.refractionPower, "value")
+      .add(uniforms.uRefractionPower, "value")
       .min(0)
       .max(1)
-      .name("refractionPower");
+      .name("uRefractionPower");
     gui
-      .add(uniforms.lightChannelDelta, "value")
+      .add(uniforms.uLightChannelDelta, "value")
       .min(0)
       .max(0.2)
-      .name("lightChannelDelta");
+      .name("uLightChannelDelta");
     gui
-      .add(uniforms.morphPower, "value")
+      .add(uniforms.uMorphPower, "value")
       .min(0.01)
       .max(0.99)
-      .name("morphPower");
+      .name("uMorphPower");
     gui
-      .add(uniforms.angle, "value")
+      .add(uniforms.uAngle, "value")
       .min(0)
       .max(6.28)
-      .name("angle");
+      .name("uAngle");
   }
 }
 

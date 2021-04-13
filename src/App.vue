@@ -8,8 +8,13 @@ import "css.gg/icons/scss/play-button-o.scss";
 import "css.gg/icons/scss/play-pause-o.scss";
 import "pannellum/build/pannellum.css";
 import { defineComponent } from "vue";
+// import VConsole from "vconsole";
 
-export default defineComponent({});
+export default defineComponent({
+  // setup() {
+  //   new VConsole();
+  // },
+});
 </script>
 
 <style lang="scss">
