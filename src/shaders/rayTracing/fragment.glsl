@@ -243,8 +243,7 @@ void main(){
     dir=normalize(-scene.light[1]);
     scene.projectedLight[1]=scene.light[1]+dir*roundedboxIntersectModified(scene.light[1],dir,scene.outerSize,scene.outerRadius);
     
-    for(int m=0;m<2;m++)
-    for(int n=0;n<2;n++)
+    for(int n=0;n<4;n++)
     {
         vec2 p=centerUv(vUv,uResolution);
         
@@ -252,7 +251,6 @@ void main(){
         vec3 rayDirectionLocal=ntransform(scene.worldToLocal,rayDirection);
         
         power+=trace(rayOriginLocal,rayDirectionLocal);
-        
     }
     
     power/=4.;

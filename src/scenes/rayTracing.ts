@@ -20,7 +20,7 @@ class RayTracing extends Base {
       uLightChannelDelta: 0.02,
       uMorphPower: 0.99,
       uAngle: 0.75 * Math.PI,
-      uZDistance: 5,
+      uZDistance: 6,
     };
   }
   // 初始化
