@@ -5,7 +5,6 @@
 #pragma glslify:opI=require(glsl-sdf-ops/intersection)
 #pragma glslify:invert=require(../modules/invert)
 #pragma glslify:cosPalette=require(glsl-cos-palette)
-#pragma glslify:PI=require(glsl-constants/PI)
 
 uniform float uTime;
 uniform vec2 uMouse;

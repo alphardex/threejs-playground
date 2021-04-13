@@ -4,6 +4,7 @@
 #pragma glslify:rand=require(glsl-random)
 #pragma glslify:roundedboxNormal=require(../modules/roundedboxNormal)
 #pragma glslify:inverse=require(glsl-inverse)
+#pragma glslify:QUARTER_PI=require(glsl-constants/QUARTER_PI)
 
 varying vec2 vUv;
 
@@ -208,7 +209,7 @@ vec3 trace(vec3 rayOrigin,vec3 rayDirection){
 
 void main(){
     
-    scene.localToWorld=rotation3d(vec3(0.,0.,1.),.7853981633974483);
+    scene.localToWorld=rotation3d(vec3(0.,0.,1.),QUARTER_PI);
     scene.worldToLocal=inverse(scene.localToWorld);
     
     float innerFactor=mix(.5,.375,uMorphPower);
