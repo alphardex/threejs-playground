@@ -5,6 +5,7 @@
 #pragma glslify:roundedboxNormal=require(../modules/roundedboxNormal)
 #pragma glslify:inverse=require(glsl-inverse)
 #pragma glslify:QUARTER_PI=require(glsl-constants/QUARTER_PI)
+#pragma glslify:centerUv=require(../modules/centerUv)
 
 varying vec2 vUv;
 
@@ -245,8 +246,7 @@ void main(){
     for(int m=0;m<2;m++)
     for(int n=0;n<2;n++)
     {
-        vec2 o=vec2(float(m),float(n))/2.-.5;
-        vec2 p=(2.*(gl_FragCoord.xy+o)-uResolution)/uResolution.y;
+        vec2 p=centerUv(vUv,uResolution);
         
         vec3 rayDirection=normalize(p.x*uu+p.y*vv+3.*ww);
         vec3 rayDirectionLocal=ntransform(scene.worldToLocal,rayDirection);
