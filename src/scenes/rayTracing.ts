@@ -31,7 +31,7 @@ class RayTracing extends Base {
     this.createRayTracingMaterial();
     this.createPlane();
     this.createLight();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.trackMousePos();
     this.addListeners();
     this.setLoop();
