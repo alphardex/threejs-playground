@@ -241,25 +241,20 @@ void main(){
     dir=normalize(-scene.light[1]);
     scene.projectedLight[1]=scene.light[1]+dir*roundedboxIntersectModified(scene.light[1],dir,scene.outerSize,scene.outerRadius);
     
-    #if AA>1
-    for(int m=0;m<AA;m++)
-    for(int n=0;n<AA;n++)
+    for(int m=0;m<2;m++)
+    for(int n=0;n<2;n++)
     {
-        vec2 o=vec2(float(m),float(n))/float(AA)-.5;
+        vec2 o=vec2(float(m),float(n))/2.-.5;
         vec2 p=(2.*(gl_FragCoord.xy+o)-uResolution)/uResolution.y;
-        #else
-        vec2 p=(2.*gl_FragCoord.xy-uResolution)/uResolution.y;
-        #endif
         
         vec3 rayDirection=normalize(p.x*uu+p.y*vv+3.*ww);
         vec3 rayDirectionLocal=ntransform(scene.worldToLocal,rayDirection);
         
         power+=trace(rayOriginLocal,rayDirectionLocal);
         
-        #if AA>1
     }
-    power/=float(AA*AA);
-    #endif
+    
+    power/=4.;
     
     power=clamp(power,0.,1.);
     
