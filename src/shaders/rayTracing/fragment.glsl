@@ -14,6 +14,7 @@ uniform float uMorphPower;
 uniform float uRefractionPower;
 uniform float uLightChannelDelta;
 uniform float uAngle;
+uniform float uZDistance;
 
 struct Scene{
     vec3 outerSize;
@@ -220,7 +221,7 @@ void main(){
     
     vec3 power=vec3(0.);
     
-    vec3 rayOrigin=vec3(9.5*cos(uAngle),0.,9.5*sin(uAngle));
+    vec3 rayOrigin=vec3(uZDistance*cos(uAngle),0.,uZDistance*sin(uAngle));
     vec3 ww=normalize(-rayOrigin);
     vec3 uu=normalize(cross(ww,vec3(0.,1.,0.)));
     vec3 vv=(cross(uu,ww));

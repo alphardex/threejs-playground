@@ -15,12 +15,12 @@ class RayTracing extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
     this.params = {
       uRefractionPower: 0.77,
       uLightChannelDelta: 0.02,
       uMorphPower: 0.99,
       uAngle: 0.75 * Math.PI,
+      uZDistance: 5,
     };
   }
   // 初始化
@@ -31,7 +31,7 @@ class RayTracing extends Base {
     this.createRayTracingMaterial();
     this.createPlane();
     this.createLight();
-    // this.createDebugPanel();
+    this.createDebugPanel();
     this.trackMousePos();
     this.addListeners();
     this.setLoop();
@@ -65,6 +65,9 @@ class RayTracing extends Base {
         uAngle: {
           value: this.params.uAngle,
         },
+        uZDistance: {
+          value: this.params.uZDistance,
+        },
       },
     });
     this.rayTracingMaterial = rayTracingMaterial;
@@ -72,7 +75,7 @@ class RayTracing extends Base {
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2, 1, 1);
     const material = this.rayTracingMaterial;
     this.createMesh({
       geometry,
@@ -131,6 +134,11 @@ class RayTracing extends Base {
       .min(0)
       .max(6.28)
       .name("uAngle");
+    gui
+      .add(uniforms.uZDistance, "value")
+      .min(0)
+      .max(10)
+      .name("uZDistance");
   }
 }
 
