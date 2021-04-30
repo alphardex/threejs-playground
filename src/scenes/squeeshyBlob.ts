@@ -16,13 +16,31 @@ class SqueeshyBlob extends Base {
   colorParams!: any;
   currentColor!: any;
   params!: any;
+  impulse!: any;
+  lastMousePos!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
     this.currentColor = ky.sample(colors);
     this.params = {
-      rotationYVelocity: 0.005,
+      impulseIntensity: {
+        x: 1.2,
+        y: 0.6,
+      },
+      rotationAcceleration: 0.24,
+      impulseDecay: {
+        x: 0.9,
+        y: 0.9,
+      },
+    };
+    this.impulse = {
+      x: 0,
+      y: 0,
+    };
+    this.lastMousePos = {
+      x: 0,
+      y: 0,
     };
   }
   // 初始化
@@ -68,7 +86,7 @@ class SqueeshyBlob extends Base {
           value: new THREE.Color(this.currentColor[3]),
         },
         uImpulse: {
-          value: new THREE.Vector2(0, 0),
+          value: new THREE.Vector2(this.impulse.x, this.impulse.y),
         },
         uSceneRotationY: {
           value: 0,
@@ -87,6 +105,19 @@ class SqueeshyBlob extends Base {
     });
     this.squeeshyBlob = mesh;
   }
+  // 根据鼠标移动计算力的大小
+  calcImpulse() {
+    const mousePos = this.mousePos;
+    const deltaX = mousePos.x - this.lastMousePos.x;
+    const deltaY = mousePos.y - this.lastMousePos.y;
+    const direction =
+      ((this.squeeshyBlob.rotation.x + Math.PI / 2) / Math.PI) % 2 > 1 ? -1 : 1;
+    this.impulse.x += deltaX * this.params.impulseIntensity.x * direction;
+    this.impulse.y -= deltaY * this.params.impulseIntensity.y;
+    this.impulse.x *= this.params.impulseDecay.x;
+    this.impulse.y *= this.params.impulseDecay.y;
+    this.lastMousePos = { ...mousePos };
+  }
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
@@ -94,8 +125,16 @@ class SqueeshyBlob extends Base {
     if (this.squeeshyBlobMaterial) {
       this.squeeshyBlobMaterial.uniforms.uTime.value = elapsedTime;
       this.squeeshyBlobMaterial.uniforms.uMouse.value = mousePos;
-      this.squeeshyBlob.rotation.y += this.params.rotationYVelocity;
+      this.calcImpulse();
+      this.squeeshyBlob.rotation.y +=
+        this.impulse.x * this.params.rotationAcceleration;
+      this.squeeshyBlob.rotation.x +=
+        this.impulse.y * this.params.rotationAcceleration;
       this.squeeshyBlobMaterial.uniforms.uSceneRotationY.value = this.squeeshyBlob.rotation.y;
+      this.squeeshyBlobMaterial.uniforms.uImpulse.value = new THREE.Vector2(
+        this.impulse.x,
+        this.impulse.y
+      );
     }
   }
   // 创建调试面板
