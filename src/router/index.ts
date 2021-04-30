@@ -27,6 +27,7 @@ import RayMarchingBall from "../views/RayMarchingBall.vue";
 import HyperbolicHelicoid from "../views/HyperbolicHelicoid.vue";
 import RayTracing from "../views/RayTracing.vue";
 import SpikyBlob from "../views/SpikyBlob.vue";
+import ParticleShape from "../views/ParticleShape.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -163,6 +164,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/spiky-blob",
     name: "SpikyBlob",
     component: SpikyBlob,
+  },
+  {
+    path: "/particle-shape",
+    name: "ParticleShape",
+    component: ParticleShape,
   },
   {
     path: "/:pathMatch(.*)*",
