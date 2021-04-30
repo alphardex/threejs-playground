@@ -89,9 +89,14 @@
           HyperbolicHelicoid
         </router-link>
       </li>
-      <li>
+      <!-- <li>
         <router-link :to="{ name: 'RayTracing' }">
           RayTracing
+        </router-link>
+      </li> -->
+      <li>
+        <router-link :to="{ name: 'SqueeshyBlob' }">
+          SqueeshyBlob
         </router-link>
       </li>
     </ul>
