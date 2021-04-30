@@ -5,14 +5,14 @@ import * as dat from "dat.gui";
 import colors from "nice-color-palettes";
 import { Base } from "./base";
 // @ts-ignore
-import squeeshyBlobVertexShader from "../shaders/squeeshyBlob/vertex.glsl";
+import spikyBlobVertexShader from "../shaders/spikyBlob/vertex.glsl";
 // @ts-ignore
-import squeeshyBlobFragmentShader from "../shaders/squeeshyBlob/fragment.glsl";
+import spikyBlobFragmentShader from "../shaders/spikyBlob/fragment.glsl";
 
-class SqueeshyBlob extends Base {
+class SpikyBlob extends Base {
   clock!: THREE.Clock;
-  squeeshyBlobMaterial!: THREE.ShaderMaterial;
-  squeeshyBlob!: THREE.Mesh;
+  spikyBlobMaterial!: THREE.ShaderMaterial;
+  spikyBlob!: THREE.Mesh;
   colorParams!: any;
   currentColor!: any;
   params!: any;
@@ -23,19 +23,20 @@ class SqueeshyBlob extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
     // this.currentColor = ky.sample(colors);
-    this.currentColor = colors[28];
+    this.currentColor = colors[35];
     this.params = {
-      spikeCount: 24,
+      spikeCount: 18,
       spikeLength: 2,
       impulseIntensity: {
-        x: 1.5,
-        y: 0.6,
+        x: 1.6,
+        y: 0.4,
       },
       rotationAcceleration: 0.24,
       impulseDecay: {
         x: 0.9,
         y: 0.9,
       },
+      rotationYSpeed: 0.001,
     };
     this.impulse = {
       x: 0,
@@ -51,7 +52,7 @@ class SqueeshyBlob extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createSqueeshyBlobMaterial();
+    this.createSpikyBlobMaterial();
     this.createSphere();
     this.createLight();
     this.trackMousePos();
@@ -61,10 +62,10 @@ class SqueeshyBlob extends Base {
     this.setLoop();
   }
   // 创建材质
-  createSqueeshyBlobMaterial() {
-    const squeeshyBlobMaterial = new THREE.ShaderMaterial({
-      vertexShader: squeeshyBlobVertexShader,
-      fragmentShader: squeeshyBlobFragmentShader,
+  createSpikyBlobMaterial() {
+    const spikyBlobMaterial = new THREE.ShaderMaterial({
+      vertexShader: spikyBlobVertexShader,
+      fragmentShader: spikyBlobFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -96,17 +97,17 @@ class SqueeshyBlob extends Base {
         },
       },
     });
-    this.squeeshyBlobMaterial = squeeshyBlobMaterial;
+    this.spikyBlobMaterial = spikyBlobMaterial;
   }
   // 创建球体
   createSphere() {
     const geometry = new THREE.SphereBufferGeometry(1, 256, 256);
-    const material = this.squeeshyBlobMaterial;
+    const material = this.spikyBlobMaterial;
     const mesh = this.createMesh({
       geometry,
       material,
     });
-    this.squeeshyBlob = mesh;
+    this.spikyBlob = mesh;
   }
   // 根据鼠标移动计算力的大小
   calcImpulse() {
@@ -114,7 +115,7 @@ class SqueeshyBlob extends Base {
     const deltaX = mousePos.x - this.lastMousePos.x;
     const deltaY = mousePos.y - this.lastMousePos.y;
     const direction =
-      ((this.squeeshyBlob.rotation.x + Math.PI / 2) / Math.PI) % 2 > 1 ? -1 : 1;
+      ((this.spikyBlob.rotation.x + Math.PI / 2) / Math.PI) % 2 > 1 ? -1 : 1;
     this.impulse.x += deltaX * this.params.impulseIntensity.x * direction;
     this.impulse.y -= deltaY * this.params.impulseIntensity.y;
     this.impulse.x *= this.params.impulseDecay.x;
@@ -125,16 +126,17 @@ class SqueeshyBlob extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.squeeshyBlobMaterial) {
-      this.squeeshyBlobMaterial.uniforms.uTime.value = elapsedTime;
-      this.squeeshyBlobMaterial.uniforms.uMouse.value = mousePos;
+    if (this.spikyBlobMaterial) {
+      this.spikyBlobMaterial.uniforms.uTime.value = elapsedTime;
+      this.spikyBlobMaterial.uniforms.uMouse.value = mousePos;
       this.calcImpulse();
-      this.squeeshyBlob.rotation.y +=
-        this.impulse.x * this.params.rotationAcceleration;
-      this.squeeshyBlob.rotation.x +=
+      this.spikyBlob.rotation.y +=
+        this.impulse.x * this.params.rotationAcceleration +
+        this.params.rotationYSpeed;
+      this.spikyBlob.rotation.x +=
         this.impulse.y * this.params.rotationAcceleration;
-      this.squeeshyBlobMaterial.uniforms.uSceneRotationY.value = this.squeeshyBlob.rotation.y;
-      this.squeeshyBlobMaterial.uniforms.uImpulse.value = new THREE.Vector2(
+      this.spikyBlobMaterial.uniforms.uSceneRotationY.value = this.spikyBlob.rotation.y;
+      this.spikyBlobMaterial.uniforms.uImpulse.value = new THREE.Vector2(
         this.impulse.x,
         this.impulse.y
       );
@@ -143,7 +145,7 @@ class SqueeshyBlob extends Base {
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI({ width: 300 });
-    const uniforms = this.squeeshyBlobMaterial.uniforms;
+    const uniforms = this.spikyBlobMaterial.uniforms;
     gui
       .add(uniforms.uImpulse.value, "x")
       .min(0)
@@ -159,4 +161,4 @@ class SqueeshyBlob extends Base {
   }
 }
 
-export default SqueeshyBlob;
+export default SpikyBlob;

@@ -95,8 +95,8 @@
         </router-link>
       </li> -->
       <li>
-        <router-link :to="{ name: 'SqueeshyBlob' }">
-          SqueeshyBlob
+        <router-link :to="{ name: 'SpikyBlob' }">
+          SpikyBlob
         </router-link>
       </li>
     </ul>

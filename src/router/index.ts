@@ -26,7 +26,7 @@ import SunshineSimulation from "../views/SunshineSimulation.vue";
 import RayMarchingBall from "../views/RayMarchingBall.vue";
 import HyperbolicHelicoid from "../views/HyperbolicHelicoid.vue";
 import RayTracing from "../views/RayTracing.vue";
-import SqueeshyBlob from "../views/SqueeshyBlob.vue";
+import SpikyBlob from "../views/SpikyBlob.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -160,9 +160,9 @@ const routes: Array<RouteRecordRaw> = [
     component: RayTracing,
   },
   {
-    path: "/squeeshy-blob",
-    name: "SqueeshyBlob",
-    component: SqueeshyBlob,
+    path: "/spiky-blob",
+    name: "SpikyBlob",
+    component: SpikyBlob,
   },
   {
     path: "/:pathMatch(.*)*",
