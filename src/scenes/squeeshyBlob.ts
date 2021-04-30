@@ -22,10 +22,13 @@ class SqueeshyBlob extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
-    this.currentColor = ky.sample(colors);
+    // this.currentColor = ky.sample(colors);
+    this.currentColor = colors[28];
     this.params = {
+      spikeCount: 24,
+      spikeLength: 2,
       impulseIntensity: {
-        x: 1.2,
+        x: 1.5,
         y: 0.6,
       },
       rotationAcceleration: 0.24,
@@ -53,7 +56,7 @@ class SqueeshyBlob extends Base {
     this.createLight();
     this.trackMousePos();
     this.createOrbitControls();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -74,10 +77,10 @@ class SqueeshyBlob extends Base {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uSpikeCount: {
-          value: 2,
+          value: this.params.spikeCount,
         },
         uSpikeLength: {
-          value: 10,
+          value: this.params.spikeLength,
         },
         uColor1: {
           value: new THREE.Color(this.currentColor[0]),

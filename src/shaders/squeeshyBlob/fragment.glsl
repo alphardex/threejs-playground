@@ -13,7 +13,7 @@ varying vec3 vPosition;
 varying float vNoise;
 
 void main(){
-    float strength=snoise3(vec3(vUv*5.,uTime*.02))*.5+.5;
+    float strength=snoise3(vec3(vUv*7.,uTime*.02))*.5+.5;
     vec3 color=mix(uColor1,uColor2,strength);
     float sine=sin(vUv.x*PI);
     float darkness=vNoise/uSpikeLength+1.;
