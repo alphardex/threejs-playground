@@ -23,7 +23,9 @@ class SpikyBlob extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
     // this.currentColor = ky.sample(colors);
-    this.currentColor = colors[35];
+    const color = colors[35];
+    console.log(color);
+    this.currentColor = color;
     this.params = {
       spikeCount: 18,
       spikeLength: 2,
