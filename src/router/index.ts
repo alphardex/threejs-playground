@@ -28,6 +28,7 @@ import HyperbolicHelicoid from "../views/HyperbolicHelicoid.vue";
 import RayTracing from "../views/RayTracing.vue";
 import SpikyBlob from "../views/SpikyBlob.vue";
 import ParticleShape from "../views/ParticleShape.vue";
+import FloatBubbles from "../views/FloatBubbles.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -169,6 +170,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/particle-shape",
     name: "ParticleShape",
     component: ParticleShape,
+  },
+  {
+    path: "/float-bubbles",
+    name: "FloatBubbles",
+    component: FloatBubbles,
   },
   {
     path: "/:pathMatch(.*)*",

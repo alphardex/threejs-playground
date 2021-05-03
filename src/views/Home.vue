@@ -99,6 +99,11 @@
           ParticleShape
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'FloatBubbles' }">
+          FloatBubbles
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
