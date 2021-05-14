@@ -61,6 +61,7 @@ body {
   --orange-color-1: #f6b64c;
   --blue-color-1: #2c3e50;
   --blue-color-2: #91a2aa;
+  --white-color-1: #c7c8c9;
 }
 
 // reset
@@ -114,6 +115,10 @@ a {
 
 .bg-blue-2 {
   background: var(--blue-color-2);
+}
+
+.bg-white-1 {
+  background: var(--white-color-1);
 }
 
 // common

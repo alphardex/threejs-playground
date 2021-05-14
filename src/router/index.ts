@@ -29,6 +29,7 @@ import RayTracing from "../views/RayTracing.vue";
 import SpikyBlob from "../views/SpikyBlob.vue";
 import ParticleShape from "../views/ParticleShape.vue";
 import FloatBubbles from "../views/FloatBubbles.vue";
+import NoiseMaterial from "../views/NoiseMaterial.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -175,6 +176,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/float-bubbles",
     name: "FloatBubbles",
     component: FloatBubbles,
+  },
+  {
+    path: "/noise-material",
+    name: "NoiseMaterial",
+    component: NoiseMaterial,
   },
   {
     path: "/:pathMatch(.*)*",

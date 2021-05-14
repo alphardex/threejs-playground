@@ -104,6 +104,11 @@
           FloatBubbles
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'NoiseMaterial' }">
+          NoiseMaterial
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
