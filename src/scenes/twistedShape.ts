@@ -11,11 +11,15 @@ class TwistedShape extends Base {
   clock!: THREE.Clock;
   material!: THREE.ShaderMaterial;
   currentAxis!: string;
+  colorParams!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
     this.currentAxis = "x";
+    this.colorParams = {
+      color: "#12112a",
+    };
   }
   // 初始化
   init() {
@@ -41,6 +45,9 @@ class TwistedShape extends Base {
         uVelocity: { value: 0.3 },
         uAxis: { value: new THREE.Vector3(1, 0, 0) },
         uDistortion: { value: 3 },
+        uColor: {
+          value: new THREE.Color(this.colorParams.color),
+        },
       },
     });
     this.material = material;
