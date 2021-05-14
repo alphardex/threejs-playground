@@ -17,7 +17,7 @@ class NoiseMaterial extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 1.8);
     this.isOpen = false;
   }
   // 初始化
@@ -74,24 +74,31 @@ class NoiseMaterial extends Base {
   // 创建点击效果
   createClickEffect() {
     window.addEventListener("click", () => {
-      const mesh = this.mesh;
-      if (this.onChooseIntersect(mesh)) {
-        const material = this.noiseMaterialMaterial;
-        if (!this.isOpen) {
-          gsap.to(material.uniforms.uTransitionProgress, {
-            value: 0.64,
-            duration: 1.2,
-          });
-          this.isOpen = true;
-        } else {
-          gsap.to(material.uniforms.uTransitionProgress, {
-            value: 0,
-            duration: 1.2,
-          });
-          this.isOpen = false;
-        }
-      }
+      this.onClickMesh();
     });
+    window.addEventListener("touchstart", () => {
+      this.onClickMesh();
+    });
+  }
+  // 点击物体时
+  onClickMesh() {
+    const mesh = this.mesh;
+    if (this.onChooseIntersect(mesh)) {
+      const material = this.noiseMaterialMaterial;
+      if (!this.isOpen) {
+        gsap.to(material.uniforms.uTransitionProgress, {
+          value: 1,
+          duration: 1.2,
+        });
+        this.isOpen = true;
+      } else {
+        gsap.to(material.uniforms.uTransitionProgress, {
+          value: 0,
+          duration: 1.2,
+        });
+        this.isOpen = false;
+      }
+    }
   }
   // 动画
   update() {
