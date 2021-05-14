@@ -109,6 +109,11 @@
           NoiseMaterial
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'NoiseWave' }">
+          NoiseWave
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
