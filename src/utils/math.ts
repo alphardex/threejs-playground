@@ -1,7 +1,7 @@
 const calcAspect = (el: HTMLElement) => el.clientWidth / el.clientHeight;
 
 const plane = (u: number, v: number, target: THREE.Vector3) => {
-  let [x, y, z] = [u, v, 0];
+  const [x, y, z] = [u, v, 0];
   target.set(x, y, z);
 };
 
@@ -30,4 +30,22 @@ const hyperbolicHelicoidFunction = (
   target.set(x, z, y);
 };
 
-export { calcAspect, hyperbolicHelicoidFunction };
+// https://arxiv.org/pdf/1604.02174.pdf
+const sphube = (u1, v1, target) => {
+  const s = 0.6;
+  const r = 1;
+  const theta = 2 * u1 * Math.PI;
+  const phi = v1 * 2 * Math.PI;
+
+  const u = Math.cos(theta) * Math.cos(phi);
+  const v = Math.cos(theta) * Math.sin(phi);
+  const w = Math.sin(theta);
+
+  const z = (r * u) / Math.sqrt(1 - s * v ** 2 - s * w ** 2);
+  const x = (r * v) / Math.sqrt(1 - s * u ** 2 - s * w ** 2);
+  const y = (r * w) / Math.sqrt(1 - s * Math.cos(theta) ** 2);
+
+  target.set(x, y, z);
+};
+
+export { calcAspect, hyperbolicHelicoidFunction, sphube };

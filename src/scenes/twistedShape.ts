@@ -5,14 +5,17 @@ import { Base } from "./base";
 import twistedShapeVertexShader from "../shaders/twistedShape/vertex.glsl";
 // @ts-ignore
 import twistedShapeFragmentShader from "../shaders/twistedShape/fragment.glsl";
+import { sphube } from "@/utils/math";
 
 class TwistedShape extends Base {
   clock!: THREE.Clock;
   material!: THREE.ShaderMaterial;
+  currentAxis!: string;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 3);
+    this.currentAxis = "x";
   }
   // 初始化
   init() {
@@ -26,6 +29,7 @@ class TwistedShape extends Base {
     // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
+    this.toggleRotateAxis();
   }
   // 创建扭曲材质
   createTwistedMaterial() {
@@ -34,8 +38,8 @@ class TwistedShape extends Base {
       fragmentShader: twistedShapeFragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uVelocity: { value: 0.5 },
-        uAxis: { value: new THREE.Vector3(0, 1, 0) },
+        uVelocity: { value: 0.3 },
+        uAxis: { value: new THREE.Vector3(1, 0, 0) },
         uDistortion: { value: 3 },
       },
     });
@@ -43,9 +47,23 @@ class TwistedShape extends Base {
   }
   // 创建扭曲图形
   createTwistedShape() {
-    const geometry = new THREE.TorusBufferGeometry(1, 0.3, 20, 45);
+    const geometry = new THREE.ParametricBufferGeometry(sphube, 400, 400);
     const material = this.material;
     this.createMesh({ geometry, material });
+  }
+  // 切换图形旋转轴
+  toggleRotateAxis() {
+    setInterval(() => {
+      const material = this.material;
+      if (this.currentAxis === "x") {
+        material.uniforms.uAxis.value = new THREE.Vector3(0, 1, 0);
+        this.currentAxis = "y";
+      } else {
+        material.uniforms.uAxis.value = new THREE.Vector3(1, 0, 0);
+        this.currentAxis = "x";
+      }
+      console.log(this.currentAxis);
+    }, 3300);
   }
   // 动画
   update() {
