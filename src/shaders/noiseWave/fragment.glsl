@@ -21,7 +21,7 @@ float fbm(in vec2 p){
     float amp=.5;
     float scale=1.;
     for(int i=0;i<OCTAVES;i++){
-        sum+=vnoise((p-vec2(1.))*scale)*amp;
+        sum+=vnoise(p*scale)*amp;
         amp*=.6;
         scale*=1.9;
     }
