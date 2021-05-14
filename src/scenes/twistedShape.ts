@@ -69,7 +69,7 @@ class TwistedShape extends Base {
         material.uniforms.uAxis.value = new THREE.Vector3(1, 0, 0);
         this.currentAxis = "x";
       }
-    }, 3360);
+    }, 3345);
   }
   // 动画
   update() {
