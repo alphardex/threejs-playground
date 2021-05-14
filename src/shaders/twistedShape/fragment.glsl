@@ -6,7 +6,7 @@ varying vec3 vNormal;
 varying vec3 vEyeVector;
 
 void main(){
-    float F=fresnel(0.,.5,2.,vEyeVector,vNormal);
+    float F=fresnel(0.,.6,2.,vEyeVector,vNormal);
     vec3 color=uColor+F;
     gl_FragColor=vec4(color,1.);
 }
