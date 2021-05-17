@@ -13,11 +13,9 @@ void main(){
     vec4 projectedPosition=projectionMatrix*viewPosition;
     gl_Position=projectedPosition;
     
-    vec3 ndc=getNDC();
-    
     vUv=uv;
     vPosition=position;
-    vNdc=ndc;
+    vNdc=getNDC();
     vNormal=normalize(mat3(modelMatrix)*normal);
     vEyeVector=getEyeVector(modelMatrix,position,cameraPosition);
 }
