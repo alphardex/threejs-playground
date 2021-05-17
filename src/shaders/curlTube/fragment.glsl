@@ -26,11 +26,7 @@ void main(){
     float cameraToWorldDistance=length(cameraToWorld);
     float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,uScatterPow);
     
-    // light
-    float light=scatter;
-    
     // color
-    // vec3 color=vec3(light,0.,0.);
     vec3 color=vec3(0.,0.,0.);
     if(uIsTube==1.){
         color+=mix(vec3(0.),uTubeColor,scatter);
