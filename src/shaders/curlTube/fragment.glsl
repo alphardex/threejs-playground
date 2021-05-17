@@ -1,4 +1,3 @@
-#pragma glslify:invert=require(../modules/invert.glsl)
 #pragma glslify:getScatter=require(../modules/getScatter.glsl)
 
 uniform float uTime;
@@ -20,13 +19,6 @@ varying vec3 vNormal;
 varying vec3 vWorldPosition;
 
 void main(){
-    // distance
-    vec3 rayToWorldDirection=normalize(uSpotLight-vWorldPosition);
-    float dist=distance(uSpotLight,vPosition);
-    
-    // diffuse
-    float diffuse=max(0.,dot(rayToWorldDirection,vNormal));
-    
     // scatter
     vec3 cameraToWorld=vWorldPosition-cameraPosition;
     vec3 cameraToWorldDirection=normalize(cameraToWorld);
@@ -34,23 +26,10 @@ void main(){
     float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,.4);
     
     // light
-    float light=0.;
-    if(uIsTube==1.){
-        light=diffuse;
-    }
-    if(uIsPlane==1.){
-        light=diffuse*scatter;
-    }
+    float light=scatter;
     
     // color
-    vec3 color=vec3(0.,0.,0.);
-    if(uIsTube==1.){
-        color=mix(vec3(0.),uTubeColor,light);
-    }
-    if(uIsPlane==1.){
-        color+=uPlaneColor;
-        color+=mix(vec3(0.),uSpotColor,light);
-    }
+    vec3 color=vec3(light,0.,0.);
     
     // tube movement
     if(uIsTube==1.){

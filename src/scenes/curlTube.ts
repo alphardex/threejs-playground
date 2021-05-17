@@ -54,7 +54,7 @@ class CurlTube extends Base {
     this.createRaycaster();
     this.trackMouseOnPlane();
     this.createSpot();
-    // this.createOrbitControls();
+    this.createOrbitControls();
     // this.createLight();
     this.addListeners();
     this.setLoop();
