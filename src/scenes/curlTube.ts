@@ -48,13 +48,13 @@ class CurlTube extends Base {
     this.createScatterMaterial();
     this.createTubeMaterial();
     this.createPlaneMaterial();
-    this.createTubes({});
+    this.createTubeGroup({});
     this.createRaycaster();
     this.createRaycastPlane();
     this.createSpot();
     this.trackMouseOnPlane();
     this.createLight();
-    this.createOrbitControls();
+    // this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
@@ -144,19 +144,21 @@ class CurlTube extends Base {
     const curve = new THREE.CatmullRomCurve3(points);
     const geometry = new THREE.TubeBufferGeometry(curve, 600, 0.005, 8);
     const material = this.tubeMaterial;
-    this.createMesh({
+    const mesh = this.createMesh({
       geometry,
       material,
     });
+    return mesh;
   }
   // 创建管道群
-  createTubes({
+  createTubeGroup({
     tubeCount = this.params.tubeCount,
     tubePointCount = this.params.tubePointCount,
     tubePointScale = this.params.tubePointScale,
   }) {
+    const tubeGroup = new THREE.Group();
     for (let i = 0; i < tubeCount; i++) {
-      this.createTube({
+      const mesh = this.createTube({
         startPoint: new THREE.Vector3(
           ky.randomNumberInRange(-0.5, 0.5),
           ky.randomNumberInRange(-0.5, 0.5),
@@ -165,11 +167,14 @@ class CurlTube extends Base {
         pointCount: tubePointCount,
         pointScale: tubePointScale,
       });
+      tubeGroup.add(mesh);
     }
+    this.scene.add(tubeGroup);
+    tubeGroup.position.z = 1.8;
   }
   // 创建追踪平面
   createRaycastPlane() {
-    const planeGeometry = new THREE.PlaneBufferGeometry(20, 20);
+    const planeGeometry = new THREE.PlaneBufferGeometry(9.8, 4.6);
     const planeMaterial = this.planeMaterial;
     const plane = this.createMesh(
       {
