@@ -21,20 +21,21 @@ class CurlTube extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 3);
     this.colorParams = {
       planeColor: "#250E2F",
-      spotColor: "#ffffff",
       tubeColor: "#ff0000",
+      spotShapeColor: "#ffffff",
+      spotLightColor: "#ff0000",
     };
     this.params = {
-      tubeCount: 100,
+      tubeCount: 240,
       tubePointCount: 600,
       tubePointScale: 1,
       scatterDivider: 150,
       planeScatterDivider: 150,
       tubeScatterDivider: 15,
-      velocity: 0.2,
+      velocity: 0.5,
       tubeThreshold: 0.3,
     };
   }
@@ -90,6 +91,15 @@ class CurlTube extends Base {
         },
         uIsPlane: {
           value: 0,
+        },
+        uPlaneColor: {
+          value: new THREE.Color(this.colorParams.planeColor),
+        },
+        uTubeColor: {
+          value: new THREE.Color(this.colorParams.tubeColor),
+        },
+        uSpotColor: {
+          value: new THREE.Color(this.colorParams.spotLightColor),
         },
         uVelocity: {
           value: this.params.velocity,
@@ -159,7 +169,7 @@ class CurlTube extends Base {
   }
   // 创建追踪平面
   createRaycastPlane() {
-    const planeGeometry = new THREE.PlaneBufferGeometry(10, 10);
+    const planeGeometry = new THREE.PlaneBufferGeometry(20, 20);
     const planeMaterial = this.planeMaterial;
     const plane = this.createMesh(
       {
@@ -174,7 +184,7 @@ class CurlTube extends Base {
   createSpot() {
     const spotGeometry = new THREE.SphereBufferGeometry(0.02, 24, 24);
     const spotMaterial = new THREE.MeshBasicMaterial({
-      color: this.colorParams.spotColor,
+      color: this.colorParams.spotShapeColor,
     });
     const spot = this.createMesh({
       geometry: spotGeometry,
@@ -195,7 +205,6 @@ class CurlTube extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
     if (this.scatterMaterial) {
       this.tubeMaterial.uniforms.uTime.value = elapsedTime;
       this.tubeMaterial.uniforms.uSpotLight.value = this.mouseSpot.position;

@@ -8,6 +8,9 @@ uniform vec3 uSpotLight;
 uniform float uScatterDivider;
 uniform float uIsTube;
 uniform float uIsPlane;
+uniform vec3 uPlaneColor;
+uniform vec3 uTubeColor;
+uniform vec3 uSpotColor;
 uniform float uVelocity;
 uniform float uTubeThreshold;
 
@@ -30,14 +33,6 @@ void main(){
     float cameraToWorldDistance=length(cameraToWorld);
     float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,.4);
     
-    // tube movement
-    if(uIsTube==1.){
-        float tubeMovement=sin(vUv.x*5.+uTime*uVelocity);
-        if(tubeMovement<uTubeThreshold){
-            discard;
-        }
-    }
-    
     // light
     float light=0.;
     if(uIsTube==1.){
@@ -47,6 +42,23 @@ void main(){
         light=diffuse*scatter;
     }
     
-    vec3 color=vec3(light,0.,0.);
+    // color
+    vec3 color=vec3(0.,0.,0.);
+    if(uIsTube==1.){
+        color=mix(vec3(0.),uTubeColor,light);
+    }
+    if(uIsPlane==1.){
+        color+=uPlaneColor;
+        color+=mix(vec3(0.),uSpotColor,light);
+    }
+    
+    // tube movement
+    if(uIsTube==1.){
+        float tubeMovement=sin(vUv.x*5.+uTime*uVelocity);
+        if(tubeMovement<uTubeThreshold){
+            discard;
+        }
+    }
+    
     gl_FragColor=vec4(color,1.);
 }
