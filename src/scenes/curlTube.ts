@@ -22,7 +22,7 @@ class CurlTube extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 1.2);
     this.colorParams = {
       planeColor: "#250E2F",
       tubeColor: "#ff0000",
@@ -34,6 +34,7 @@ class CurlTube extends Base {
       tubePointCount: 600,
       tubePointScale: 1,
       scatterDivider: 150,
+      scatterPow: 0.6,
       planeScatterDivider: 150,
       tubeScatterDivider: 15,
       velocity: 0.5,
@@ -53,9 +54,9 @@ class CurlTube extends Base {
     this.createPlane();
     this.createRaycaster();
     this.trackMouseOnPlane();
-    this.createSpot();
-    this.createOrbitControls();
-    // this.createLight();
+    // this.createSpot();
+    // this.createOrbitControls();
+    this.createLight();
     this.addListeners();
     this.setLoop();
   }
@@ -80,6 +81,9 @@ class CurlTube extends Base {
         },
         uScatterDivider: {
           value: this.params.scatterDivider,
+        },
+        uScatterPow: {
+          value: this.params.scatterPow,
         },
         uIsTube: {
           value: 0,
@@ -225,6 +229,10 @@ class CurlTube extends Base {
     }
     if (this.mouseSpot && this.mousePosOnPlane) {
       this.mouseSpot.position.copy(this.mousePosOnPlane);
+    }
+    if (this.mousePosOnPlane) {
+      this.scene.rotation.x = this.mousePosOnPlane.y / 4;
+      this.scene.rotation.y = this.mousePosOnPlane.x / 4;
     }
     this.renderPlaneScene();
   }

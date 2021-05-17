@@ -5,6 +5,7 @@ uniform vec2 uMouse;
 uniform vec2 uResolution;
 uniform vec3 uSpotLight;
 uniform float uScatterDivider;
+uniform float uScatterPow;
 uniform float uIsTube;
 uniform float uIsPlane;
 uniform vec3 uPlaneColor;
@@ -23,13 +24,21 @@ void main(){
     vec3 cameraToWorld=vWorldPosition-cameraPosition;
     vec3 cameraToWorldDirection=normalize(cameraToWorld);
     float cameraToWorldDistance=length(cameraToWorld);
-    float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,.4);
+    float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,uScatterPow);
     
     // light
     float light=scatter;
     
     // color
-    vec3 color=vec3(light,0.,0.);
+    // vec3 color=vec3(light,0.,0.);
+    vec3 color=vec3(0.,0.,0.);
+    if(uIsTube==1.){
+        color+=mix(vec3(0.),uTubeColor,scatter);
+    }
+    if(uIsPlane==1.){
+        color+=uPlaneColor;
+        color+=mix(vec3(0.),uSpotColor,scatter);
+    }
     
     // tube movement
     if(uIsTube==1.){
