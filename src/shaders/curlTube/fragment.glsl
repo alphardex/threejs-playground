@@ -34,13 +34,7 @@ void main(){
     float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,.4);
     
     // light
-    float light=0.;
-    if(uIsTube==1.){
-        light=diffuse;
-    }
-    if(uIsPlane==1.){
-        light=diffuse*scatter;
-    }
+    float light=diffuse*scatter;
     
     // color
     vec3 color=vec3(0.,0.,0.);
