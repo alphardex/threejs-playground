@@ -114,6 +114,11 @@
       <li>
         <router-link :to="{ name: 'TwistedShape' }">TwistedShape</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'CurlTube' }">
+          CurlTube
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

@@ -356,17 +356,17 @@ class Base {
     this.mousePos.y = y;
   }
   // 获取点击物
-  getInterSects(): THREE.Intersection[] {
+  getInterSects(container = this.scene): THREE.Intersection[] {
     this.raycaster.setFromCamera(this.mousePos, this.camera);
     const intersects = this.raycaster.intersectObjects(
-      this.scene.children,
+      container.children,
       true
     );
     return intersects;
   }
   // 选中点击物时
-  onChooseIntersect(target: THREE.Object3D) {
-    const intersects = this.getInterSects();
+  onChooseIntersect(target: THREE.Object3D, container = this.scene) {
+    const intersects = this.getInterSects(container);
     const intersect = intersects[0];
     if (!intersect || !intersect.face) {
       return null;

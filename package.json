@@ -39,6 +39,7 @@
     "nice-color-palettes": "^3.0.0",
     "pannellum": "^2.5.6",
     "postprocessing": "^6.21.4",
+    "simplex-noise": "^2.4.0",
     "suncalc": "^1.8.0",
     "sweetalert2": "^10.3.6",
     "three": "^0.123.0",

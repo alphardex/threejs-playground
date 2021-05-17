@@ -31,6 +31,7 @@ import ParticleShape from "../views/ParticleShape.vue";
 import FloatBubbles from "../views/FloatBubbles.vue";
 import NoiseMaterial from "../views/NoiseMaterial.vue";
 import NoiseWave from "../views/NoiseWave.vue";
+import CurlTube from "../views/CurlTube.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -187,6 +188,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/noise-wave",
     name: "NoiseWave",
     component: NoiseWave,
+  },
+  {
+    path: "/curl-tube",
+    name: "CurlTube",
+    component: CurlTube,
   },
   {
     path: "/:pathMatch(.*)*",
