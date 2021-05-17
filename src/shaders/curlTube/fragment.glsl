@@ -17,24 +17,30 @@ uniform float uTubeThreshold;
 varying vec2 vUv;
 varying vec3 vPosition;
 varying vec3 vNormal;
-varying vec3 vEyeVector;
+varying vec3 vWorldPosition;
 
 void main(){
     // distance
-    vec3 rayToWorldDirection=normalize(uSpotLight-vEyeVector);
+    vec3 rayToWorldDirection=normalize(uSpotLight-vWorldPosition);
     float dist=distance(uSpotLight,vPosition);
     
     // diffuse
     float diffuse=max(0.,dot(rayToWorldDirection,vNormal));
     
     // scatter
-    vec3 cameraToWorld=vEyeVector-cameraPosition;
+    vec3 cameraToWorld=vWorldPosition-cameraPosition;
     vec3 cameraToWorldDirection=normalize(cameraToWorld);
     float cameraToWorldDistance=length(cameraToWorld);
     float scatter=getScatter(cameraPosition,cameraToWorldDirection,uSpotLight,cameraToWorldDistance,uScatterDivider,.4);
     
     // light
-    float light=diffuse*scatter;
+    float light=0.;
+    if(uIsTube==1.){
+        light=diffuse;
+    }
+    if(uIsPlane==1.){
+        light=diffuse*scatter;
+    }
     
     // color
     vec3 color=vec3(0.,0.,0.);
