@@ -24,10 +24,11 @@ class CurlTube extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1.2);
     this.colorParams = {
-      planeColor: "#250E2F",
-      tubeColor: "#ff0000",
+      // palette: https://colorhunt.co/palette/167893
+      planeColor: "#1b262c",
+      tubeColor: "#3282b8",
+      spotLightColor: "#3282b8",
       spotShapeColor: "#ffffff",
-      spotLightColor: "#ff0000",
     };
     this.params = {
       tubeCount: 300,
@@ -56,6 +57,7 @@ class CurlTube extends Base {
     this.trackMouseOnPlane();
     // this.createSpot();
     // this.createOrbitControls();
+    // this.createDebugPanel();
     this.createLight();
     this.addListeners();
     this.setLoop();
@@ -243,6 +245,21 @@ class CurlTube extends Base {
       this.renderer.render(this.planeScene, this.camera);
       this.renderer.clearDepth();
     }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI({ width: 300 });
+    const tubeUniforms = this.tubeMaterial.uniforms;
+    const planeUniforms = this.planeMaterial.uniforms;
+    gui.addColor(this.colorParams, "planeColor").onFinishChange((value) => {
+      planeUniforms.uPlaneColor.value.set(value);
+    });
+    gui.addColor(this.colorParams, "tubeColor").onFinishChange((value) => {
+      tubeUniforms.uTubeColor.value.set(value);
+    });
+    gui.addColor(this.colorParams, "spotLightColor").onFinishChange((value) => {
+      planeUniforms.uSpotColor.value.set(value);
+    });
   }
 }
 
