@@ -87,6 +87,11 @@
         </router-link>
       </li>
       <li>
+        <router-link :to="{ name: 'RayTracing' }">
+          RayTracing
+        </router-link>
+      </li>
+      <li>
         <router-link :to="{ name: 'SpikyBlob' }">
           SpikyBlob
         </router-link>
