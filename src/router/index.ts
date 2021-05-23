@@ -32,6 +32,7 @@ import FloatBubbles from "../views/FloatBubbles.vue";
 import NoiseMaterial from "../views/NoiseMaterial.vue";
 import NoiseWave from "../views/NoiseWave.vue";
 import CurlTube from "../views/CurlTube.vue";
+import ThousandFollow from "../views/ThousandFollow.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -193,6 +194,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/curl-tube",
     name: "CurlTube",
     component: CurlTube,
+  },
+  {
+    path: "/thousand-follow",
+    name: "ThousandFollow",
+    component: ThousandFollow,
   },
   {
     path: "/:pathMatch(.*)*",

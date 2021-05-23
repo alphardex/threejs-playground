@@ -124,6 +124,11 @@
           CurlTube
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ThousandFollow' }">
+          ThousandFollow
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
