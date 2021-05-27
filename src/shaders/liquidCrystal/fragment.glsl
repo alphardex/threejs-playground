@@ -5,7 +5,7 @@ uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
 uniform sampler2D uIriMap;
-uniform float uIriStrength;
+uniform float uIriBoost;
 
 varying vec2 vUv;
 varying vec3 vWorldNormal;
@@ -22,11 +22,12 @@ void main(){
     vec3 color=invert(vec3(colorStrength));
     
     // iri
-    vec3 iri=texture2D(uIriMap,vec2(0.)).rgb;
-    vec3 iriNormal=vWorldNormal*iri*uIriStrength;
+    vec3 airy=texture2D(uIriMap,vec2(NdotV*.99,0.)).rgb;
+    airy*=airy;
+    vec3 specularLight=vWorldNormal*airy*uIriBoost;
     
     float mixStrength=smoothstep(.3,.6,NdotV);
-    vec3 finalColor=mix(iriNormal,color,mixStrength);
+    vec3 finalColor=mix(specularLight,color,mixStrength);
     
     gl_FragColor=vec4(finalColor,0.);
 }

@@ -18,6 +18,7 @@ class LiquidCrystal extends Base {
     this.cameraPosition = new THREE.Vector3(0, 0, 25);
     this.params = {
       timeScale: 0.1,
+      iriBoost: 8,
     };
   }
   // 初始化
@@ -52,8 +53,8 @@ class LiquidCrystal extends Base {
         uIriMap: {
           value: new ThinFilmFresnelMap(1000, 1.2, 3.2, 64),
         },
-        uIriStrength: {
-          value: 8,
+        uIriBoost: {
+          value: this.params.iriBoost,
         },
       },
     });
