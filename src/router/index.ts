@@ -33,6 +33,7 @@ import NoiseMaterial from "../views/NoiseMaterial.vue";
 import NoiseWave from "../views/NoiseWave.vue";
 import CurlTube from "../views/CurlTube.vue";
 import ThousandFollow from "../views/ThousandFollow.vue";
+import LiquidCrystal from "../views/LiquidCrystal.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -199,6 +200,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/thousand-follow",
     name: "ThousandFollow",
     component: ThousandFollow,
+  },
+  {
+    path: "/liquid-crystal",
+    name: "LiquidCrystal",
+    component: LiquidCrystal,
   },
   {
     path: "/:pathMatch(.*)*",

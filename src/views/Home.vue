@@ -129,6 +129,11 @@
           ThousandFollow
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'LiquidCrystal' }">
+          LiquidCrystal
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
