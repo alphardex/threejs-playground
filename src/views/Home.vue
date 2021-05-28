@@ -134,6 +134,11 @@
           LiquidCrystal
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'CurveRacing' }">
+          CurveRacing
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

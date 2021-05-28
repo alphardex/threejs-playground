@@ -61,6 +61,7 @@ body {
   --orange-color-1: #f6b64c;
   --blue-color-1: #2c3e50;
   --blue-color-2: #91a2aa;
+  --blue-color-3: #4ec6f2;
   --black-color-1: #12112a;
   --white-color-1: #c7c8c9;
 }
@@ -116,6 +117,10 @@ a {
 
 .bg-blue-2 {
   background: var(--blue-color-2);
+}
+
+.bg-blue-3 {
+  background: var(--blue-color-3);
 }
 
 .bg-white-1 {
