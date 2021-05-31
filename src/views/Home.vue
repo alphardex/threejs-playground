@@ -139,6 +139,11 @@
           CurveRacing
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'VueLogo' }">
+          VueLogo
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
