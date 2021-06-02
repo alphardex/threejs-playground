@@ -34,7 +34,6 @@ import NoiseWave from "../views/NoiseWave.vue";
 import CurlTube from "../views/CurlTube.vue";
 import ThousandFollow from "../views/ThousandFollow.vue";
 import LiquidCrystal from "../views/LiquidCrystal.vue";
-import CurveRacing from "../views/CurveRacing.vue";
 import VueLogo from "../views/VueLogo.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -207,11 +206,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/liquid-crystal",
     name: "LiquidCrystal",
     component: LiquidCrystal,
-  },
-  {
-    path: "/curve-racing",
-    name: "CurveRacing",
-    component: CurveRacing,
   },
   {
     path: "/vue-logo",
