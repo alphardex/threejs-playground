@@ -35,6 +35,7 @@ import CurlTube from "../views/CurlTube.vue";
 import ThousandFollow from "../views/ThousandFollow.vue";
 import LiquidCrystal from "../views/LiquidCrystal.vue";
 import VueLogo from "../views/VueLogo.vue";
+import CylinderOrbitText from "../views/CylinderOrbitText.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -211,6 +212,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/vue-logo",
     name: "VueLogo",
     component: VueLogo,
+  },
+  {
+    path: "/cylinder-orbit-text",
+    name: "CylinderOrbitText",
+    component: CylinderOrbitText,
   },
   {
     path: "/:pathMatch(.*)*",

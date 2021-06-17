@@ -139,6 +139,11 @@
           VueLogo
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'CylinderOrbitText' }">
+          CylinderOrbitText
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
