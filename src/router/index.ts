@@ -36,6 +36,7 @@ import ThousandFollow from "../views/ThousandFollow.vue";
 import LiquidCrystal from "../views/LiquidCrystal.vue";
 import VueLogo from "../views/VueLogo.vue";
 import CylinderOrbitText from "../views/CylinderOrbitText.vue";
+import FBOParticles from "../views/FBOParticles.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -217,6 +218,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/cylinder-orbit-text",
     name: "CylinderOrbitText",
     component: CylinderOrbitText,
+  },
+  {
+    path: "/fbo-particles",
+    name: "FBOParticles",
+    component: FBOParticles,
   },
   {
     path: "/:pathMatch(.*)*",

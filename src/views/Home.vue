@@ -144,6 +144,11 @@
           CylinderOrbitText
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'FBOParticles' }">
+          FBOParticles
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
