@@ -7,6 +7,7 @@ import "@alphardex/aqua.css/dist/aqua.min.css";
 import "css.gg/icons/scss/play-button-o.scss";
 import "css.gg/icons/scss/play-pause-o.scss";
 import "pannellum/build/pannellum.css";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 import { defineComponent } from "vue";
 // import VConsole from "vconsole";
 
@@ -233,8 +234,16 @@ a {
 
 // utils
 
+.w-180 {
+  width: 45rem;
+}
+
 .w-240 {
   width: 60rem;
+}
+
+.h-90 {
+  height: 22.5rem;
 }
 
 .h-120 {

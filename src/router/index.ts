@@ -37,6 +37,7 @@ import LiquidCrystal from "../views/LiquidCrystal.vue";
 import VueLogo from "../views/VueLogo.vue";
 import CylinderOrbitText from "../views/CylinderOrbitText.vue";
 import FBOParticles from "../views/FBOParticles.vue";
+import LeanGallery from "../views/LeanGallery.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -223,6 +224,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/fbo-particles",
     name: "FBOParticles",
     component: FBOParticles,
+  },
+  {
+    path: "/lean-gallery",
+    name: "LeanGallery",
+    component: LeanGallery,
   },
   {
     path: "/:pathMatch(.*)*",

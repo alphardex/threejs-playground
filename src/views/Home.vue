@@ -149,6 +149,11 @@
           FBOParticles
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'LeanGallery' }">
+          LeanGallery
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

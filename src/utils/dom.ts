@@ -34,11 +34,11 @@ class DOMMeshObject {
     scene.add(mesh);
     this.mesh = mesh;
   }
-  setPosition() {
+  setPosition(deltaY = window.scrollY) {
     const { mesh, rect } = this;
     const { top, left, width, height } = rect;
     const x = left + width / 2 - window.innerWidth / 2;
-    const y = -(top + height / 2 - window.innerHeight / 2) + window.scrollY;
+    const y = -(top + height / 2 - window.innerHeight / 2) + deltaY;
     mesh.position.set(x, y, 0);
   }
 }

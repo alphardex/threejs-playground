@@ -9,7 +9,7 @@ vec4 RGBShift(sampler2D t,vec2 rUv,vec2 gUv,vec2 bUv,float isBlackWhite){
         color2.rgb=blackAndWhite(color2.rgb);
         color3.rgb=blackAndWhite(color3.rgb);
     }
-    vec4 color=vec4(color1.r,color2.g,color3.b,1.);
+    vec4 color=vec4(color1.r,color2.g,color3.b,color2.a);
     return color;
 }
 
