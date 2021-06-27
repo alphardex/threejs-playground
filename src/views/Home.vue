@@ -154,6 +154,11 @@
           LeanGallery
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'CloudySky' }">
+          CloudySky
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
