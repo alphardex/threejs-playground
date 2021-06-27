@@ -57,6 +57,7 @@ class CloudySky extends Base {
       },
     });
     this.cloudySkyMaterial = cloudySkyMaterial;
+    this.shaderMaterial = cloudySkyMaterial;
   }
   // 创建平面
   createPlane() {
