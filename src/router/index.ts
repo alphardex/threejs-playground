@@ -39,6 +39,7 @@ import CylinderOrbitText from "../views/CylinderOrbitText.vue";
 import FBOParticles from "../views/FBOParticles.vue";
 import LeanGallery from "../views/LeanGallery.vue";
 import CloudySky from "../views/CloudySky.vue";
+import SimpleFBM from "../views/SimpleFBM.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -235,6 +236,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/cloudy-sky",
     name: "CloudySky",
     component: CloudySky,
+  },
+  {
+    path: "/simple-fbm",
+    name: "SimpleFBM",
+    component: SimpleFBM,
   },
   {
     path: "/:pathMatch(.*)*",

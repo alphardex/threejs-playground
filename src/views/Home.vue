@@ -159,6 +159,11 @@
           CloudySky
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'SimpleFBM' }">
+          SimpleFBM
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

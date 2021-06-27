@@ -11,10 +11,12 @@ uniform vec3 uSkyColor;
 varying vec2 vUv;
 varying vec3 vPosition;
 
+#define OCTAVES 6
+
 float fbm(vec3 p){
     float sum=0.;
     float amp=1.;
-    for(int j=0;j<6;j++){
+    for(int i=0;i<OCTAVES;i++){
         vec3 r=p/amp*.2;
         float noise=snoise(r)*amp;
         sum+=noise;
