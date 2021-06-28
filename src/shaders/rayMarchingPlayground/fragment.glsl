@@ -14,8 +14,8 @@ varying vec3 vPosition;
 
 vec2 sdf(vec3 p){
     vec3 p1=rotate(p,vec3(1.),uTime);
-    float box=sdBox(p1,vec3(.3));
-    float result=box;
+    float sphere=sdSphere(p1,.4);
+    float result=sphere;
     float objType=1.;
     return vec2(result,objType);
 }
@@ -45,7 +45,9 @@ void main(){
     if(depth<end){
         vec3 pos=eye+depth*ray;
         vec3 normal=getNormal(pos);
-        color=normal;
+        vec3 lightDir=vec3(-.5,.5,.5);
+        float diffuse=max(dot(lightDir,normal),.1);
+        color=vec3(diffuse);
     }
     gl_FragColor=vec4(color,1.);
 }
