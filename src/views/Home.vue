@@ -164,6 +164,11 @@
           SimpleFBM
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'RayMarchingPlayground' }">
+          RayMarchingPlayground
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
