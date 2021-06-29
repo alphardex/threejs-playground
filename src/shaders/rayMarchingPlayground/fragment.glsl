@@ -14,6 +14,7 @@
 #pragma glslify:opS=require(glsl-sdf-ops/subtraction)
 #pragma glslify:opU=require(glsl-sdf-ops/union)
 #pragma glslify:opTwist=require(../modules/twist)
+#pragma glslify:diffuse=require(../modules/diffuse)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -128,20 +129,20 @@ void main(){
         
         // diffuse
         vec3 lightDir=vec3(-.5,.5,.5);
-        float diffuse=max(dot(lightDir,normal),.1);
+        float diff=diffuse(lightDir,normal,2.);
         
         // tile
         float u=1.-floor(mod(pos.x,2.));
         float v=1.-floor(mod(pos.z,2.));
         if((u==1.&&v<1.)||(u<1.&&v==1.)){
-            diffuse*=.7;
+            diff*=.7;
         }
         
         // softshadow
         float shadow=softshadow(pos,lightDir,.02,2.5);
-        diffuse*=shadow;
+        diff*=shadow;
         
-        color=vec3(diffuse);
+        color=vec3(diff);
     }
     gl_FragColor=vec4(color,1.);
 }
