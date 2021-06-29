@@ -112,9 +112,9 @@ float rayMarch(vec3 eye,vec3 ray,float end){
 void main(){
     vec2 cUv=centerUv(vUv,uResolution);
     vec3 color=vec3(0.);
-    vec3 eye=vec3(0.,0.,2);
+    vec3 eye=vec3(0.,0.,1.);
     vec3 ray=normalize(vec3(cUv,-eye.z));
-    float end=5.;
+    float end=24.;
     float depth=rayMarch(eye,ray,end);
     if(depth<end){
         vec3 pos=eye+depth*ray;
