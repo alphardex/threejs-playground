@@ -169,6 +169,11 @@
           RayMarchingPlayground
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'RayMarchingFire' }">
+          RayMarchingFire
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
