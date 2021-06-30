@@ -1,8 +1,8 @@
 #pragma glslify:centerUv=require(../modules/centerUv)
 #pragma glslify:getRayDirection=require(../modules/getRayDirection)
 #pragma glslify:sdSphere=require(glsl-sdf-primitives/sdSphere)
-#pragma glslify:cnoise=require(glsl-noise/classic/3d)
 #pragma glslify:opU=require(glsl-sdf-ops/union)
+#pragma glslify:cnoise=require(glsl-noise/classic/3d)
 
 uniform float uTime;
 uniform vec2 uMouse;
@@ -16,12 +16,12 @@ varying vec3 vPosition;
 
 float fire(vec3 p){
     vec3 p2=p*vec3(1.,.5,1.)+vec3(0.,1.,0.);
-    float d=sdSphere(p2,1.);
+    float geo=sdSphere(p2,1.);
+    // float result=geo;
     float displacement=uTime*uVelocity;
     vec3 displacementY=vec3(.0,displacement,.0);
     float noise=(cnoise(p+displacementY))*p.y*.4;
-    // float result=d;
-    float result=d+noise;
+    float result=geo+noise;
     return result;
 }
 
