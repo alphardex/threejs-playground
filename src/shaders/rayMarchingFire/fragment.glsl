@@ -20,8 +20,8 @@ float fire(vec3 p){
     float displacement=uTime*uVelocity;
     vec3 displacementY=vec3(.0,displacement,.0);
     float noise=(cnoise(p+displacementY))*p.y*.4;
-    // float result=d;
-    float result=d+noise;
+    float result=d;
+    // float result=d+noise;
     return result;
 }
 
@@ -61,7 +61,6 @@ void main(){
     float strength=pow(result.w*2.,4.);
     
     vec3 mixColor=mix(uColor1,uColor2,fireBody);
-    vec3 finalColor=mixColor*strength;
-    vec4 color=vec4(finalColor,1.);
-    gl_FragColor=color;
+    vec3 color=mixColor*strength;
+    gl_FragColor=vec4(color,1.);
 }
