@@ -17,7 +17,7 @@ class RayMarchingFire extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1);
     this.params = {
-      velocity: 2,
+      velocity: 3,
     };
     this.colorParams = {
       color1: "#ff801a",
@@ -54,7 +54,7 @@ class RayMarchingFire extends Base {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
         uVelocity: {
-          value: 3,
+          value: this.params.velocity,
         },
         uColor1: {
           value: new THREE.Color(this.colorParams.color1),
