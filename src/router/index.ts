@@ -42,6 +42,7 @@ import CloudySky from "../views/CloudySky.vue";
 import SimpleFBM from "../views/SimpleFBM.vue";
 import RayMarchingPlayground from "../views/RayMarchingPlayground.vue";
 import RayMarchingFire from "../views/RayMarchingFire.vue";
+import BouncyBalloon from "../views/BouncyBalloon.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -253,6 +254,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/ray-marching-fire",
     name: "RayMarchingFire",
     component: RayMarchingFire,
+  },
+  {
+    path: "/bouncy-balloon",
+    name: "BouncyBalloon",
+    component: BouncyBalloon,
   },
   {
     path: "/:pathMatch(.*)*",

@@ -174,6 +174,11 @@
           RayMarchingFire
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'BouncyBalloon' }">
+          BouncyBalloon
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

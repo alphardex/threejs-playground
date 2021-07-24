@@ -65,6 +65,7 @@ body {
   --blue-color-3: #4ec6f2;
   --black-color-1: #12112a;
   --white-color-1: #c7c8c9;
+  --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
 }
 
 // reset
@@ -130,6 +131,10 @@ a {
 
 .bg-black-1 {
   background: var(--black-color-1);
+}
+
+.bg-white-grad-1 {
+  background: var(--white-grad-1);
 }
 
 // common
