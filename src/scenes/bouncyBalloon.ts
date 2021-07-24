@@ -72,9 +72,9 @@ class BouncyBalloon extends PhysicsBase {
   // 创建光源
   createLight() {
     const { ballColor } = this.params;
-    const ambiLight = new THREE.AmbientLight(new THREE.Color("#ffffff"), 0.75);
+    const ambiLight = new THREE.AmbientLight(new THREE.Color("white"), 0.75);
     this.scene.add(ambiLight);
-    const dirLight1 = new THREE.DirectionalLight(new THREE.Color("#ffffff"), 4);
+    const dirLight1 = new THREE.DirectionalLight(new THREE.Color("white"), 4);
     dirLight1.position.set(0, 5, -4);
     this.scene.add(dirLight1);
     const dirLight2 = new THREE.DirectionalLight(new THREE.Color(ballColor), 4);
@@ -137,7 +137,7 @@ class BouncyBalloon extends PhysicsBase {
     // 在three.js中创建渲染物体
     const geo = new THREE.PlaneGeometry(1, 1);
     const mat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color("#ff0000"),
+      color: new THREE.Color("red"),
       side: THREE.DoubleSide,
     });
     const mesh = new THREE.Mesh(geo, mat);
