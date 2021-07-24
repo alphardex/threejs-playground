@@ -30,6 +30,7 @@ class Base {
   composer!: EffectComposer;
   shaderMaterial!: THREE.ShaderMaterial;
   mouseSpeed!: number;
+  viewport!: any;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -429,6 +430,18 @@ class Base {
   // 将相机的方向设为z轴
   setCameraUpZ() {
     this.camera.up.set(0, 0, 1);
+  }
+  // 获取viewport
+  getViewport() {
+    const { camera } = this;
+    const position = new THREE.Vector3();
+    const target = new THREE.Vector3();
+    const distance = camera.getWorldPosition(position).distanceTo(target);
+    const fov = ((camera as any).fov * Math.PI) / 180; // convert vertical fov to radians
+    const h = 2 * Math.tan(fov / 2) * distance; // visible height
+    const w = h * (window.innerWidth / window.innerHeight);
+    const viewport = { width: w, height: h };
+    this.viewport = viewport;
   }
 }
 
