@@ -17,7 +17,6 @@ import {
   NormalPass,
   SSAOEffect,
   EffectPass,
-  HalfFloatType,
 } from "postprocessing";
 
 class BouncyBalloon extends PhysicsBase {
@@ -48,43 +47,20 @@ class BouncyBalloon extends PhysicsBase {
     this.createWorld();
     this.createScene();
     this.createPerspectiveCamera();
+    this.getViewport();
     this.createRenderer();
     this.changeRendererParams();
-    this.getViewport();
-    this.createLight();
     this.createBallMaterial();
     this.createBalls();
     this.createFourPlanes();
     this.addBallsDamping();
     this.createMouseFollowBall();
     this.hideSomeObjs();
+    this.createLight();
     this.createPostprocessingEffect();
     this.trackMousePos();
     this.addListeners();
     this.setLoop();
-  }
-  // 更改渲染器参数
-  changeRendererParams() {
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
-    this.renderer.toneMapping = THREE.CineonToneMapping;
-    this.renderer.toneMappingExposure = 1.5;
-  }
-  // 创建光源
-  createLight() {
-    const { ballColor } = this.params;
-    const ambiLight = new THREE.AmbientLight(new THREE.Color("white"), 0.75);
-    this.scene.add(ambiLight);
-    const dirLight1 = new THREE.DirectionalLight(new THREE.Color("white"), 4);
-    dirLight1.position.set(0, 5, -4);
-    this.scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(new THREE.Color(ballColor), 4);
-    dirLight2.position.set(0, -15, 0);
-    this.scene.add(dirLight2);
-    const spotLight = new THREE.SpotLight(new THREE.Color(ballColor));
-    spotLight.penumbra = 1;
-    spotLight.angle = 0.2;
-    spotLight.position.set(20, 20, 25);
-    this.scene.add(spotLight);
   }
   // 创建球材质
   createBallMaterial() {
@@ -244,12 +220,33 @@ class BouncyBalloon extends PhysicsBase {
     this.planes.forEach((plane) => (plane.mesh.visible = false));
     this.mouseFollowBall.mesh.visible = false;
   }
+  // 更改渲染器参数
+  changeRendererParams() {
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.toneMapping = THREE.CineonToneMapping;
+    this.renderer.toneMappingExposure = 1.5;
+  }
+  // 创建光源
+  createLight() {
+    const { ballColor } = this.params;
+    const ambiLight = new THREE.AmbientLight(new THREE.Color("white"), 0.75);
+    this.scene.add(ambiLight);
+    const dirLight1 = new THREE.DirectionalLight(new THREE.Color("white"), 4);
+    dirLight1.position.set(0, 5, -4);
+    this.scene.add(dirLight1);
+    const dirLight2 = new THREE.DirectionalLight(new THREE.Color(ballColor), 4);
+    dirLight2.position.set(0, -15, 0);
+    this.scene.add(dirLight2);
+    const spotLight = new THREE.SpotLight(new THREE.Color(ballColor));
+    spotLight.penumbra = 1;
+    spotLight.angle = 0.2;
+    spotLight.position.set(20, 20, 25);
+    this.scene.add(spotLight);
+  }
   // 创建后期处理特效
   createPostprocessingEffect() {
     const { ballColor } = this.params;
-    const composer = new EffectComposer(this.renderer, {
-      frameBufferType: HalfFloatType,
-    });
+    const composer = new EffectComposer(this.renderer);
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.multisampling = 0;
     const renderPass = new RenderPass(this.scene, this.camera);
