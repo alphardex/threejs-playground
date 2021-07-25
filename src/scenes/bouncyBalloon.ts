@@ -267,22 +267,22 @@ class BouncyBalloon extends PhysicsBase {
       this.camera,
       normalPass.renderTarget.texture,
       {
+        ...ssaoConfig,
+        color: ballColor,
         samples: 9,
         radius: 30,
         intensity: 30,
-        color: ballColor,
-        ...ssaoConfig,
       }
     );
     const ssaoEffect2 = new SSAOEffect(
       this.camera,
       normalPass.renderTarget.texture,
       {
+        ...ssaoConfig,
+        color: ballColor,
         samples: 18,
         radius: 5,
         intensity: 30,
-        color: ballColor,
-        ...ssaoConfig,
       }
     );
 
