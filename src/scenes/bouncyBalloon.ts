@@ -229,17 +229,18 @@ class BouncyBalloon extends PhysicsBase {
   // 创建光源
   createLight() {
     const { ballColor } = this.params;
+
+    // 环境光
     const ambiLight = new THREE.AmbientLight(new THREE.Color("white"), 0.75);
     this.scene.add(ambiLight);
+
+    // 平行光
     const dirLight1 = new THREE.DirectionalLight(new THREE.Color("white"), 4);
-    dirLight1.position.set(0, 5, -4);
+    dirLight1.position.set(0, 5, -5);
     this.scene.add(dirLight1);
-    const dirLight2 = new THREE.DirectionalLight(new THREE.Color(ballColor), 4);
-    dirLight2.position.set(0, -15, 0);
-    this.scene.add(dirLight2);
+
+    // 聚光
     const spotLight = new THREE.SpotLight(new THREE.Color(ballColor));
-    spotLight.penumbra = 1;
-    spotLight.angle = 0.2;
     spotLight.position.set(20, 20, 25);
     this.scene.add(spotLight);
   }
@@ -247,12 +248,16 @@ class BouncyBalloon extends PhysicsBase {
   createPostprocessingEffect() {
     const { ballColor } = this.params;
     const composer = new EffectComposer(this.renderer);
-    composer.setSize(window.innerWidth, window.innerHeight);
-    composer.multisampling = 0;
+
+    // 渲染通道
     const renderPass = new RenderPass(this.scene, this.camera);
     composer.addPass(renderPass);
+
+    // 法线通道
     const normalPass = new NormalPass(this.scene, this.camera);
     composer.addPass(normalPass);
+
+    // SSAO特效
     const ssaoConfig = {
       rangeThreshold: 0.5,
       rangeFalloff: 0.1,
@@ -280,9 +285,12 @@ class BouncyBalloon extends PhysicsBase {
         ...ssaoConfig,
       }
     );
+
+    // 特效通道
     const effectPass = new EffectPass(this.camera, ssaoEffect1, ssaoEffect2);
     effectPass.renderToScreen = true;
     composer.addPass(effectPass);
+
     this.composer = composer;
   }
 }
