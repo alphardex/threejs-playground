@@ -43,6 +43,7 @@ import SimpleFBM from "../views/SimpleFBM.vue";
 import RayMarchingPlayground from "../views/RayMarchingPlayground.vue";
 import RayMarchingFire from "../views/RayMarchingFire.vue";
 import BouncyBalloon from "../views/BouncyBalloon.vue";
+import NakedEye from "../views/NakedEye.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -259,6 +260,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/bouncy-balloon",
     name: "BouncyBalloon",
     component: BouncyBalloon,
+  },
+  {
+    path: "/naked-eye",
+    name: "NakedEye",
+    component: NakedEye,
   },
   {
     path: "/:pathMatch(.*)*",
