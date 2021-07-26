@@ -6,6 +6,7 @@ import { Base } from "./base";
 import nakedEyeVertexShader from "../shaders/nakedEye/vertex.glsl";
 // @ts-ignore
 import nakedEyeFragmentShader from "../shaders/nakedEye/fragment.glsl";
+import { nakedEyeDepthMapImgUrl, nakedEyeImgUrl } from "@/consts/nakedEye";
 
 class NakedEye extends Base {
   clock!: THREE.Clock;
@@ -18,18 +19,20 @@ class NakedEye extends Base {
   // 初始化
   init() {
     this.createScene();
-    this.createPerspectiveCamera();
+    this.createOrthographicCamera();
     this.createRenderer();
     this.createNakedEyeMaterial();
     this.createPlane();
     this.createLight();
     this.trackMousePos();
-    this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
   // 创建材质
   createNakedEyeMaterial() {
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(nakedEyeImgUrl);
+    const depthMapTexture = loader.load(nakedEyeDepthMapImgUrl);
     const nakedEyeMaterial = new THREE.ShaderMaterial({
       vertexShader: nakedEyeVertexShader,
       fragmentShader: nakedEyeFragmentShader,
@@ -44,13 +47,20 @@ class NakedEye extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
+        uTexture: {
+          value: texture,
+        },
+        uDepthMap: {
+          value: depthMapTexture,
+        },
       },
     });
     this.nakedEyeMaterial = nakedEyeMaterial;
+    this.shaderMaterial = nakedEyeMaterial;
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+    const geometry = new THREE.PlaneBufferGeometry(2, 3, 100, 100);
     const material = this.nakedEyeMaterial;
     this.createMesh({
       geometry,
