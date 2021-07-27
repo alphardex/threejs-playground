@@ -95,7 +95,7 @@ class DistortImage extends Base {
       this.postprocessingShaderConfig
     );
     this.params = {
-      shaderName: "twist",
+      shaderName: "mousewave",
       postprocessing: "default",
     };
     this.scrollSpeed = 0;
