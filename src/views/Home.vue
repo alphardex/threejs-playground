@@ -184,6 +184,11 @@
           NakedEye
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'WaveLines' }">
+          WaveLines
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

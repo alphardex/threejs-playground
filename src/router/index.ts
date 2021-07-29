@@ -44,6 +44,7 @@ import RayMarchingPlayground from "../views/RayMarchingPlayground.vue";
 import RayMarchingFire from "../views/RayMarchingFire.vue";
 import BouncyBalloon from "../views/BouncyBalloon.vue";
 import NakedEye from "../views/NakedEye.vue";
+import WaveLines from "../views/WaveLines.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -265,6 +266,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/naked-eye",
     name: "NakedEye",
     component: NakedEye,
+  },
+  {
+    path: "/wave-lines",
+    name: "WaveLines",
+    component: WaveLines,
   },
   {
     path: "/:pathMatch(.*)*",
