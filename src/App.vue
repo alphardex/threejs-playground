@@ -66,6 +66,7 @@ body {
   --black-color-1: #12112a;
   --white-color-1: #c7c8c9;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
+  --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
 }
 
 // reset
@@ -106,6 +107,10 @@ a {
 
 .bg-blue-grad-1 {
   background: var(--blue-grad-1);
+}
+
+.bg-blue-grad-2 {
+  background: var(--blue-grad-2);
 }
 
 .bg-grey-grad-1 {

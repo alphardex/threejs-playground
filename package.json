@@ -17,6 +17,7 @@
     "dat.gui": "^0.7.7",
     "glsl-constants": "^1.0.0",
     "glsl-cos-palette": "^1.0.0",
+    "glsl-easings": "^1.0.0",
     "glsl-fast-gaussian-blur": "^1.0.2",
     "glsl-hsv2rgb": "^1.0.0",
     "glsl-inverse": "^1.0.0",
