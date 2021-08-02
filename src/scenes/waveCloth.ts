@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { Base } from "./base";
 // @ts-ignore
-import waveLinesVertexShader from "../shaders/waveLines/vertex.glsl";
+import waveClothVertexShader from "../shaders/waveCloth/vertex.glsl";
 // @ts-ignore
-import waveLinesFragmentShader from "../shaders/waveLines/fragment.glsl";
+import waveClothFragmentShader from "../shaders/waveCloth/fragment.glsl";
 
-class WaveLines extends Base {
+class WaveCloth extends Base {
   clock!: THREE.Clock;
-  waveLinesMaterial!: THREE.ShaderMaterial;
+  waveClothMaterial!: THREE.ShaderMaterial;
   plane!: THREE.Mesh | null;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -19,16 +19,16 @@ class WaveLines extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createWaveLinesMaterial();
+    this.createWaveClothMaterial();
     this.createPlane();
     this.addListeners();
     this.setLoop();
   }
   // 创建材质
-  createWaveLinesMaterial() {
-    const waveLinesMaterial = new THREE.ShaderMaterial({
-      vertexShader: waveLinesVertexShader,
-      fragmentShader: waveLinesFragmentShader,
+  createWaveClothMaterial() {
+    const waveClothMaterial = new THREE.ShaderMaterial({
+      vertexShader: waveClothVertexShader,
+      fragmentShader: waveClothFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -44,12 +44,12 @@ class WaveLines extends Base {
       transparent: true,
       depthTest: false,
     });
-    this.waveLinesMaterial = waveLinesMaterial;
+    this.waveClothMaterial = waveClothMaterial;
   }
   // 创建平面
   createPlane() {
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 128, 128);
-    const material = this.waveLinesMaterial;
+    const material = this.waveClothMaterial;
     const plane = this.createMesh({
       geometry,
       material,
@@ -64,11 +64,11 @@ class WaveLines extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.waveLinesMaterial) {
-      this.waveLinesMaterial.uniforms.uTime.value = elapsedTime;
-      this.waveLinesMaterial.uniforms.uMouse.value = mousePos;
+    if (this.waveClothMaterial) {
+      this.waveClothMaterial.uniforms.uTime.value = elapsedTime;
+      this.waveClothMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }
 
-export default WaveLines;
+export default WaveCloth;

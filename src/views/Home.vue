@@ -185,8 +185,8 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'WaveLines' }">
-          WaveLines
+        <router-link :to="{ name: 'WaveCloth' }">
+          WaveCloth
         </router-link>
       </li>
     </ul>

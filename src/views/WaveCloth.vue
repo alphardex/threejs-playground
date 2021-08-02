@@ -1,17 +1,17 @@
 <template>
-  <div class="wave-lines w-full h-full bg-blue-grad-3"></div>
+  <div class="wave-cloth w-full h-full bg-blue-grad-3"></div>
 </template>
 
 <script lang="ts">
-import WaveLines from "@/scenes/waveLines";
+import WaveCloth from "@/scenes/waveCloth";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  name: "WaveLines",
+  name: "WaveCloth",
   setup() {
     const start = () => {
-      const waveLines = new WaveLines(".wave-lines", false);
-      waveLines.init();
+      const waveCloth = new WaveCloth(".wave-cloth", false);
+      waveCloth.init();
     };
     onMounted(() => {
       start();
