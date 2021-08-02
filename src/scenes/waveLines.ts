@@ -18,7 +18,7 @@ class WaveLines extends Base {
   // 初始化
   init() {
     this.createScene();
-    this.createPerspectiveCamera();
+    this.createOrthographicCamera();
     this.createRenderer();
     this.createWaveLinesMaterial();
     this.createPlane();
@@ -47,10 +47,11 @@ class WaveLines extends Base {
       },
     });
     this.waveLinesMaterial = waveLinesMaterial;
+    this.shaderMaterial = waveLinesMaterial;
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
     const material = this.waveLinesMaterial;
     this.createMesh({
       geometry,
