@@ -14,8 +14,8 @@ void main(){
     
     // alpha
     vec3 cNormal=computeNormal(vPosition);
-    vec3 up=vec3(0.,0.,-1.);
-    float F=fresnel(0.,.5,4.,up,cNormal);
+    vec3 eyeVector=vec3(0.,0.,-1.);
+    float F=fresnel(0.,.5,4.,eyeVector,cNormal);
     float alpha=F*.5;
     
     gl_FragColor=vec4(color,alpha);
