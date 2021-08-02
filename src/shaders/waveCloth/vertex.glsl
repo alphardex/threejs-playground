@@ -19,11 +19,12 @@ void main(){
     p3.x-=uTime/5.;
     p3.x/=4.;
     
-    p3.z-=uTime/10.;
     p3.y-=uTime/100.;
+    p3.z-=uTime/10.;
     
-    p.z-=vnoise(p3*7.)/15.;
     p.y-=vnoise(p3*7.)/15.+cos(p.x*2.-uTime/2.)/5.-.3;
+    p.z-=vnoise(p3*7.)/15.;
+    
     vec4 modelPosition=modelMatrix*vec4(p,1.);
     vec4 viewPosition=viewMatrix*modelPosition;
     vec4 projectedPosition=projectionMatrix*viewPosition;
