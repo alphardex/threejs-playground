@@ -1,5 +1,5 @@
 <template>
-  <div class="wave-lines w-full h-full bg-blue-grad-2"></div>
+  <div class="wave-lines w-full h-full bg-black"></div>
 </template>
 
 <script lang="ts">
