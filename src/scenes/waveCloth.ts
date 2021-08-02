@@ -17,7 +17,7 @@ class WaveCloth extends Base {
   // 初始化
   init() {
     this.createScene();
-    this.createPerspectiveCamera();
+    this.createOrthographicCamera();
     this.createRenderer();
     this.createWaveClothMaterial();
     this.createPlane();
@@ -45,20 +45,17 @@ class WaveCloth extends Base {
       depthTest: false,
     });
     this.waveClothMaterial = waveClothMaterial;
+    this.shaderMaterial = waveClothMaterial;
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 128, 128);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2, 128, 128);
     const material = this.waveClothMaterial;
     const plane = this.createMesh({
       geometry,
       material,
     });
     this.plane = plane;
-  }
-  // 缩放平面
-  scalePlane() {
-    this.plane.scale.set((this.camera as any).aspect * 1.55, 0.75, 1);
   }
   // 动画
   update() {
