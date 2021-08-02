@@ -24,7 +24,6 @@ class WaveLines extends Base {
     this.createPlane();
     this.createLight();
     this.trackMousePos();
-    this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
