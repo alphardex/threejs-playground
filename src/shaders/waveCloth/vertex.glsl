@@ -25,6 +25,7 @@ void main(){
     p.y-=vnoise(p3*7.)/15.+cos(p.x*2.-uTime/2.)/5.-.3;
     p.z-=vnoise(p3*7.)/15.;
     
+    // vec4 modelPosition=modelMatrix*vec4(position,1.);
     vec4 modelPosition=modelMatrix*vec4(p,1.);
     vec4 viewPosition=viewMatrix*modelPosition;
     vec4 projectedPosition=projectionMatrix*viewPosition;
