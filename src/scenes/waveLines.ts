@@ -1,6 +1,4 @@
 import * as THREE from "three";
-import ky from "kyouka";
-import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
 import waveLinesVertexShader from "../shaders/waveLines/vertex.glsl";
@@ -10,6 +8,7 @@ import waveLinesFragmentShader from "../shaders/waveLines/fragment.glsl";
 class WaveLines extends Base {
   clock!: THREE.Clock;
   waveLinesMaterial!: THREE.ShaderMaterial;
+  plane!: THREE.Mesh | null;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -22,8 +21,6 @@ class WaveLines extends Base {
     this.createRenderer();
     this.createWaveLinesMaterial();
     this.createPlane();
-    this.createLight();
-    this.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -44,6 +41,8 @@ class WaveLines extends Base {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
       },
+      transparent: true,
+      depthTest: false,
     });
     this.waveLinesMaterial = waveLinesMaterial;
   }
@@ -51,10 +50,15 @@ class WaveLines extends Base {
   createPlane() {
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 128, 128);
     const material = this.waveLinesMaterial;
-    this.createMesh({
+    const plane = this.createMesh({
       geometry,
       material,
     });
+    this.plane = plane;
+  }
+  // 缩放平面
+  scalePlane() {
+    this.plane.scale.set((this.camera as any).aspect * 1.55, 0.75, 1);
   }
   // 动画
   update() {
