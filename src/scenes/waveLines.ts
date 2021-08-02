@@ -13,12 +13,12 @@ class WaveLines extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2);
   }
   // 初始化
   init() {
     this.createScene();
-    this.createOrthographicCamera();
+    this.createPerspectiveCamera();
     this.createRenderer();
     this.createWaveLinesMaterial();
     this.createPlane();
@@ -43,17 +43,13 @@ class WaveLines extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
-        uLineWidth: {
-          value: 0.01,
-        },
       },
     });
     this.waveLinesMaterial = waveLinesMaterial;
-    this.shaderMaterial = waveLinesMaterial;
   }
   // 创建平面
   createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(2, 2, 100, 100);
+    const geometry = new THREE.PlaneBufferGeometry(1, 1, 128, 128);
     const material = this.waveLinesMaterial;
     this.createMesh({
       geometry,
