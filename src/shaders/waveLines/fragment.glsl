@@ -9,8 +9,8 @@ uniform float uLineWidth;
 varying vec2 vUv;
 varying vec3 vPosition;
 
-float line(float pos,float halfWidth,float offset){
-    return smoothstep(halfWidth,0.,abs(pos+offset));
+float line(float pos,float halfWidth){
+    return smoothstep(halfWidth,0.,abs(pos));
 }
 
 void main(){
@@ -18,7 +18,7 @@ void main(){
     vec3 waveColor=vec3(0.);
     for(float i=0.;i<10.;i++){
         // wave lines
-        float waveLine=line(uv.y,uLineWidth,0.);
+        float waveLine=line(uv.y,uLineWidth);
         waveColor+=vec3(waveLine);
         
         // anime
