@@ -4,6 +4,8 @@ uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
 
+uniform float uLineWidth;
+
 varying vec2 vUv;
 varying vec3 vPosition;
 
@@ -16,11 +18,11 @@ void main(){
     vec3 waveColor=vec3(0.);
     for(float i=0.;i<10.;i++){
         // wave lines
-        float waveLine=line(uv.y,.01,0.);
+        float waveLine=line(uv.y,uLineWidth,0.);
         waveColor+=vec3(waveLine);
         
         // anime
-        float xOffset=sin(uv.x+uTime+i*.1)*.075;
+        float xOffset=sin(uv.x+uTime)*.075;
         uv.y+=xOffset;
     }
     gl_FragColor=vec4(waveColor,1.);

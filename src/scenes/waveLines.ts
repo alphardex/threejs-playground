@@ -43,6 +43,9 @@ class WaveLines extends Base {
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
         },
+        uLineWidth: {
+          value: 0.01,
+        },
       },
     });
     this.waveLinesMaterial = waveLinesMaterial;
