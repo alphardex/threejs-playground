@@ -11,19 +11,18 @@ float xmbNoise(vec3 x){
 
 void main(){
     vec3 p=vec3(position.x,0.,position.y);
+    
+    // wave
+    p.y=xmbNoise(p)/8.;
+    
+    // noise
     vec3 p2=p;
-    vec3 p3=p;
-    
-    p.y=xmbNoise(p2)/8.;
-    
-    p3.x-=uTime/5.;
-    p3.x/=4.;
-    
-    p3.y-=uTime/100.;
-    p3.z-=uTime/10.;
-    
-    p.y-=vnoise(p3*7.)/15.+cos(p.x*2.-uTime/2.)/5.-.3;
-    p.z-=vnoise(p3*7.)/15.;
+    p2.x-=uTime/5.;
+    p2.x/=4.;
+    p2.y-=uTime/100.;
+    p2.z-=uTime/10.;
+    p.y-=vnoise(p2*8.)/12.+cos(p.x*2.-uTime/2.)/5.-.3;
+    p.z-=vnoise(p2*8.)/12.;
     
     // vec4 modelPosition=modelMatrix*vec4(position,1.);
     vec4 modelPosition=modelMatrix*vec4(p,1.);
