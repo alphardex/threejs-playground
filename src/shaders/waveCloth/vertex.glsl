@@ -12,10 +12,10 @@ float xmbNoise(vec3 x){
 void main(){
     vec3 p=vec3(position.x,0.,position.y);
     
-    // wave
+    // noise wave
     p.y=xmbNoise(p)/8.;
     
-    // noise
+    // distort
     vec3 p2=p;
     p2.x-=uTime/5.;
     p2.x/=4.;
