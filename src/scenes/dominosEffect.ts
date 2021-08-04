@@ -22,7 +22,7 @@ class DominosEffect extends PhysicsBase {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 3, 5);
+    this.cameraPosition = new THREE.Vector3(-5, 5, 5);
     this.params = {
       groundColor: "#f0f0f0", // 地面颜色
       cubeColor: "#002f93", // 骨牌颜色
@@ -161,7 +161,7 @@ class DominosEffect extends PhysicsBase {
   // 创建球
   createBall() {
     const ball = this.createSphere({
-      position: new Point({ x: -6, y: 0, z: 0 }),
+      position: new Point({ x: -6.5, y: 0, z: 0 }),
     });
     this.ball = ball;
   }
