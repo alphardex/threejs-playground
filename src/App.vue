@@ -65,6 +65,7 @@ body {
   --blue-color-3: #4ec6f2;
   --black-color-1: #12112a;
   --white-color-1: #c7c8c9;
+  --white-color-2: #f0f0f0;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
   --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
   --blue-grad-3: radial-gradient(ellipse at bottom, #130930 0%, #090a0f 100%);
@@ -137,6 +138,10 @@ a {
 
 .bg-white-1 {
   background: var(--white-color-1);
+}
+
+.bg-white-2 {
+  background: var(--white-color-2);
 }
 
 .bg-black-1 {

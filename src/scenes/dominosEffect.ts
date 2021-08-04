@@ -183,8 +183,6 @@ class DominosEffect extends PhysicsBase {
   // 更改渲染器参数
   changeRendererParams() {
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-    this.renderer.toneMapping = THREE.CineonToneMapping;
-    this.renderer.toneMappingExposure = 1.5;
   }
   // 创建光源
   createLight() {
