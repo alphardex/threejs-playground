@@ -38,6 +38,7 @@ class DominosEffect extends PhysicsBase {
     this.createRenderer();
     this.changeRendererParams();
     this.enableShadow();
+    this.createLight();
     this.createGroundMaterial();
     this.createGround();
     this.createCubeMaterial();
@@ -46,7 +47,6 @@ class DominosEffect extends PhysicsBase {
     this.createSphereMaterial();
     this.createBall();
     this.applyForce2Ball();
-    this.createLight();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
