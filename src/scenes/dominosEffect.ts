@@ -15,6 +15,7 @@ class DominosEffect extends PhysicsBase {
   clock!: THREE.Clock;
   cubeMat!: THREE.MeshPhongMaterial;
   sphereMat!: THREE.MeshPhongMaterial;
+  ground!: MeshPhysicsObject;
   ball!: MeshPhysicsObject;
   params!: any;
   constructor(sel: string, debug: boolean) {
@@ -29,6 +30,7 @@ class DominosEffect extends PhysicsBase {
   // 初始化
   init() {
     this.createWorld();
+    this.changeWorldParams();
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
@@ -39,6 +41,7 @@ class DominosEffect extends PhysicsBase {
     this.createSphereMaterial();
     this.createBall();
     this.applyForce2Ball();
+    this.hideSth();
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
@@ -97,6 +100,7 @@ class DominosEffect extends PhysicsBase {
 
     const obj = new MeshPhysicsObject(mesh, body);
     this.meshPhysicsObjs.push(obj);
+    this.ground = obj;
     return obj;
   }
   // 创建多个骨牌
@@ -148,6 +152,20 @@ class DominosEffect extends PhysicsBase {
   applyForce2Ball() {
     const ball = this.ball;
     ball.body.applyLocalForce(new CANNON.Vec3(200, 0, 0));
+  }
+  // 改变物理世界参数
+  changeWorldParams() {
+    const world = this.world;
+    world.defaultContactMaterial.contactEquationStiffness = 100;
+    world.defaultContactMaterial.contactEquationRelaxation = 2;
+    world.defaultContactMaterial.frictionEquationRelaxation = 2;
+    world.allowSleep = true;
+    world.quatNormalizeFast = true;
+    world.quatNormalizeSkip = 8;
+  }
+  // 隐藏掉部分东西
+  hideSth() {
+    this.ground.mesh.visible = false;
   }
 }
 
