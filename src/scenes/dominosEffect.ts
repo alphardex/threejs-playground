@@ -14,6 +14,8 @@ import {
 class DominosEffect extends PhysicsBase {
   clock!: THREE.Clock;
   cubeMat!: THREE.MeshPhongMaterial;
+  sphereMat!: THREE.MeshPhongMaterial;
+  ball!: MeshPhysicsObject;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -21,6 +23,7 @@ class DominosEffect extends PhysicsBase {
     this.cameraPosition = new THREE.Vector3(0, 3, 5);
     this.params = {
       cubeColor: "#002f93", // 骨牌颜色
+      sphereColor: "silver", // 球体颜色
     };
   }
   // 初始化
@@ -30,8 +33,12 @@ class DominosEffect extends PhysicsBase {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createCubeMaterial();
-    this.createCube({ position: { x: 0, y: 0.5, z: 0 } });
     this.createGround();
+    this.createCube({});
+    this.createCubes();
+    this.createSphereMaterial();
+    this.createBall();
+    this.applyForce2Ball();
     this.createLight();
     this.createOrbitControls();
     this.addListeners();
@@ -68,7 +75,7 @@ class DominosEffect extends PhysicsBase {
   }
   // 创建地面
   createGround() {
-    const position = new Point({ x: 0, y: 0, z: 0 });
+    const position = new Point({ x: 0, y: -0.5, z: 0 });
     const rotation = new Point({ x: ky.deg2rad(-90), y: 0, z: 0 });
     const geo = new THREE.PlaneBufferGeometry(100, 100);
     const mat = this.cubeMat;
@@ -91,6 +98,59 @@ class DominosEffect extends PhysicsBase {
     const obj = new MeshPhysicsObject(mesh, body);
     this.meshPhysicsObjs.push(obj);
     return obj;
+  }
+  // 创建多个骨牌
+  createCubes() {
+    const pairCount = 10;
+    const gap = 0.5;
+    for (let i = 1; i < pairCount + 1; i++) {
+      const before = new Point({ x: gap * i, y: 0, z: 0 });
+      const after = new Point({ x: -gap * i, y: 0, z: 0 });
+      this.createCube({ position: before });
+      this.createCube({ position: after });
+    }
+  }
+  // 创建球体材质
+  createSphereMaterial() {
+    const { sphereColor } = this.params;
+    const sphereMat = new THREE.MeshPhongMaterial({
+      color: new THREE.Color(sphereColor),
+    });
+    this.sphereMat = sphereMat;
+  }
+  // 创建球
+  createSphere({ position = new Point({ x: 0, y: 0, z: 0 }), r = 0.5 }) {
+    // 在three.js中创建渲染物体
+    const geo = new THREE.SphereBufferGeometry(r, 64, 64);
+    const mat = this.sphereMat;
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.copy(point2ThreeVector(position));
+    this.scene.add(mesh);
+
+    // 在cannon.js中创建物理物体
+    const body = new CANNON.Body({
+      mass: 1,
+      shape: new CANNON.Sphere(r),
+      position: point2CannonVec(position),
+    });
+    this.world.addBody(body);
+
+    // 将两物体的数据同步
+    const obj = new MeshPhysicsObject(mesh, body);
+    this.meshPhysicsObjs.push(obj);
+    return obj;
+  }
+  // 创建球
+  createBall() {
+    const ball = this.createSphere({
+      position: new Point({ x: -6, y: 0, z: 0 }),
+    });
+    this.ball = ball;
+  }
+  // 对球施加力
+  applyForce2Ball() {
+    const ball = this.ball;
+    ball.body.applyLocalForce(new CANNON.Vec3(200, 0, 0));
   }
 }
 
