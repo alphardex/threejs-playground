@@ -120,14 +120,12 @@ class DominosEffect extends PhysicsBase {
   }
   // 创建球
   createSphere({ position = new Point({ x: 0, y: 0, z: 0 }), r = 0.5 }) {
-    // 在three.js中创建渲染物体
     const geo = new THREE.SphereBufferGeometry(r, 64, 64);
     const mat = this.sphereMat;
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.copy(point2ThreeVector(position));
     this.scene.add(mesh);
 
-    // 在cannon.js中创建物理物体
     const body = new CANNON.Body({
       mass: 1,
       shape: new CANNON.Sphere(r),
@@ -135,7 +133,6 @@ class DominosEffect extends PhysicsBase {
     });
     this.world.addBody(body);
 
-    // 将两物体的数据同步
     const obj = new MeshPhysicsObject(mesh, body);
     this.meshPhysicsObjs.push(obj);
     return obj;
