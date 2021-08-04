@@ -189,6 +189,11 @@
           WaveCloth
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'DominosEffect' }">
+          DominosEffect
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

@@ -1,5 +1,5 @@
 <template>
-  <div class="bouncy-balloon w-full h-full bg-black bg-white-grad-1"></div>
+  <div class="bouncy-balloon w-full h-full bg-white-grad-1"></div>
 </template>
 
 <script lang="ts">
