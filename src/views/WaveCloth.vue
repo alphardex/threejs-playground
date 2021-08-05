@@ -16,12 +16,13 @@
             type="password"
             class="form-control rounded-3xl glass-2"
             placeholder="密码"
+            id="password"
           />
-          <button
+          <div
             class="btn-enter btn btn-primary btn-circle flex-none w-8 h-8 flex-center bg-black-2 border-0"
           >
             <i class="gg gg-arrow-right text-black-3" style="--ggs:0.9;"></i>
-          </button>
+          </div>
         </div>
       </div>
     </form>
@@ -31,6 +32,7 @@
 <script lang="ts">
 import WaveCloth from "@/scenes/waveCloth";
 import { defineComponent, onMounted } from "vue";
+import ky from "kyouka";
 
 export default defineComponent({
   name: "WaveCloth",
@@ -39,8 +41,27 @@ export default defineComponent({
       const waveCloth = new WaveCloth(".wave-cloth", false);
       waveCloth.init();
     };
+    const listenEnter = () => {
+      const passwordInput = document.querySelector(
+        "#password"
+      ) as HTMLInputElement;
+      const enterBtn = document.querySelector(".btn-enter");
+      enterBtn.addEventListener("click", async () => {
+        const password = passwordInput.value;
+        if (!password) {
+          passwordInput.classList.add("shake-horizontal");
+          passwordInput.classList.add("pointer-events-none");
+          enterBtn.classList.add("pointer-events-none");
+          await ky.sleep(800);
+          passwordInput.classList.remove("shake-horizontal");
+          passwordInput.classList.remove("pointer-events-none");
+          enterBtn.classList.remove("pointer-events-none");
+        }
+      });
+    };
     onMounted(() => {
       start();
+      listenEnter();
     });
   },
 });
