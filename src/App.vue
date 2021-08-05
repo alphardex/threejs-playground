@@ -69,7 +69,13 @@ body {
   --white-color-2: #f0f0f0;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
   --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
-  --blue-grad-3: radial-gradient(ellipse at bottom, #130930 0%, #090a0f 100%);
+  --blue-grad-3: linear-gradient(
+    60deg,
+    #3d3393 0%,
+    #2b76b9 37%,
+    #2cacd1 65%,
+    #35eb93 100%
+  );
 }
 
 // reset
