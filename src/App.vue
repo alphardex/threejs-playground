@@ -157,6 +157,10 @@ a {
   background: var(--blue-color-4) !important;
 }
 
+.border-0 {
+  border-width: 0 !important;
+}
+
 .glass-1 {
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);

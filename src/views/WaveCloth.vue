@@ -16,11 +16,11 @@
           placeholder="用户名"
         />
         <input
-          type="text"
+          type="password"
           class="form-control rounded-3xl glass-2"
           placeholder="密码"
         />
-        <div class="btn btn-primary btn-round text-center glass-2 bg-blue-4">
+        <div class="btn btn-primary btn-round text-center border-0 bg-blue-4">
           登录
         </div>
       </div>
