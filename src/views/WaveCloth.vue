@@ -1,13 +1,13 @@
 <template>
   <div class="fixed z-0 wave-cloth w-full h-full bg-blue-grad-3"></div>
   <div class="relative w-screen h-screen flex-center">
-    <form class="card w-72 glass-1 p-4">
+    <form class="card w-72 glass-1 p-6">
       <div class="space-y-4">
         <div class="flex-center">
           <img
             src="../assets/wave-cloth/logo.jpg"
             alt=""
-            class="avatar w-24 h-24 block -mt-16"
+            class="avatar w-24 h-24 block -mt-18"
           />
         </div>
         <input
@@ -20,7 +20,9 @@
           class="form-control rounded-3xl glass-2"
           placeholder="密码"
         />
-        <div class="btn btn-primary btn-round text-center glass-2">登录</div>
+        <div class="btn btn-primary btn-round text-center glass-2 bg-blue-4">
+          登录
+        </div>
       </div>
     </form>
   </div>
