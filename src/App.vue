@@ -212,6 +212,10 @@ a {
   }
 }
 
+.text-glow {
+  text-shadow: 0 0 0.1em, 0 0 0.2em;
+}
+
 // common
 
 .btn {

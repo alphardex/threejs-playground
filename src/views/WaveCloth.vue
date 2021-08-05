@@ -10,7 +10,7 @@
             class="avatar w-18 h-18 block"
           />
         </div>
-        <div class="text-center text-white text-lg">用户名</div>
+        <div class="text-center text-white text-lg text-glow">用户名</div>
         <div class="flex items-center space-x-2">
           <input
             type="password"
