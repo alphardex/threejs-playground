@@ -152,7 +152,31 @@ a {
   background: var(--white-grad-1);
 }
 
+.glass-1 {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-2 {
+  --input-placeholder-color: white;
+
+  color: white;
+  background: transparent;
+  backdrop-filter: blur(5px);
+  box-shadow: 4px 4px 60px -6px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 // common
+
+.btn {
+  cursor: pointer;
+}
 
 .tag {
   --tag-color: white;
