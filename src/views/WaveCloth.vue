@@ -1,7 +1,7 @@
 <template>
   <div class="fixed z-0 wave-cloth w-full h-full animated-bg-grad"></div>
   <div class="relative w-screen h-screen flex-center">
-    <form class="relative -top-16 card w-72 p-6 bg-transparent">
+    <form class="relative -top-16 card w-56 p-6 bg-transparent">
       <div class="space-y-4">
         <div class="flex-center">
           <img
@@ -11,18 +11,16 @@
           />
         </div>
         <div class="text-center text-white text-lg text-glow">用户名</div>
-        <div class="flex items-center space-x-2">
+        <div class="relative flex items-center space-x-2">
           <input
             type="password"
-            class="form-control rounded-3xl glass-2"
+            class="form-control rounded-md glass-2"
             placeholder="密码"
             id="password"
           />
           <div
-            class="btn-enter btn btn-primary btn-circle flex-none w-8 h-8 flex-center bg-black-2 border-0"
-          >
-            <i class="gg gg-arrow-right text-black-3" style="--ggs:0.9;"></i>
-          </div>
+            class="absolute v-center -right-8 btn-enter btn btn-primary btn-circle flex-none w-6 h-6 flex-center glass-2 bg-black-5 mask-arrow"
+          ></div>
         </div>
       </div>
     </form>

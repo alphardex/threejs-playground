@@ -69,6 +69,7 @@ body {
   --black-color-2: #aaaaaa;
   --black-color-3: #{transparentize(black, 0.3)};
   --black-color-4: hsla(0, 0%, 75%, 90%);
+  --black-color-5: hsla(0, 0%, 75%, 0.75);
   --white-color-1: #c7c8c9;
   --white-color-2: #f0f0f0;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
@@ -166,12 +167,20 @@ a {
   background: var(--black-color-2) !important;
 }
 
+.bg-black-5 {
+  background: var(--black-color-5) !important;
+}
+
 .text-black-3 {
   color: var(--black-color-3);
 }
 
 .border-0 {
   border-width: 0 !important;
+}
+
+.absolute {
+  position: absolute !important;
 }
 
 .glass-1 {
@@ -183,15 +192,19 @@ a {
 }
 
 .glass-2 {
-  --input-placeholder-color: white;
-
   color: white;
-  background: transparent;
+  background: hsla(0, 0%, 50%, 0.5);
   backdrop-filter: blur(5px);
   box-shadow: 4px 4px 60px -6px rgba(0, 0, 0, 0.2);
   border: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.mask-arrow {
+  mask-image: linear-gradient(black, black),
+    url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='1rem' height='1rem' viewBox='0 0 1024 1024'%3E%3Cpath d='M648.362667 755.2a42.666667 42.666667 0 0 0 60.330666 0.554667l217.173334-213.333334a42.666667 42.666667 0 0 0 0-60.842666l-217.173334-213.333334a42.666667 42.666667 0 0 0-59.818666 60.842667L791.68 469.333333H128a42.666667 42.666667 0 1 0 0 85.333334h663.68l-142.805333 140.245333a42.666667 42.666667 0 0 0-0.512 60.330667z' %3E%3C/path%3E%3C/svg%3E");
+  mask-composite: exclude;
+  mask-repeat: no-repeat;
+  mask-position: center;
 }
 
 .animated-bg-grad {
