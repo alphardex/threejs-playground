@@ -120,9 +120,9 @@ export default defineComponent({
       const dateStrEl = document.querySelector("#date-str");
       const now = new Date();
       const month = now.getMonth() + 1;
-      const day = now.getDate();
-      const hour = now.getHours();
-      const minute = now.getMinutes();
+      const day = ky.padNumber(now.getDate(), 2);
+      const hour = ky.padNumber(now.getHours(), 2);
+      const minute = ky.padNumber(now.getMinutes(), 2);
       const year = now.getFullYear();
       const dateStr = `${year}/${month}/${day} ${hour}:${minute}`;
       dateStrEl.textContent = dateStr;
