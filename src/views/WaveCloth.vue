@@ -1,27 +1,27 @@
 <template>
   <div class="fixed z-0 wave-cloth w-full h-full bg-blue-grad-3"></div>
   <div class="relative w-screen h-screen flex-center">
-    <form class="relative -top-8 card w-72 glass-1 p-6">
+    <form class="relative -top-16 card w-72 p-6 bg-transparent">
       <div class="space-y-4">
         <div class="flex-center">
           <img
             src="../assets/wave-cloth/logo.jpg"
             alt=""
-            class="avatar w-24 h-24 block -mt-18"
+            class="avatar w-18 h-18 block"
           />
         </div>
-        <input
-          type="text"
-          class="form-control rounded-3xl glass-2"
-          placeholder="用户名"
-        />
-        <input
-          type="password"
-          class="form-control rounded-3xl glass-2"
-          placeholder="密码"
-        />
-        <div class="btn btn-primary btn-round text-center border-0 bg-blue-4">
-          登录
+        <div class="text-center text-white text-lg">用户名</div>
+        <div class="flex items-center space-x-2">
+          <input
+            type="password"
+            class="form-control rounded-3xl glass-2"
+            placeholder="密码"
+          />
+          <button
+            class="btn-enter btn btn-primary btn-circle flex-none w-8 h-8 flex-center bg-black-2 border-0"
+          >
+            <i class="gg gg-arrow-right text-black-3" style="--ggs:0.9;"></i>
+          </button>
         </div>
       </div>
     </form>
@@ -46,4 +46,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.btn-enter {
+  &:active {
+    background: var(--black-color-4) !important;
+  }
+}
+</style>

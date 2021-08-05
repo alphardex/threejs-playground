@@ -6,6 +6,7 @@
 import "@alphardex/aqua.css/dist/aqua.min.css";
 import "css.gg/icons/scss/play-button-o.scss";
 import "css.gg/icons/scss/play-pause-o.scss";
+import "css.gg/icons/scss/arrow-right.scss";
 import "pannellum/build/pannellum.css";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 import { defineComponent } from "vue";
@@ -65,6 +66,9 @@ body {
   --blue-color-3: #4ec6f2;
   --blue-color-4: #130930;
   --black-color-1: #12112a;
+  --black-color-2: #aaaaaa;
+  --black-color-3: #{transparentize(black, 0.3)};
+  --black-color-4: hsla(0, 0%, 75%, 90%);
   --white-color-1: #c7c8c9;
   --white-color-2: #f0f0f0;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
@@ -163,6 +167,14 @@ a {
   background: var(--blue-color-4) !important;
 }
 
+.bg-black-2 {
+  background: var(--black-color-2) !important;
+}
+
+.text-black-3 {
+  color: var(--black-color-3);
+}
+
 .border-0 {
   border-width: 0 !important;
 }
@@ -191,6 +203,12 @@ a {
 
 .btn {
   cursor: pointer;
+}
+
+.form-control {
+  --input-padding: 0.375rem;
+
+  font-size: 0.8rem;
 }
 
 .tag {
