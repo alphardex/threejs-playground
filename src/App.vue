@@ -6,6 +6,7 @@
 import "@alphardex/aqua.css/dist/aqua.min.css";
 import "css.gg/icons/scss/play-button-o.scss";
 import "css.gg/icons/scss/play-pause-o.scss";
+import "css.gg/icons/scss/time.scss";
 import "css.gg/icons/scss/arrow-right.scss";
 import "pannellum/build/pannellum.css";
 import "locomotive-scroll/dist/locomotive-scroll.css";
@@ -68,10 +69,12 @@ body {
   --black-color-1: #12112a;
   --black-color-2: #aaaaaa;
   --black-color-3: #{transparentize(black, 0.3)};
-  --black-color-4: hsla(0, 0%, 75%, 90%);
-  --black-color-5: hsla(0, 0%, 75%, 0.75);
+  --black-color-4: rgba(255, 255, 255, 0.5);
+  --black-color-5: rgba(255, 255, 255, 0.4);
+  --black-color-6: #{transparentize(black, 0.6)};
   --white-color-1: #c7c8c9;
   --white-color-2: #f0f0f0;
+  --white-color-3: #{transparentize(white, 0.4)};
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
   --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
   // Amour Amour + Itmeo Branding
@@ -98,12 +101,24 @@ a {
 
 // utils
 
+.absolute {
+  position: absolute !important;
+}
+
+.inline-flex {
+  display: inline-flex !important;
+}
+
 .top-58vh {
   top: 58vh;
 }
 
 .opacity-0 {
   opacity: 0 !important;
+}
+
+.text-black-3 {
+  color: var(--black-color-3);
 }
 
 .bg-black-transparent-1 {
@@ -171,16 +186,16 @@ a {
   background: var(--black-color-5) !important;
 }
 
-.text-black-3 {
-  color: var(--black-color-3);
+.bg-black-6 {
+  background: var(--black-color-6);
 }
 
 .border-0 {
   border-width: 0 !important;
 }
 
-.absolute {
-  position: absolute !important;
+.shadow-1 {
+  box-shadow: 0 0 2px 2px #{transparentize(white, 0.4)};
 }
 
 .glass-1 {
@@ -192,11 +207,19 @@ a {
 }
 
 .glass-2 {
+  --input-placeholder-color: var(--white-color-3);
+
   color: white;
-  background: hsla(0, 0%, 50%, 0.5);
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(5px);
   box-shadow: 4px 4px 60px -6px rgba(0, 0, 0, 0.2);
   border: none;
+
+  &.activate {
+    &:active {
+      background: var(--black-color-4) !important;
+    }
+  }
 }
 
 .mask-arrow {
@@ -229,6 +252,10 @@ a {
   text-shadow: 0 0 0.1em, 0 0 0.2em;
 }
 
+.bg-glow {
+  filter: drop-shadow(0 0 0.1em);
+}
+
 // common
 
 .btn {
@@ -236,7 +263,7 @@ a {
 }
 
 .form-control {
-  --input-padding: 0.375rem;
+  --input-padding: 0.375rem 0.375rem 0.375rem 0.5rem;
 
   font-size: 0.8rem;
 }
