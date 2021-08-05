@@ -73,13 +73,8 @@ body {
   --white-color-2: #f0f0f0;
   --white-grad-1: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
   --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
-  --blue-grad-3: linear-gradient(
-    60deg,
-    #3d3393 0%,
-    #2b76b9 37%,
-    #2cacd1 65%,
-    #35eb93 100%
-  );
+  // Amour Amour + Itmeo Branding
+  --blue-grad-3: linear-gradient(-45deg, #f77062, #fe5196, #009efd, #2af598);
 }
 
 // reset
@@ -197,6 +192,24 @@ a {
   border: none;
   border-left: 1px solid rgba(255, 255, 255, 0.3);
   border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.animated-bg-grad {
+  background: var(--blue-grad-3);
+  background-size: 400% 400%;
+  animation: gradient 30s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 // common
