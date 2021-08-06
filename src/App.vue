@@ -266,6 +266,7 @@ a {
   --input-padding: 0.375rem 0.375rem 0.375rem 0.5rem;
 
   font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .tag {
