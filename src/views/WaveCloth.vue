@@ -37,20 +37,6 @@
             id="btn-enter"
           ></div>
         </div>
-        <div class="flex items-center space-x-2">
-          <!-- 验证码 -->
-          <input
-            type="text"
-            class="flex-1 form-control rounded-md glass-2"
-            placeholder="验证码"
-            id="captcha"
-          />
-          <img
-            src="../assets/wave-cloth/captcha.png"
-            alt=""
-            class="w-15 rounded-md"
-          />
-        </div>
       </div>
     </form>
     <!-- 日期 -->
