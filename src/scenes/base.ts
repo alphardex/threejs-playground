@@ -10,6 +10,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 
 class Base {
   debug: boolean;
@@ -442,6 +443,27 @@ class Base {
     const w = h * (window.innerWidth / window.innerHeight);
     const viewport = { width: w, height: h };
     this.viewport = viewport;
+  }
+  // 加载HDR
+  loadHDR(url: string): Promise<THREE.Texture> {
+    const loader = new RGBELoader();
+    return new Promise((resolve, reject) => {
+      loader.load(
+        url,
+        (texture) => {
+          const generator = new THREE.PMREMGenerator(this.renderer);
+          const envmap = generator.fromEquirectangular(texture).texture;
+          texture.dispose();
+          generator.dispose();
+          resolve(envmap);
+        },
+        undefined,
+        (err) => {
+          console.log(err);
+          reject();
+        }
+      );
+    });
   }
 }
 

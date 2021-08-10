@@ -3,68 +3,63 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
-import noiseMarbleVertexShader from "../shaders/noiseMarble/vertex.glsl";
-// @ts-ignore
-import noiseMarbleFragmentShader from "../shaders/noiseMarble/fragment.glsl";
+import noiseMarbleColorFragmentShader from "../shaders/noiseMarble/color/fragment.glsl";
+import { hdrUrl } from "@/consts/noiseMarble";
 
 class NoiseMarble extends Base {
   clock!: THREE.Clock;
-  noiseMarbleMaterial!: THREE.ShaderMaterial;
+  noiseMarbleMaterial!: THREE.MeshStandardMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2);
   }
   // 初始化
-  init() {
+  async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.changeRendererParams();
+    await this.loadEnvmap();
     this.createNoiseMarbleMaterial();
-    this.createPlane();
-    this.createLight();
+    this.createSphere();
     this.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
+  // 更改渲染器参数
+  changeRendererParams() {
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  }
+  // 加载envmap
+  async loadEnvmap() {
+    const envmap = await this.loadHDR(hdrUrl);
+    this.scene.environment = envmap;
+  }
   // 创建材质
-  createNoiseMarbleMaterial() {
-    const noiseMarbleMaterial = new THREE.ShaderMaterial({
-      vertexShader: noiseMarbleVertexShader,
-      fragmentShader: noiseMarbleFragmentShader,
-      side: THREE.DoubleSide,
-      uniforms: {
-        uTime: {
-          value: 0,
-        },
-        uMouse: {
-          value: new THREE.Vector2(0, 0),
-        },
-        uResolution: {
-          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
-        },
-      },
+  async createNoiseMarbleMaterial() {
+    const noiseMarbleMaterial = new THREE.MeshStandardMaterial({
+      roughness: 0.1,
     });
+    noiseMarbleMaterial.onBeforeCompile = (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        /vec4 diffuseColor.*;/,
+        noiseMarbleColorFragmentShader
+      );
+      console.log(shader.fragmentShader);
+    };
     this.noiseMarbleMaterial = noiseMarbleMaterial;
   }
-  // 创建平面
-  createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+  // 创建球体
+  createSphere() {
+    const geometry = new THREE.SphereBufferGeometry(1, 128, 128);
     const material = this.noiseMarbleMaterial;
     this.createMesh({
       geometry,
       material,
     });
-  }
-  // 动画
-  update() {
-    const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
-    if (this.noiseMarbleMaterial) {
-      this.noiseMarbleMaterial.uniforms.uTime.value = elapsedTime;
-      this.noiseMarbleMaterial.uniforms.uMouse.value = mousePos;
-    }
   }
 }
 
