@@ -1,5 +1,5 @@
 <template>
-  <div class="noise-marble w-full h-full bg-white-grad-2"></div>
+  <div class="noise-marble w-full h-full bg-white-grad-1"></div>
 </template>
 
 <script lang="ts">
