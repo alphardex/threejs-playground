@@ -194,6 +194,11 @@
           DominosEffect
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'NoiseMarble' }">
+          NoiseMarble
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

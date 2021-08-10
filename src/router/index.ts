@@ -46,6 +46,7 @@ import BouncyBalloon from "../views/BouncyBalloon.vue";
 import NakedEye from "../views/NakedEye.vue";
 import WaveCloth from "../views/WaveCloth.vue";
 import DominosEffect from "../views/DominosEffect.vue";
+import NoiseMarble from "../views/NoiseMarble.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -277,6 +278,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dominos-effect",
     name: "DominosEffect",
     component: DominosEffect,
+  },
+  {
+    path: "/noise-marble",
+    name: "NoiseMarble",
+    component: NoiseMarble,
   },
   {
     path: "/:pathMatch(.*)*",
