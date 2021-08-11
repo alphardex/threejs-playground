@@ -3,15 +3,15 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
-import noiseMarbleColorVertexTopShader from "../shaders/noiseMarble/color/vertexTop.glsl";
+import noiseMarbleVertexTopShader from "../shaders/noiseMarble/vertexTop.glsl";
 // @ts-ignore
-import noiseMarbleColorVertexMainShader from "../shaders/noiseMarble/color/vertexMain.glsl";
+import noiseMarbleVertexMainShader from "../shaders/noiseMarble/vertexMain.glsl";
 // @ts-ignore
-import noiseMarbleColorFragmentTopShader from "../shaders/noiseMarble/color/fragmentTop.glsl";
+import noiseMarbleFragmentTopShader from "../shaders/noiseMarble/fragmentTop.glsl";
 // @ts-ignore
-import noiseMarbleColorFragmentMainShader from "../shaders/noiseMarble/color/fragmentMain.glsl";
+import noiseMarbleFragmentMainShader from "../shaders/noiseMarble/fragmentMain.glsl";
 // @ts-ignore
-import noiseMarbleColorFragmentColorShader from "../shaders/noiseMarble/color/fragmentColor.glsl";
+import noiseMarbleFragmentColorShader from "../shaders/noiseMarble/fragmentColor.glsl";
 import { displacementMapUrl, hdrUrl, heightMapUrl } from "@/consts/noiseMarble";
 
 class NoiseMarble extends Base {
@@ -81,7 +81,7 @@ class NoiseMarble extends Base {
     this.createSphere();
     this.createOrbitControls();
     this.autoRotateOrbitControl();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -104,7 +104,7 @@ class NoiseMarble extends Base {
       shader.uniforms = { ...shader.uniforms, ...this.uniforms };
       // vertex
       shader.vertexShader = `
-        ${noiseMarbleColorVertexTopShader}
+        ${noiseMarbleVertexTopShader}
         ${shader.vertexShader}
         `;
       shader.vertexShader = shader.vertexShader.replace(
@@ -112,26 +112,26 @@ class NoiseMarble extends Base {
         (match) =>
           `
         ${match}
-        ${noiseMarbleColorVertexMainShader}
+        ${noiseMarbleVertexMainShader}
         `
       );
 
       // fragment
       shader.fragmentShader = `
-      ${noiseMarbleColorFragmentTopShader}
+      ${noiseMarbleFragmentTopShader}
       ${shader.fragmentShader}
       `;
       shader.fragmentShader = shader.fragmentShader.replace(
         /void main\(\) {/,
         (match) =>
           `
-          ${noiseMarbleColorFragmentMainShader}
+          ${noiseMarbleFragmentMainShader}
           ${match}
           `
       );
       shader.fragmentShader = shader.fragmentShader.replace(
         /vec4 diffuseColor.*;/,
-        noiseMarbleColorFragmentColorShader
+        noiseMarbleFragmentColorShader
       );
     };
     this.noiseMarbleMaterial = noiseMarbleMaterial;
