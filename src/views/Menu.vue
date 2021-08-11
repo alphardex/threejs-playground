@@ -6,7 +6,7 @@
       <li class="menu-list-item"><a href="#">About</a></li>
     </ul>
   </nav>
-  <div class="stage w-full h-full bg-blue-1"></div>
+  <div class="stage w-screen h-screen bg-blue-1"></div>
 </template>
 
 <script lang="ts">

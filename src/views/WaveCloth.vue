@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed z-0 wave-cloth w-full h-full animated-bg-grad"></div>
+  <div class="fixed z-0 wave-cloth w-screen h-screen animated-bg-grad"></div>
   <div class="relative w-screen h-screen flex-center">
     <form class="relative -top-16 card w-70 p-6 bg-transparent">
       <div class="space-y-4">

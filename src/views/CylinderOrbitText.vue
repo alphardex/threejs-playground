@@ -1,5 +1,5 @@
 <template>
-  <div class="cylinder-orbit-text w-full h-full bg-blue-1"></div>
+  <div class="cylinder-orbit-text w-screen h-screen bg-blue-1"></div>
 </template>
 
 <script lang="ts">

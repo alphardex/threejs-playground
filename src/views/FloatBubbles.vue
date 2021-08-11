@@ -1,5 +1,5 @@
 <template>
-  <div class="float-bubbles w-full h-full"></div>
+  <div class="float-bubbles w-screen h-screen"></div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="float-world w-full h-full bg-blue-grad-1"></div>
+  <div class="float-world w-screen h-screen bg-blue-grad-1"></div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="liquid-crystal w-full h-full bg-black"></div>
+  <div class="liquid-crystal w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

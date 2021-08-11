@@ -1,5 +1,5 @@
 <template>
-  <div class="curve-racing w-full h-full bg-blue-3"></div>
+  <div class="curve-racing w-screen h-screen bg-blue-3"></div>
 </template>
 
 <script lang="ts">

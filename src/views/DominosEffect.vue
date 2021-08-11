@@ -1,5 +1,5 @@
 <template>
-  <div class="dominos-effect w-full h-full bg-white-2"></div>
+  <div class="dominos-effect w-screen h-screen bg-white-2"></div>
 </template>
 
 <script lang="ts">

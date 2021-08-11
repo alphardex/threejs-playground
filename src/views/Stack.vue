@@ -27,7 +27,7 @@
     <div class="status high-score" v-if="highScore">
       {{ highScore }}
     </div>
-    <div class="stack absolute w-full h-full bg-blue-grad-1"></div>
+    <div class="stack absolute w-screen h-screen bg-blue-grad-1"></div>
   </div>
 </template>
 

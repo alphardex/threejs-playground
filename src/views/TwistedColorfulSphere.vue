@@ -1,5 +1,5 @@
 <template>
-  <div class="twisted-colorful-sphere w-full h-full bg-black"></div>
+  <div class="twisted-colorful-sphere w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

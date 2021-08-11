@@ -25,7 +25,7 @@ class NoiseMarble extends Base {
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
       roughness: 0.1,
-      color1: "navy",
+      color1: "#000080",
       color2: "#66ccff",
       depth: 0.6,
       smooth: 0.2,
@@ -75,9 +75,9 @@ class NoiseMarble extends Base {
     await this.loadEnvmap();
     this.createNoiseMarbleMaterial();
     this.createSphere();
-    this.trackMousePos();
     this.createOrbitControls();
     this.autoRotateOrbitControl();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -149,6 +149,33 @@ class NoiseMarble extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     this.uniforms.uTime.value = elapsedTime;
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    const material = this.noiseMarbleMaterial;
+    const uniforms = this.uniforms;
+    gui.add(this.params, "roughness", 0, 1, 0.01).onChange((value) => {
+      material.roughness = value;
+    });
+    gui.add(this.params, "depth", 0, 1, 0.01).onChange((value) => {
+      uniforms.uDepth.value = value;
+    });
+    gui.add(this.params, "smooth", 0, 1, 0.1).onChange((value) => {
+      uniforms.uSmooth.value = value;
+    });
+    gui.add(this.params, "speed", 0, 1, 0.01).onChange((value) => {
+      uniforms.uSpeed.value = value;
+    });
+    gui.add(this.params, "strength", 0, 1, 0.01).onChange((value) => {
+      uniforms.uStrength.value = value;
+    });
+    gui.addColor(this.params, "color1").onChange((value) => {
+      uniforms.uColor1.value = new THREE.Color(value);
+    });
+    gui.addColor(this.params, "color2").onChange((value) => {
+      uniforms.uColor2.value = new THREE.Color(value);
+    });
   }
 }
 

@@ -13,7 +13,7 @@
       class="absolute z-1 right-0 top-58vh w-30 transition-opacity duration-300 pointer-events-none blink-1"
       v-if="status.showTip && !status.startStrike"
     />
-    <div class="bell-strike w-full h-full bg-temple"></div>
+    <div class="bell-strike w-screen h-screen bg-temple"></div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid-icosahedron w-full h-full bg-black"></div>
+  <div class="grid-icosahedron w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

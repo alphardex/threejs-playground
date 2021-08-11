@@ -1,5 +1,5 @@
 <template>
-  <div class="ray-tracing w-full h-full bg-black"></div>
+  <div class="ray-tracing w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

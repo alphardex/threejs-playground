@@ -1,5 +1,5 @@
 <template>
-  <div class="ray-marching-ball w-full h-full bg-black"></div>
+  <div class="ray-marching-ball w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

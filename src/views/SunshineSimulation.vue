@@ -1,5 +1,5 @@
 <template>
-  <div class="sunshine-simulation w-full h-full bg-blue-2"></div>
+  <div class="sunshine-simulation w-screen h-screen bg-blue-2"></div>
   <div class="fixed top-4 h-center space-y-2" v-if="sunshineSimulation">
     <div class="flex items-center space-x-4">
       <div>{{ sunshineSimulation.status.sunriseTime }}</div>

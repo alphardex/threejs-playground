@@ -1,5 +1,5 @@
 <template>
-  <div class="ray-marching-playground w-full h-full bg-black"></div>
+  <div class="ray-marching-playground w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">
@@ -10,7 +10,10 @@ export default defineComponent({
   name: "RayMarchingPlayground",
   setup() {
     const start = () => {
-      const rayMarchingPlayground = new RayMarchingPlayground(".ray-marching-playground", false);
+      const rayMarchingPlayground = new RayMarchingPlayground(
+        ".ray-marching-playground",
+        false
+      );
       rayMarchingPlayground.init();
     };
     onMounted(() => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="vue-logo w-full h-full bg-white"></div>
+  <div class="vue-logo w-screen h-screen bg-white"></div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="hyperbolic-helicoid w-full h-full bg-grey-grad-1"></div>
+  <div class="hyperbolic-helicoid w-screen h-screen bg-grey-grad-1"></div>
 </template>
 
 <script lang="ts">

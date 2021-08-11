@@ -1,5 +1,5 @@
 <template>
-  <div class="fbo-particles w-full h-full bg-white"></div>
+  <div class="fbo-particles w-screen h-screen bg-white"></div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="naked-eye w-full h-full bg-black"></div>
+  <div class="naked-eye w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">

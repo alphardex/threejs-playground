@@ -1,5 +1,5 @@
 <template>
-  <div class="noise-material w-full h-full bg-white-1"></div>
+  <div class="noise-material w-screen h-screen bg-white-1"></div>
 </template>
 
 <script lang="ts">

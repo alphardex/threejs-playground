@@ -1,5 +1,5 @@
 <template>
-  <div class="twisted-shape w-full h-full bg-black-1"></div>
+  <div class="twisted-shape w-screen h-screen bg-black-1"></div>
 </template>
 
 <script lang="ts">
