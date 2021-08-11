@@ -7,6 +7,7 @@ uniform float uTime;
 uniform float uSpeed;
 uniform sampler2D uDisplacementMap;
 uniform float uStrength;
+uniform float uSlice;
 
 varying vec3 vPosition;
 varying vec3 vDirection;

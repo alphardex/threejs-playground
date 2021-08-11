@@ -31,6 +31,7 @@ class NoiseMarble extends Base {
       smooth: 0.2,
       speed: 0.05,
       strength: 0.2,
+      slice: 1,
     };
     const loader = new THREE.TextureLoader();
     const heightMap = loader.load(heightMapUrl);
@@ -63,6 +64,9 @@ class NoiseMarble extends Base {
       },
       uStrength: {
         value: this.params.strength,
+      },
+      uSlice: {
+        value: this.params.slice,
       },
     };
   }
@@ -161,7 +165,7 @@ class NoiseMarble extends Base {
     gui.add(this.params, "depth", 0, 1, 0.01).onChange((value) => {
       uniforms.uDepth.value = value;
     });
-    gui.add(this.params, "smooth", 0, 1, 0.1).onChange((value) => {
+    gui.add(this.params, "smooth", 0, 1, 0.01).onChange((value) => {
       uniforms.uSmooth.value = value;
     });
     gui.add(this.params, "speed", 0, 1, 0.01).onChange((value) => {
@@ -169,6 +173,9 @@ class NoiseMarble extends Base {
     });
     gui.add(this.params, "strength", 0, 1, 0.01).onChange((value) => {
       uniforms.uStrength.value = value;
+    });
+    gui.add(this.params, "slice", 0, 5, 0.01).onChange((value) => {
+      uniforms.uSlice.value = value;
     });
     gui.addColor(this.params, "color1").onChange((value) => {
       uniforms.uColor1.value = new THREE.Color(value);

@@ -22,7 +22,7 @@ float rayMarch(vec3 eye,vec3 ray){
         float h=texture2D(uHeightMap,uv).r;
         float cutoff=1.-i*ratio;
         float slice=smoothstep(cutoff,cutoff+uSmooth,h);
-        float dist=slice*ratio;
+        float dist=slice*ratio*uSlice;
         depth+=dist;
     }
     
