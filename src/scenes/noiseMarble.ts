@@ -25,7 +25,7 @@ class NoiseMarble extends Base {
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
       roughness: 0.1,
-      color1: "#000080",
+      color1: "#000000",
       color2: "#66ccff",
       depth: 0.6,
       smooth: 0.2,
@@ -81,7 +81,7 @@ class NoiseMarble extends Base {
     this.createSphere();
     this.createOrbitControls();
     this.autoRotateOrbitControl();
-    // this.createDebugPanel();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }

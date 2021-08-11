@@ -80,6 +80,7 @@ body {
   --blue-grad-2: linear-gradient(135deg, #548db1 0%, #544d92 100%);
   // Amour Amour + Itmeo Branding
   --blue-grad-3: linear-gradient(-45deg, #f77062, #fe5196, #009efd, #2af598);
+  --blue-grad-4: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
 }
 
 // reset
@@ -140,6 +141,10 @@ a {
 
 .bg-blue-grad-3 {
   background: var(--blue-grad-3);
+}
+
+.bg-blue-grad-4 {
+  background: var(--blue-grad-4);
 }
 
 .bg-grey-grad-1 {
