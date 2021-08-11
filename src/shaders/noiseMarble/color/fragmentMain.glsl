@@ -5,7 +5,7 @@ float rayMarch(vec3 eye,vec3 ray){
     float depth=0.;
     
     for(float i=0.;i<iter;i++){
-        p+=ray*ratio*.6;
+        p+=ray*ratio*uDepth;
         vec2 uv=equirectUv(normalize(p));
         
         // displacement point
@@ -21,7 +21,7 @@ float rayMarch(vec3 eye,vec3 ray){
         
         float h=texture2D(uHeightMap,uv).r;
         float cutoff=1.-i*ratio;
-        float slice=smoothstep(cutoff,cutoff+.2,h);
+        float slice=smoothstep(cutoff,cutoff+uSmooth,h);
         float dist=slice*ratio;
         depth+=dist;
     }

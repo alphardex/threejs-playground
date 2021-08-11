@@ -24,8 +24,13 @@ class NoiseMarble extends Base {
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
+      roughness: 0.1,
       color1: "navy",
       color2: "#66ccff",
+      depth: 0.6,
+      smooth: 0.2,
+      speed: 0.05,
+      strength: 0.2,
     };
     const loader = new THREE.TextureLoader();
     const heightMap = loader.load(heightMapUrl);
@@ -41,6 +46,12 @@ class NoiseMarble extends Base {
       uColor2: {
         value: new THREE.Color(this.params.color2),
       },
+      uDepth: {
+        value: this.params.depth,
+      },
+      uSmooth: {
+        value: this.params.smooth,
+      },
       uTime: {
         value: 0,
       },
@@ -48,10 +59,10 @@ class NoiseMarble extends Base {
         value: displacementMap,
       },
       uSpeed: {
-        value: 0.05,
+        value: this.params.speed,
       },
       uStrength: {
-        value: 0.2,
+        value: this.params.strength,
       },
     };
   }
@@ -83,7 +94,7 @@ class NoiseMarble extends Base {
   // 创建材质
   async createNoiseMarbleMaterial() {
     const noiseMarbleMaterial = new THREE.MeshStandardMaterial({
-      roughness: 0.1,
+      roughness: this.params.roughness,
     });
     noiseMarbleMaterial.onBeforeCompile = (shader) => {
       shader.uniforms = { ...shader.uniforms, ...this.uniforms };
