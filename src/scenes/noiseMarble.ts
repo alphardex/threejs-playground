@@ -3,8 +3,6 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
-import noiseMarbleColorFragmentShader from "../shaders/noiseMarble/color/fragment.glsl";
-// @ts-ignore
 import noiseMarbleColorVertexTopShader from "../shaders/noiseMarble/color/vertexTop.glsl";
 // @ts-ignore
 import noiseMarbleColorVertexMainShader from "../shaders/noiseMarble/color/vertexMain.glsl";
@@ -14,7 +12,7 @@ import noiseMarbleColorFragmentTopShader from "../shaders/noiseMarble/color/frag
 import noiseMarbleColorFragmentMainShader from "../shaders/noiseMarble/color/fragmentMain.glsl";
 // @ts-ignore
 import noiseMarbleColorFragmentColorShader from "../shaders/noiseMarble/color/fragmentColor.glsl";
-import { hdrUrl, heightmapUrl } from "@/consts/noiseMarble";
+import { displacementMapUrl, hdrUrl, heightMapUrl } from "@/consts/noiseMarble";
 
 class NoiseMarble extends Base {
   clock!: THREE.Clock;
@@ -29,15 +27,31 @@ class NoiseMarble extends Base {
       color1: "navy",
       color2: "#66ccff",
     };
+    const loader = new THREE.TextureLoader();
+    const heightMap = loader.load(heightMapUrl);
+    const displacementMap = loader.load(displacementMapUrl);
+    displacementMap.wrapS = displacementMap.wrapT = THREE.RepeatWrapping;
     this.uniforms = {
-      uHeightmap: {
-        value: this.getHeightmap(),
+      uHeightMap: {
+        value: heightMap,
       },
       uColor1: {
         value: new THREE.Color(this.params.color1),
       },
       uColor2: {
         value: new THREE.Color(this.params.color2),
+      },
+      uTime: {
+        value: 0,
+      },
+      uDisplacementMap: {
+        value: displacementMap,
+      },
+      uSpeed: {
+        value: 0.05,
+      },
+      uStrength: {
+        value: 0.2,
       },
     };
   }
@@ -116,15 +130,14 @@ class NoiseMarble extends Base {
       material,
     });
   }
-  // 获取高度贴图
-  getHeightmap() {
-    const loader = new THREE.TextureLoader();
-    const texture = loader.load(heightmapUrl);
-    return texture;
-  }
   // 自动旋转场景
   autoRotateOrbitControl() {
     this.controls.autoRotate = true;
+  }
+  // 动画
+  update() {
+    const elapsedTime = this.clock.getElapsedTime();
+    this.uniforms.uTime.value = elapsedTime;
   }
 }
 

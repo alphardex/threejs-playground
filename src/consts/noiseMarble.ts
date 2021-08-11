@@ -1,6 +1,10 @@
 const hdrUrl = "./static/hdrs/warehouse.hdr";
 
 // http://kitfox.com/projects/perlinNoiseMaker/
-const heightmapUrl = "./static/heightmaps/2.png";
+// const heightMapUrl = "./static/noisemaps/2.png";
+// const displacementMapUrl = "./static/noisemaps/4.png";
 
-export { hdrUrl, heightmapUrl };
+const heightMapUrl = "./static/noisemaps/1.jpeg";
+const displacementMapUrl = "./static/noisemaps/5.jpeg";
+
+export { hdrUrl, heightMapUrl, displacementMapUrl };
