@@ -31,7 +31,7 @@ class NoiseMarble extends Base {
       smooth: 0.2,
       speed: 0.05,
       strength: 0.2,
-      slice: 1,
+      slice: 1.6,
     };
     const loader = new THREE.TextureLoader();
     const heightMap = loader.load(heightMapUrl);
