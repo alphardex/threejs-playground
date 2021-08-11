@@ -81,7 +81,7 @@ class NoiseMarble extends Base {
     this.createSphere();
     this.createOrbitControls();
     this.autoRotateOrbitControl();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
