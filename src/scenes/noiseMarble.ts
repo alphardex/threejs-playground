@@ -96,7 +96,7 @@ class NoiseMarble extends Base {
     this.scene.environment = envmap;
   }
   // 创建材质
-  async createNoiseMarbleMaterial() {
+  createNoiseMarbleMaterial() {
     const noiseMarbleMaterial = new THREE.MeshStandardMaterial({
       roughness: this.params.roughness,
     });
