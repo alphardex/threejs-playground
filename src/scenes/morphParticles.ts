@@ -13,7 +13,7 @@ class MorphParticles extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2);
   }
   // 初始化
   init() {
@@ -21,10 +21,9 @@ class MorphParticles extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createMorphParticlesMaterial();
-    this.createPlane();
+    this.createParticleSphere();
     this.createLight();
     this.trackMousePos();
-    this.createOrbitControls();
     this.addListeners();
     this.setLoop();
   }
@@ -48,14 +47,12 @@ class MorphParticles extends Base {
     });
     this.morphParticlesMaterial = morphParticlesMaterial;
   }
-  // 创建平面
-  createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+  // 创建微粒球体
+  createParticleSphere() {
+    const geometry = new THREE.SphereBufferGeometry(1, 128, 128);
     const material = this.morphParticlesMaterial;
-    this.createMesh({
-      geometry,
-      material,
-    });
+    const points = new THREE.Points(geometry, material);
+    this.scene.add(points);
   }
   // 动画
   update() {
