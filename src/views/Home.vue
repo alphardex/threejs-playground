@@ -199,6 +199,11 @@
           NoiseMarble
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'MorphParticles' }">
+          MorphParticles
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
