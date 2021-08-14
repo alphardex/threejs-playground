@@ -1,5 +1,5 @@
 <template>
-  <div class="morph-particles w-screen h-screen bg-black"></div>
+  <div class="morph-particles w-screen h-screen bg-blue-grad-2"></div>
 </template>
 
 <script lang="ts">

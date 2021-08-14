@@ -19,6 +19,7 @@ class MorphParticles extends Base {
     this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
       rotateSpeed: 0.01,
+      pointColor: "#4ec0e9",
     };
     this.currentTransition = 0;
   }
@@ -59,6 +60,9 @@ class MorphParticles extends Base {
         uTransition2: {
           value: 0,
         },
+        uColor: {
+          value: new THREE.Color(this.params.pointColor),
+        },
       },
     });
     this.morphParticlesMaterial = morphParticlesMaterial;
@@ -88,7 +92,7 @@ class MorphParticles extends Base {
     );
 
     // torus
-    const torusGeometry = new THREE.TorusBufferGeometry(0.6, 0.4, 128, 128);
+    const torusGeometry = new THREE.TorusBufferGeometry(0.7, 0.3, 128, 128);
     const torusPositions = this.sampleParticlesPositionFromMesh(
       torusGeometry.toNonIndexed()
     );
