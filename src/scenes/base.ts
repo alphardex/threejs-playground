@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import ky from "kyouka";
 import { MeshObject } from "@/types";
-import { calcAspect } from "@/utils/math";
+import { calcAspect, point2Array } from "@/utils/math";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
@@ -11,6 +11,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import Stats from "three/examples/jsm/libs/stats.module";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 
 class Base {
   debug: boolean;
@@ -464,6 +465,22 @@ class Base {
         }
       );
     });
+  }
+  // 从mesh上取样微粒位置信息
+  sampleParticlesPositionFromMesh(
+    geometry: THREE.BufferGeometry,
+    count = 10000
+  ) {
+    const material = new THREE.MeshBasicMaterial();
+    const mesh = new THREE.Mesh(geometry, material);
+    const sampler = new MeshSurfaceSampler(mesh).build();
+    const particlesPosition = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const position = new THREE.Vector3();
+      sampler.sample(position);
+      particlesPosition.set(point2Array(position), i * 3);
+    }
+    return particlesPosition;
   }
 }
 
