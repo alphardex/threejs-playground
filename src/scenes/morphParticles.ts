@@ -6,11 +6,13 @@ import { Base } from "./base";
 import morphParticlesVertexShader from "../shaders/morphParticles/vertex.glsl";
 // @ts-ignore
 import morphParticlesFragmentShader from "../shaders/morphParticles/fragment.glsl";
+import gsap from "gsap";
 
 class MorphParticles extends Base {
   clock!: THREE.Clock;
   morphParticlesMaterial!: THREE.ShaderMaterial;
   params!: any;
+  currentTransition!: number;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -18,6 +20,7 @@ class MorphParticles extends Base {
     this.params = {
       rotateSpeed: 0.01,
     };
+    this.currentTransition = 0;
   }
   // 初始化
   init() {
@@ -29,6 +32,7 @@ class MorphParticles extends Base {
     this.createLight();
     // this.createDebugPanel();
     this.trackMousePos();
+    this.onClickParticles();
     this.addListeners();
     this.setLoop();
   }
@@ -52,6 +56,9 @@ class MorphParticles extends Base {
         uTransition1: {
           value: 0,
         },
+        uTransition2: {
+          value: 0,
+        },
       },
     });
     this.morphParticlesMaterial = morphParticlesMaterial;
@@ -65,10 +72,19 @@ class MorphParticles extends Base {
     const spherePositions = this.sampleParticlesPositionFromMesh(
       sphereGeometry.toNonIndexed()
     );
-    console.log(spherePositions);
     geometry.setAttribute(
       "position",
       new THREE.BufferAttribute(spherePositions, 3)
+    );
+
+    // box
+    const boxGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 128, 128);
+    const boxPositions = this.sampleParticlesPositionFromMesh(
+      boxGeometry.toNonIndexed()
+    );
+    geometry.setAttribute(
+      "aPositionBox",
+      new THREE.BufferAttribute(boxPositions, 3)
     );
 
     // torus
@@ -108,6 +124,39 @@ class MorphParticles extends Base {
       .max(1)
       .step(0.01)
       .name("transition1");
+  }
+  // 监听点击微粒
+  onClickParticles() {
+    document.addEventListener("click", () => {
+      this.changeParticles();
+    });
+  }
+  // 改变微粒
+  changeParticles() {
+    let currentTransition = this.currentTransition;
+    const uniforms = this.morphParticlesMaterial.uniforms;
+    console.log(currentTransition);
+    if (currentTransition === 0) {
+      gsap.to(uniforms.uTransition1, {
+        value: 1,
+      });
+      this.currentTransition += 1;
+    } else if (currentTransition === 1) {
+      gsap.to(uniforms.uTransition2, {
+        value: 1,
+      });
+      this.currentTransition += 1;
+    } else if (currentTransition === 2) {
+      gsap.to(uniforms.uTransition2, {
+        value: 0,
+      });
+      this.currentTransition += 1;
+    } else if (currentTransition === 3) {
+      gsap.to(uniforms.uTransition1, {
+        value: 0,
+      });
+      this.currentTransition = 0;
+    }
   }
 }
 
