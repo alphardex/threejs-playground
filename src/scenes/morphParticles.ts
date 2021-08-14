@@ -28,7 +28,6 @@ class MorphParticles extends Base {
     this.createParticles();
     this.createLight();
     // this.createDebugPanel();
-    this.createOrbitControls();
     this.trackMousePos();
     this.addListeners();
     this.setLoop();
