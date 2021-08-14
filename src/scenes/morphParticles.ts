@@ -16,7 +16,7 @@ class MorphParticles extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2.5);
     this.params = {
       rotateSpeed: 0.01,
       pointColor: "#4ec0e9",
@@ -132,6 +132,9 @@ class MorphParticles extends Base {
   // 监听点击微粒
   onClickParticles() {
     document.addEventListener("click", () => {
+      this.changeParticles();
+    });
+    document.addEventListener("touchstart", () => {
       this.changeParticles();
     });
   }
