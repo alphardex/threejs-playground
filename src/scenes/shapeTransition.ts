@@ -13,6 +13,8 @@ class ShapeTransition extends Base {
   materials!: THREE.ShaderMaterial[];
   params!: any;
   configs!: any;
+  angles!: any;
+  jitter!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -36,6 +38,14 @@ class ShapeTransition extends Base {
       { color: [0.5, 0.3, 0.0], chromaticBlur: 3 * chromaticBlur },
       { color: [0.9, 0.1, 0.0], chromaticBlur: 4 * chromaticBlur },
     ];
+    const pointCount = this.params.pointCount;
+    const angles = Array.from(
+      { length: pointCount },
+      () => TAU * Math.random()
+    );
+    this.angles = angles;
+    const jitter = Array.from({ length: pointCount }, () => Math.random());
+    this.jitter = jitter;
   }
   // 初始化
   init() {
@@ -93,13 +103,9 @@ class ShapeTransition extends Base {
   // 创建点数组
   createPoints(centers, radius, multiplier) {
     const pointCount = this.params.pointCount;
-    const angles = Array.from(
-      { length: pointCount },
-      () => TAU * Math.random()
-    );
     let points = [];
     for (let i = 0; i < pointCount; i++) {
-      let angle = angles[i];
+      let angle = this.angles[i];
       let center = centers[i % centers.length];
       points.push(
         center[0] + radius * Math.sin(multiplier * angle),
@@ -142,10 +148,7 @@ class ShapeTransition extends Base {
     );
 
     // jitter
-    const jitter = Array.from({ length: params.pointCount }, () =>
-      Math.random()
-    );
-    const jitterPosition = new Float32Array(jitter);
+    const jitterPosition = new Float32Array(this.jitter);
     geometry.setAttribute(
       "aJitter",
       new THREE.BufferAttribute(jitterPosition, 3)
