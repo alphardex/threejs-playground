@@ -204,6 +204,11 @@
           MorphParticles
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ShapeTransition' }">
+          ShapeTransition
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

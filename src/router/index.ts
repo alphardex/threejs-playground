@@ -48,6 +48,7 @@ import WaveCloth from "../views/WaveCloth.vue";
 import DominosEffect from "../views/DominosEffect.vue";
 import NoiseMarble from "../views/NoiseMarble.vue";
 import MorphParticles from "../views/MorphParticles.vue";
+import ShapeTransition from "../views/ShapeTransition.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -289,6 +290,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/morph-particles",
     name: "MorphParticles",
     component: MorphParticles,
+  },
+  {
+    path: "/shape-transition",
+    name: "ShapeTransition",
+    component: ShapeTransition,
   },
   {
     path: "/:pathMatch(.*)*",
