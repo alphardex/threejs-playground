@@ -157,6 +157,9 @@ const point2ThreeVector = (point) =>
 // 点转化为Cannon.js的向量
 const point2CannonVec = (point) => new CANNON.Vec3(point.x, point.y, point.z);
 
+// 2PI
+const TAU = 2 * Math.PI;
+
 export {
   calcAspect,
   hyperbolicHelicoidFunction,
@@ -170,4 +173,5 @@ export {
   arrays2Point,
   point2ThreeVector,
   point2CannonVec,
+  TAU,
 };
