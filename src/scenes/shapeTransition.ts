@@ -125,8 +125,9 @@ class ShapeTransition extends Base {
     const params = this.params;
 
     // shape1
+    const centers1 = this.circleCenters(params.radius1, params.circleCount1);
     const points1 = this.createPoints(
-      this.circleCenters(params.radius1, params.circleCount1),
+      centers1,
       params.radius1,
       params.multiplier1
     );
@@ -137,8 +138,9 @@ class ShapeTransition extends Base {
     );
 
     // shape2
+    const centers2 = this.circleCenters(params.radius2, params.circleCount2);
     const points2 = this.createPoints(
-      this.circleCenters(params.radius2, params.circleCount2),
+      centers2,
       params.radius2,
       params.multiplier2
     );
