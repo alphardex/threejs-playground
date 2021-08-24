@@ -26,7 +26,7 @@ class ShapeTransition extends Base {
       radius2: 0.4,
       circleCount1: 1,
       multiplier1: 1,
-      circleCount2: 6,
+      circleCount2: 5,
       multiplier2: 4,
       chromaticBlur: 0.1,
     };
@@ -91,12 +91,15 @@ class ShapeTransition extends Base {
   // 创建圆心
   circleCenters(radius, N) {
     if (N === 1) {
-      return [[0, 0]];
+      return [{ x: 0, y: 0 }];
     }
     let centers = [];
     for (let i = 0; i < N; i++) {
-      let angle = ((i % N) * TAU) / N;
-      centers.push([radius * Math.sin(angle), radius * Math.cos(angle)]);
+      const angle = (i * TAU) / N;
+      const x = radius * Math.sin(angle);
+      const y = radius * Math.cos(angle);
+      const center = { x, y };
+      centers.push(center);
     }
     return centers;
   }
@@ -105,13 +108,13 @@ class ShapeTransition extends Base {
     const pointCount = this.params.pointCount;
     let points = [];
     for (let i = 0; i < pointCount; i++) {
-      let angle = this.angles[i];
-      let center = centers[i % centers.length];
-      points.push(
-        center[0] + radius * Math.sin(multiplier * angle),
-        center[1] + radius * Math.cos(multiplier * angle),
-        0
-      );
+      const angle = this.angles[i];
+      const offsetX = radius * Math.sin(multiplier * angle);
+      const offsetY = radius * Math.cos(multiplier * angle);
+      const center = centers[i % centers.length];
+      const x = center.x + offsetX;
+      const y = center.y + offsetY;
+      points.push(x, y, 0);
     }
     return points;
   }
@@ -120,13 +123,11 @@ class ShapeTransition extends Base {
     const geometry = new THREE.BufferGeometry();
 
     const params = this.params;
-    let r1 = params.circleCount1 === 1 ? params.radius1 : params.radius2;
-    let r2 = params.circleCount2 === 1 ? params.radius1 : params.radius2;
 
     // shape1
     const points1 = this.createPoints(
-      this.circleCenters(r1, params.circleCount1),
-      r1,
+      this.circleCenters(params.radius1, params.circleCount1),
+      params.radius1,
       params.multiplier1
     );
     const shape1Position = new Float32Array(points1);
@@ -137,8 +138,8 @@ class ShapeTransition extends Base {
 
     // shape2
     const points2 = this.createPoints(
-      this.circleCenters(r2, params.circleCount2),
-      r2,
+      this.circleCenters(params.radius2, params.circleCount2),
+      params.radius2,
       params.multiplier2
     );
     const shape2Position = new Float32Array(points2);
