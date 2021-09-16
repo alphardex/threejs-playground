@@ -21,6 +21,10 @@ class TimeTravel extends Base {
     this.cameraPosition = new THREE.Vector3(0, 0, 0.35);
     this.params = {
       speed: 0.02,
+      offsetX: 0,
+      offsetY: 0,
+      repeatX: 10,
+      repeatY: 4,
     };
   }
   // 初始化
@@ -32,6 +36,7 @@ class TimeTravel extends Base {
     this.createTimeTravelMaterial();
     this.createTube();
     this.createLight();
+    this.runTravelAnimation();
     this.trackMousePos();
     this.addListeners();
     this.setLoop();
@@ -57,7 +62,6 @@ class TimeTravel extends Base {
     });
     timeTravelMaterial.map.wrapS = timeTravelMaterial.map.wrapT =
       THREE.MirroredRepeatWrapping;
-    timeTravelMaterial.map.repeat.set(10, 4);
     this.timeTravelMaterial = timeTravelMaterial;
   }
   // 创建管道
@@ -75,16 +79,46 @@ class TimeTravel extends Base {
     });
     this.tubeMesh = mesh;
   }
-  // 管道运动
-  moveTube() {
-    const speed = this.params.speed;
-    if (this.timeTravelMaterial) {
-      this.timeTravelMaterial.map.offset.x += speed;
+  // 更新管道状态
+  updateTube() {
+    const timeTravelMaterial = this.timeTravelMaterial;
+    const params = this.params;
+    const { offsetX, offsetY, repeatX, repeatY } = params;
+    if (timeTravelMaterial) {
+      timeTravelMaterial.map.offset.set(offsetX, offsetY);
+      timeTravelMaterial.map.repeat.set(repeatX, repeatY);
     }
+  }
+  // 运行穿梭动画
+  runTravelAnimation() {
+    const t = gsap.timeline({ repeat: -1 });
+    t.to(this.params, {
+      offsetX: 8,
+      duration: 12,
+      ease: "power2.inOut",
+    })
+      .to(
+        this.params,
+        {
+          repeatX: 0.3,
+          duration: 4,
+          ease: "power1.inOut",
+        },
+        0
+      )
+      .to(
+        this.params,
+        {
+          repeatX: 10,
+          duration: 6,
+          ease: "power2.inOut",
+        },
+        "-=5"
+      );
   }
   // 动画
   update() {
-    this.moveTube();
+    this.updateTube();
   }
 }
 
