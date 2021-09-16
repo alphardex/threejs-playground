@@ -10,6 +10,7 @@ class TimeTravel extends Base {
   params!: any;
   curve!: THREE.CatmullRomCurve3;
   tubeMesh!: THREE.Mesh;
+  anime!: gsap.core.Timeline;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -116,6 +117,7 @@ class TimeTravel extends Base {
         },
         "-=5"
       );
+    this.anime = t;
   }
   // 动画
   update() {
