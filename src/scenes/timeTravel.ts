@@ -1,12 +1,12 @@
 import * as THREE from "three";
 import ky from "kyouka";
-import * as dat from "dat.gui";
+import gsap from "gsap";
 import { Base } from "./base";
 import { tunnelTexture } from "@/consts/timeTravel";
 
 class TimeTravel extends Base {
   clock!: THREE.Clock;
-  timeTravelMaterial!: THREE.MeshStandardMaterial;
+  timeTravelMaterial!: THREE.MeshBasicMaterial;
   params!: any;
   curve!: THREE.CatmullRomCurve3;
   tubeMesh!: THREE.Mesh;
@@ -51,19 +51,19 @@ class TimeTravel extends Base {
   createTimeTravelMaterial() {
     const loader = new THREE.TextureLoader();
     const texture = loader.load(tunnelTexture);
-    const timeTravelMaterial = new THREE.MeshStandardMaterial({
+    const timeTravelMaterial = new THREE.MeshBasicMaterial({
       side: THREE.BackSide,
       map: texture,
     });
     timeTravelMaterial.map.wrapS = timeTravelMaterial.map.wrapT =
-      THREE.RepeatWrapping;
-    timeTravelMaterial.map.repeat.set(30, 6);
+      THREE.MirroredRepeatWrapping;
+    timeTravelMaterial.map.repeat.set(10, 4);
     this.timeTravelMaterial = timeTravelMaterial;
   }
   // 创建管道
   createTube() {
     const points = [...ky.range(0, 5)].map((item, i) => {
-      return new THREE.Vector3(0, 0, (2.5 * i) / 4);
+      return new THREE.Vector3(0, 0, (3 * i) / 4);
     });
     const curve = new THREE.CatmullRomCurve3(points);
     this.curve = curve;
