@@ -49,6 +49,7 @@ import DominosEffect from "../views/DominosEffect.vue";
 import NoiseMarble from "../views/NoiseMarble.vue";
 import MorphParticles from "../views/MorphParticles.vue";
 import ShapeTransition from "../views/ShapeTransition.vue";
+import TimeTravel from "../views/TimeTravel.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -295,6 +296,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/shape-transition",
     name: "ShapeTransition",
     component: ShapeTransition,
+  },
+  {
+    path: "/time-travel",
+    name: "TimeTravel",
+    component: TimeTravel,
   },
   {
     path: "/:pathMatch(.*)*",
