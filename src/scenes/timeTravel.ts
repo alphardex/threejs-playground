@@ -69,6 +69,7 @@ class TimeTravel extends Base {
     const points = [...ky.range(0, 5)].map((item, i) => {
       return new THREE.Vector3(0, 0, (3 * i) / 4);
     });
+    points[4].y = -0.05;
     const curve = new THREE.CatmullRomCurve3(points);
     this.curve = curve;
     const geometry = new THREE.TubeBufferGeometry(curve, 80, 0.02, 60, false);
