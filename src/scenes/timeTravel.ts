@@ -36,7 +36,6 @@ class TimeTravel extends Base {
     this.createRenderer();
     this.createTimeTravelMaterial();
     this.createTube();
-    this.createLight();
     this.runTravelAnimation();
     this.trackMousePos();
     this.addListeners();
@@ -45,13 +44,6 @@ class TimeTravel extends Base {
   // 旋转相机
   rotateCamera() {
     this.camera.rotation.y = ky.deg2rad(180);
-  }
-  // 创建光照
-  createLight() {
-    const dirLight = new THREE.DirectionalLight(new THREE.Color("white"), 0.8);
-    this.scene.add(dirLight);
-    const hemiLight = new THREE.HemisphereLight(0xffffbb, 0x887979, 0.8);
-    this.scene.add(hemiLight);
   }
   // 创建材质
   createTimeTravelMaterial() {
