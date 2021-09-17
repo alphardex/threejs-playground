@@ -37,7 +37,6 @@ class TimeTravel extends Base {
     this.createTimeTravelMaterial();
     this.createTube();
     this.runTravelAnimation();
-    this.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
