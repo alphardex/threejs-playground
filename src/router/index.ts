@@ -50,6 +50,7 @@ import NoiseMarble from "../views/NoiseMarble.vue";
 import MorphParticles from "../views/MorphParticles.vue";
 import ShapeTransition from "../views/ShapeTransition.vue";
 import TimeTravel from "../views/TimeTravel.vue";
+import PixelRiver from "../views/PixelRiver.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -301,6 +302,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/time-travel",
     name: "TimeTravel",
     component: TimeTravel,
+  },
+  {
+    path: "/pixel-river",
+    name: "PixelRiver",
+    component: PixelRiver,
   },
   {
     path: "/:pathMatch(.*)*",

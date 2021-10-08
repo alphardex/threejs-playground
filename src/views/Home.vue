@@ -214,6 +214,11 @@
           TimeTravel
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'PixelRiver' }">
+          PixelRiver
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
