@@ -1,4 +1,7 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import {
   preloadImages,
   ImageDOMMeshObjGroup,
@@ -6,9 +9,13 @@ import {
 } from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
-import pixelRiverVertexShader from "../shaders/pixelRiver/vertex.glsl";
+import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";
 // @ts-ignore
-import pixelRiverFragmentShader from "../shaders/pixelRiver/fragment.glsl";
+import pixelRiverMainFragmentShader from "../shaders/pixelRiver/main/fragment.glsl";
+// @ts-ignore
+import pixelRiverPostprocessingVertexShader from "../shaders/pixelRiver/postprocessing/vertex.glsl";
+// @ts-ignore
+import pixelRiverPostprocessingFragmentShader from "../shaders/pixelRiver/postprocessing/fragment.glsl";
 
 class PixelRiver extends Base {
   clock!: THREE.Clock;
@@ -16,6 +23,7 @@ class PixelRiver extends Base {
   pixelRiverMaterial!: THREE.ShaderMaterial;
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
   mouseWheelScroller!: MouseWheelScroller;
+  customPass!: ShaderPass;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -47,12 +55,13 @@ class PixelRiver extends Base {
   createEverything() {
     this.createPixelRiverMaterial();
     this.createImageDOMMeshObjGroup();
+    this.createPostprocessingEffect();
   }
   // 创建材质
   createPixelRiverMaterial() {
     const pixelRiverMaterial = new THREE.ShaderMaterial({
-      vertexShader: pixelRiverVertexShader,
-      fragmentShader: pixelRiverFragmentShader,
+      vertexShader: pixelRiverMainVertexShader,
+      fragmentShader: pixelRiverMainFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -98,6 +107,28 @@ class PixelRiver extends Base {
   // 动画
   update() {
     this.syncScroll();
+  }
+  // 创建后期处理特效
+  createPostprocessingEffect() {
+    const composer = new EffectComposer(this.renderer);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    composer.addPass(renderPass);
+    const customPass = new ShaderPass({
+      vertexShader: pixelRiverPostprocessingVertexShader,
+      fragmentShader: pixelRiverPostprocessingFragmentShader,
+      uniforms: {
+        tDiffuse: {
+          value: null,
+        },
+        uRGBShiftStrength: {
+          value: 0,
+        },
+      },
+    });
+    customPass.renderToScreen = true;
+    composer.addPass(customPass);
+    this.composer = composer;
+    this.customPass = customPass;
   }
 }
 
