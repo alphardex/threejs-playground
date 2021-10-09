@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import imagesLoaded from "imagesloaded";
-import NormalizeWheel from "normalize-wheel";
 import { lerp } from "./math";
 
 // 获取归一化的鼠标位置
