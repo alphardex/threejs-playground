@@ -5,14 +5,14 @@
   <div class="bg-black">
     <div class="h-20"></div>
     <div class="h-100"></div>
-    <div class="gallery place-items-center">
-      <div v-for="n in 9" :key="n">
-        <img
-          :src="require(`../assets/pixel-river/${n}.jpg`)"
-          alt=""
-          class="w-100 block"
-        />
-      </div>
+    <div class="gallery">
+      <img
+        :src="require(`../assets/pixel-river/${n}.jpg`)"
+        alt=""
+        class="gallery-item"
+        v-for="n in 9"
+        :key="n"
+      />
     </div>
     <div class="h-20"></div>
   </div>
@@ -45,6 +45,12 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(45ch, 1fr));
   gap: 12rem 4rem;
+  place-items: center;
+
+  &-item {
+    display: block;
+    width: 25rem;
+  }
 }
 
 ::-webkit-scrollbar {
