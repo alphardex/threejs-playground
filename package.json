@@ -9,7 +9,7 @@
     "scene": "plop scene"
   },
   "dependencies": {
-    "@alphardex/aqua.css": "^1.6.4",
+    "@alphardex/aqua.css": "^1.6.9",
     "bezier-easing": "^2.1.0",
     "cannon-es": "^0.16.0",
     "core-js": "^3.6.5",

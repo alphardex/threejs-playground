@@ -100,8 +100,8 @@ class ImageDOMMeshObjGroup {
   }
 }
 
-// 鼠标滚轮监听器
-class MouseWheelScroller {
+// 滚动监听器
+class Scroller {
   scroll!: any;
   constructor() {
     this.scroll = {
@@ -113,13 +113,13 @@ class MouseWheelScroller {
       direction: "",
     };
   }
-  // 监听滚轮滚动
-  listenForWheel(strength = 0.5) {
-    window.addEventListener("mousewheel", (e) => {
-      const normalized = NormalizeWheel(e);
-      const speed = normalized.pixelY;
-      const scrollY = speed * strength;
-      this.scroll.target += scrollY;
+  // 监听滚动
+  listenForScroll() {
+    window.addEventListener("scroll", () => {
+      const oldScrollY = this.scroll.target;
+      const newScrollY = window.scrollY;
+      const scrollYDelta = newScrollY - oldScrollY;
+      this.scroll.target += scrollYDelta;
     });
   }
   // 同步滚动的数据
@@ -141,5 +141,5 @@ export {
   getPointsInPath,
   DOMMeshObject,
   ImageDOMMeshObjGroup,
-  MouseWheelScroller,
+  Scroller,
 };

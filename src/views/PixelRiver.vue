@@ -1,12 +1,19 @@
 <template>
-  <div class="pixel-river w-screen h-screen bg-black">
-    <div class="absolute w-screen h-screen flex-center">
-      <div class="flex items-center space-x-40">
-        <img src="../assets/pixel-river/1.jpg" alt="" class="w-100" />
-        <img src="../assets/pixel-river/2.jpg" alt="" class="w-100" />
-        <img src="../assets/pixel-river/3.jpg" alt="" class="w-100" />
+  <div
+    class="pixel-river fixed z-0 w-screen h-screen pointer-events-none"
+  ></div>
+  <div class="bg-black">
+    <div class="h-20"></div>
+    <div class="gallery place-items-center">
+      <div v-for="n in 14" :key="n">
+        <img
+          :src="require(`../assets/pixel-river/${n}.jpg`)"
+          alt=""
+          class="w-100 block"
+        />
       </div>
     </div>
+    <div class="h-20"></div>
   </div>
 </template>
 
@@ -31,5 +38,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 img {
   opacity: 0;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(45ch, 1fr));
+  gap: 12rem 4rem;
 }
 </style>

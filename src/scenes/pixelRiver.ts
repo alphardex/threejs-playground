@@ -1,12 +1,11 @@
 import * as THREE from "three";
+import ky from "kyouka";
+import gsap from "gsap";
+import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import {
-  preloadImages,
-  ImageDOMMeshObjGroup,
-  MouseWheelScroller,
-} from "@/utils/dom";
+import { preloadImages, ImageDOMMeshObjGroup, Scroller } from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";
@@ -22,7 +21,7 @@ class PixelRiver extends Base {
   images!: HTMLImageElement[];
   pixelRiverMaterial!: THREE.ShaderMaterial;
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
-  mouseWheelScroller!: MouseWheelScroller;
+  Scroller!: Scroller;
   customPass!: ShaderPass;
   params!: any;
   constructor(sel: string, debug: boolean) {
@@ -36,9 +35,14 @@ class PixelRiver extends Base {
       far: 2000,
     };
     this.images = [...document.querySelectorAll("img")];
-    this.mouseWheelScroller = new MouseWheelScroller();
+    this.Scroller = new Scroller();
     this.params = {
-      scrollSpeedStrength: 0.5,
+      scrollSpeedStrength: 1,
+      progress: 0,
+      // progress: 0.7,
+      waveScale: 1.6,
+      distA: 0.64,
+      distB: 2.5,
     };
   }
   // 初始化
@@ -48,6 +52,7 @@ class PixelRiver extends Base {
     this.createRenderer();
     await preloadImages();
     this.createEverything();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -92,21 +97,17 @@ class PixelRiver extends Base {
   // 监听事件
   addListeners() {
     this.onResize();
-    this.onWheel();
+    this.onScroll();
   }
-  // 监听鼠标滚轮滚动
-  onWheel() {
-    this.mouseWheelScroller.listenForWheel(this.params.scrollSpeedStrength);
+  // 监听滚动
+  onScroll() {
+    this.Scroller.listenForScroll();
   }
   // 同步滚动
   syncScroll() {
-    const currentScrollY = this.mouseWheelScroller.scroll.current;
-    this.mouseWheelScroller.syncScroll();
+    this.Scroller.syncScroll();
+    const currentScrollY = this.Scroller.scroll.current;
     this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
-  }
-  // 动画
-  update() {
-    this.syncScroll();
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -122,6 +123,21 @@ class PixelRiver extends Base {
         tDiffuse: {
           value: null,
         },
+        uTime: {
+          value: 0,
+        },
+        uProgress: {
+          value: this.params.progress, // 扭曲进度
+        },
+        uWaveScale: {
+          value: this.params.waveScale, // 扭曲波浪大小
+        },
+        uDistA: {
+          value: this.params.distA,
+        },
+        uDistB: {
+          value: this.params.distB,
+        },
       },
     });
     customPass.renderToScreen = true;
@@ -129,6 +145,74 @@ class PixelRiver extends Base {
     composer.addPass(customPass);
 
     this.composer = composer;
+  }
+  // 更新Pass的变量
+  updatePassVariables() {
+    const uniforms = this.customPass.uniforms;
+    const elapsedTime = this.clock.getElapsedTime();
+    uniforms.uTime.value = elapsedTime;
+
+    const params = this.params;
+    uniforms.uProgress.value = params.progress;
+    uniforms.uWaveScale.value = params.waveScale;
+    uniforms.uDistA.value = params.distA;
+    uniforms.uDistB.value = params.distB;
+  }
+  // 更新图片状态
+  updateMeshState() {
+    this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((obj) => {
+      const progress = this.params.progress;
+      obj.mesh.rotation.z = ky.deg2rad(90) * progress;
+    });
+  }
+  // 处理滚动时状态
+  handleScroll() {
+    const currentScrollY = this.Scroller.scroll.target;
+    const params = this.params;
+    console.log(currentScrollY);
+    if (currentScrollY > 0) {
+      gsap.to(params, {
+        progress: 0,
+        ease: "power3.inout",
+      });
+    } else if (currentScrollY <= 0) {
+      gsap.to(params, {
+        progress: 0.7,
+        ease: "power3.inout",
+      });
+    }
+  }
+  // 动画
+  update() {
+    this.syncScroll();
+    this.updatePassVariables();
+    this.updateMeshState();
+    this.handleScroll();
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI();
+    const params = this.params;
+    gui
+      .add(params, "progress")
+      .min(0)
+      .max(1)
+      .step(0.01);
+    gui
+      .add(params, "waveScale")
+      .min(0)
+      .max(10)
+      .step(0.01);
+    gui
+      .add(params, "distA")
+      .min(0)
+      .max(1)
+      .step(0.01);
+    gui
+      .add(params, "distB")
+      .min(0)
+      .max(20)
+      .step(0.01);
   }
 }
 

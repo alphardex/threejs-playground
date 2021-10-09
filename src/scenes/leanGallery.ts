@@ -122,10 +122,10 @@ class LeanGallery extends Base {
   // 监听事件
   addListeners() {
     this.onResize();
-    this.onWheel();
+    this.onScroll();
   }
   // 监听鼠标滚轮
-  onWheel() {
+  onScroll() {
     window.addEventListener("mousewheel", (e) => {
       const normalized = NormalizeWheel(e);
       const speed = normalized.pixelY;
