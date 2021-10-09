@@ -18,7 +18,6 @@ import pixelRiverPostprocessingFragmentShader from "../shaders/pixelRiver/postpr
 
 class PixelRiver extends Base {
   clock!: THREE.Clock;
-  images!: HTMLImageElement[];
   pixelRiverMaterial!: THREE.ShaderMaterial;
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
   Scroller!: Scroller;
@@ -34,13 +33,10 @@ class PixelRiver extends Base {
       near: 100,
       far: 2000,
     };
-    this.images = [...document.querySelectorAll("img")];
     this.Scroller = new Scroller();
     this.params = {
-      scrollSpeedStrength: 1,
       progress: 0,
-      // progress: 0.7,
-      waveScale: 1.6,
+      waveScale: 1.5,
       distA: 0.64,
       distB: 2.5,
     };
@@ -52,7 +48,7 @@ class PixelRiver extends Base {
     this.createRenderer();
     await preloadImages();
     this.createEverything();
-    this.createDebugPanel();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -87,8 +83,9 @@ class PixelRiver extends Base {
   }
   // 创建图片DOM物体组
   createImageDOMMeshObjGroup() {
-    const { images, scene, pixelRiverMaterial } = this;
     const imageDOMMeshObjGroup = new ImageDOMMeshObjGroup();
+    const { scene, pixelRiverMaterial } = this;
+    const images = [...document.querySelectorAll("img")];
     images.map((image) => {
       imageDOMMeshObjGroup.addObject(image, scene, pixelRiverMaterial);
     });
@@ -102,12 +99,6 @@ class PixelRiver extends Base {
   // 监听滚动
   onScroll() {
     this.Scroller.listenForScroll();
-  }
-  // 同步滚动
-  syncScroll() {
-    this.Scroller.syncScroll();
-    const currentScrollY = this.Scroller.scroll.current;
-    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -146,6 +137,19 @@ class PixelRiver extends Base {
 
     this.composer = composer;
   }
+  // 动画
+  update() {
+    this.syncScroll();
+    this.updatePassVariables();
+    this.updateMeshState();
+    this.handleScroll();
+  }
+  // 同步滚动
+  syncScroll() {
+    this.Scroller.syncScroll();
+    const currentScrollY = this.Scroller.scroll.current;
+    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
+  }
   // 更新Pass的变量
   updatePassVariables() {
     const uniforms = this.customPass.uniforms;
@@ -162,32 +166,30 @@ class PixelRiver extends Base {
   updateMeshState() {
     this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((obj) => {
       const progress = this.params.progress;
-      obj.mesh.rotation.z = ky.deg2rad(90) * progress;
+      gsap.to(obj.mesh.rotation, {
+        z: ky.deg2rad(90) * progress,
+        ease: "power2.out",
+        duration: 1.2,
+      });
     });
   }
   // 处理滚动时状态
   handleScroll() {
     const currentScrollY = this.Scroller.scroll.target;
     const params = this.params;
-    console.log(currentScrollY);
     if (currentScrollY > 0) {
       gsap.to(params, {
         progress: 0,
         ease: "power3.inout",
+        duration: 1.2,
       });
     } else if (currentScrollY <= 0) {
       gsap.to(params, {
         progress: 0.7,
-        ease: "power3.inout",
+        ease: "power3.out",
+        duration: 1.2,
       });
     }
-  }
-  // 动画
-  update() {
-    this.syncScroll();
-    this.updatePassVariables();
-    this.updateMeshState();
-    this.handleScroll();
   }
   // 创建调试面板
   createDebugPanel() {

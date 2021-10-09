@@ -4,8 +4,10 @@
   ></div>
   <div class="bg-black">
     <div class="h-20"></div>
+    <div class="h-100"></div>
+    <div class="h-40"></div>
     <div class="gallery place-items-center">
-      <div v-for="n in 14" :key="n">
+      <div v-for="n in 9" :key="n">
         <img
           :src="require(`../assets/pixel-river/${n}.jpg`)"
           alt=""
