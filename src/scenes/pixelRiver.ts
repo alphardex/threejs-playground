@@ -111,8 +111,10 @@ class PixelRiver extends Base {
   // 创建后期处理特效
   createPostprocessingEffect() {
     const composer = new EffectComposer(this.renderer);
+
     const renderPass = new RenderPass(this.scene, this.camera);
     composer.addPass(renderPass);
+
     const customPass = new ShaderPass({
       vertexShader: pixelRiverPostprocessingVertexShader,
       fragmentShader: pixelRiverPostprocessingFragmentShader,
@@ -123,9 +125,10 @@ class PixelRiver extends Base {
       },
     });
     customPass.renderToScreen = true;
-    composer.addPass(customPass);
-    this.composer = composer;
     this.customPass = customPass;
+    composer.addPass(customPass);
+
+    this.composer = composer;
   }
 }
 
