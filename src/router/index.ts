@@ -51,6 +51,7 @@ import MorphParticles from "../views/MorphParticles.vue";
 import ShapeTransition from "../views/ShapeTransition.vue";
 import TimeTravel from "../views/TimeTravel.vue";
 import PixelRiver from "../views/PixelRiver.vue";
+import ImagePlane from "../views/ImagePlane.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -307,6 +308,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/pixel-river",
     name: "PixelRiver",
     component: PixelRiver,
+  },
+  {
+    path: "/image-plane",
+    name: "ImagePlane",
+    component: ImagePlane,
   },
   {
     path: "/:pathMatch(.*)*",

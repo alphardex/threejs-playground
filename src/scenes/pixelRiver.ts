@@ -89,16 +89,8 @@ class PixelRiver extends Base {
     images.map((image) => {
       imageDOMMeshObjGroup.addObject(image, scene, pixelRiverMaterial);
     });
+    imageDOMMeshObjGroup.setObjsPosition();
     this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
-  }
-  // 监听事件
-  addListeners() {
-    this.onResize();
-    this.onScroll();
-  }
-  // 监听滚动
-  onScroll() {
-    this.Scroller.listenForScroll();
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -137,9 +129,19 @@ class PixelRiver extends Base {
 
     this.composer = composer;
   }
+  // 监听事件
+  addListeners() {
+    this.onResize();
+    this.onScroll();
+  }
+  // 监听滚动
+  onScroll() {
+    this.Scroller.listenForScroll();
+  }
   // 动画
   update() {
     this.syncScroll();
+    this.updatePassTime();
     this.updatePassVariables();
     this.updateMeshState();
     this.handleScroll();
@@ -150,12 +152,15 @@ class PixelRiver extends Base {
     const currentScrollY = this.Scroller.scroll.current;
     this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
   }
-  // 更新Pass的变量
-  updatePassVariables() {
+  // 更新Pass的时间
+  updatePassTime() {
     const uniforms = this.customPass.uniforms;
     const elapsedTime = this.clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
-
+  }
+  // 更新Pass的变量
+  updatePassVariables() {
+    const uniforms = this.customPass.uniforms;
     const params = this.params;
     uniforms.uProgress.value = params.progress;
     uniforms.uWaveScale.value = params.waveScale;

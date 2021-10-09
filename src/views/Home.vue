@@ -219,6 +219,11 @@
           PixelRiver
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ImagePlane' }">
+          ImagePlane
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
