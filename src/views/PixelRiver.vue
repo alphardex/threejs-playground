@@ -46,4 +46,8 @@ img {
   grid-template-columns: repeat(auto-fill, minmax(45ch, 1fr));
   gap: 12rem 4rem;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
 </style>

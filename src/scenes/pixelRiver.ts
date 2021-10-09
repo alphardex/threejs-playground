@@ -35,7 +35,7 @@ class PixelRiver extends Base {
     };
     this.Scroller = new Scroller();
     this.params = {
-      progress: 0,
+      progress: 0.7,
       waveScale: 1.5,
       distA: 0.64,
       distB: 2.5,
