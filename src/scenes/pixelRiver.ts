@@ -47,7 +47,6 @@ class PixelRiver extends Base {
   createEverything() {
     this.createPixelRiverMaterial();
     this.createImageDOMMeshObjGroup();
-    this.updateScrollPosition();
   }
   // 创建材质
   createPixelRiverMaterial() {
@@ -81,19 +80,24 @@ class PixelRiver extends Base {
     });
     this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
   }
-  // 更新滚动位置
-  updateScrollPosition(scrollY = window.scrollY) {
-    this.imageDOMMeshObjGroup.setObjsPosition(scrollY);
-  }
   // 监听事件
   addListeners() {
     this.onResize();
+    this.onWheel();
+  }
+  // 监听鼠标滚轮滚动
+  onWheel() {
     this.mouseWheelScroller.listenForWheel(this.params.scrollSpeedStrength);
+  }
+  // 同步滚动
+  syncScroll() {
+    const currentScrollY = this.mouseWheelScroller.scroll.current;
+    this.mouseWheelScroller.syncScroll();
+    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
   }
   // 动画
   update() {
-    this.mouseWheelScroller.syncScroll();
-    this.updateScrollPosition(this.mouseWheelScroller.scroll.current);
+    this.syncScroll();
   }
 }
 
