@@ -120,9 +120,6 @@ class PixelRiver extends Base {
         tDiffuse: {
           value: null,
         },
-        uRGBShiftStrength: {
-          value: 0,
-        },
       },
     });
     customPass.renderToScreen = true;
