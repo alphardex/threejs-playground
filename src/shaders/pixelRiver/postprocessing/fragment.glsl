@@ -1,5 +1,3 @@
-#pragma glslify:map=require(glsl-map)
-
 uniform float uTime;
 uniform vec2 uMouse;
 uniform vec2 uResolution;
@@ -13,7 +11,7 @@ varying vec2 vUv;
 
 void main(){
     vec2 newUv=vUv;
-    vec2 p=map(newUv,vec2(0.),vec2(1.),vec2(-1.),vec2(1.));
+    vec2 p=2.*newUv-1.;
     
     p+=.11*cos((1.3*uWaveScale)*p.yx+1.3*uTime+vec2(.4,1.7));
     p+=.12*cos((2.5*uWaveScale)*p.yx+1.5*uTime+vec2(2.7,3.9));
