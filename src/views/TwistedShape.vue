@@ -16,9 +16,6 @@ export default defineComponent({
     onMounted(() => {
       start();
     });
-    return {
-      start,
-    };
   },
 });
 </script>
