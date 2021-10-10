@@ -34,3 +34,12 @@ export interface SunshinePos {
   sunshinePos: any;
   sunshinePosCalc: Point3D;
 }
+
+export interface Scroll {
+  current: number;
+  target: number;
+  ease: number;
+  last: number;
+  delta: number;
+  direction: "up" | "down" | "";
+}

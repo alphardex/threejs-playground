@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import imagesLoaded from "imagesloaded";
 import { lerp } from "./math";
+import { Scroll } from "@/types";
 
 // 获取归一化的鼠标位置
 const getNormalizedMousePos = (e: MouseEvent | Touch) => {
@@ -101,7 +102,7 @@ class ImageDOMMeshObjGroup {
 
 // 滚动监听器
 class Scroller {
-  scroll!: any;
+  scroll!: Scroll;
   constructor() {
     this.scroll = {
       current: 0,

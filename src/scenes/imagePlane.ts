@@ -17,7 +17,7 @@ class ImagePlane extends Base {
   clock!: THREE.Clock;
   imagePlaneMaterial!: THREE.ShaderMaterial;
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
-  Scroller!: Scroller;
+  scroller!: Scroller;
   customPass!: ShaderPass;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -29,7 +29,7 @@ class ImagePlane extends Base {
       near: 100,
       far: 2000,
     };
-    this.Scroller = new Scroller();
+    this.scroller = new Scroller();
   }
   // 初始化
   async init() {
@@ -113,7 +113,7 @@ class ImagePlane extends Base {
   }
   // 监听滚动
   onScroll() {
-    this.Scroller.listenForScroll();
+    this.scroller.listenForScroll();
   }
   // 动画
   update() {
@@ -122,8 +122,8 @@ class ImagePlane extends Base {
   }
   // 同步滚动
   syncScroll() {
-    this.Scroller.syncScroll();
-    const currentScrollY = this.Scroller.scroll.current;
+    this.scroller.syncScroll();
+    const currentScrollY = this.scroller.scroll.current;
     this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
   }
   // 更新Pass的时间

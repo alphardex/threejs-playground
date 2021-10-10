@@ -20,7 +20,7 @@ class PixelRiver extends Base {
   clock!: THREE.Clock;
   pixelRiverMaterial!: THREE.ShaderMaterial;
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
-  Scroller!: Scroller;
+  scroller!: Scroller;
   customPass!: ShaderPass;
   params!: any;
   constructor(sel: string, debug: boolean) {
@@ -33,7 +33,7 @@ class PixelRiver extends Base {
       near: 100,
       far: 2000,
     };
-    this.Scroller = new Scroller();
+    this.scroller = new Scroller();
     this.params = {
       progress: 0.7,
       waveScale: 1.5,
@@ -136,7 +136,7 @@ class PixelRiver extends Base {
   }
   // 监听滚动
   onScroll() {
-    this.Scroller.listenForScroll();
+    this.scroller.listenForScroll();
   }
   // 动画
   update() {
@@ -148,8 +148,8 @@ class PixelRiver extends Base {
   }
   // 同步滚动
   syncScroll() {
-    this.Scroller.syncScroll();
-    const currentScrollY = this.Scroller.scroll.current;
+    this.scroller.syncScroll();
+    const currentScrollY = this.scroller.scroll.current;
     this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
   }
   // 更新Pass的时间
@@ -180,7 +180,7 @@ class PixelRiver extends Base {
   }
   // 处理滚动时状态
   handleScroll() {
-    const currentScrollY = this.Scroller.scroll.target;
+    const currentScrollY = this.scroller.scroll.target;
     const params = this.params;
     if (currentScrollY > 0) {
       gsap.to(params, {
