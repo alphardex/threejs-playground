@@ -224,6 +224,11 @@
           ImagePlane
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'UnrollImages' }">
+          UnrollImages
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

@@ -83,6 +83,10 @@ body {
   --blue-grad-4: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 // reset
 
 ul,
