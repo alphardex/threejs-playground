@@ -58,6 +58,7 @@ class UnrollImages extends Base {
       this.imageDOMMeshObjGroup.imageDOMMeshObjs,
       this.params.revealStagger
     );
+    this.onClickToggleImages();
   }
   // 创建一切
   createEverything() {
@@ -195,6 +196,34 @@ class UnrollImages extends Base {
         stagger,
       }
     );
+  }
+  // 收起图片
+  hideImage(imageDOMMeshObj: DOMMeshObject) {
+    const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
+    gsap.fromTo(
+      uProgress,
+      {
+        value: 1,
+      },
+      {
+        value: 0,
+        duration: this.params.revealDuration,
+        ease: this.params.revealEase,
+      }
+    );
+  }
+  // 点击更改图片状态
+  onClickToggleImages() {
+    this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((obj) => {
+      obj.el.addEventListener("click", () => {
+        const uProgress = (obj.mesh.material as any).uniforms.uProgress;
+        if (uProgress.value < 0.1) {
+          this.revealImage(obj);
+        } else if (uProgress.value > 0.9) {
+          this.hideImage(obj);
+        }
+      });
+    });
   }
 }
 

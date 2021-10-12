@@ -49,6 +49,7 @@ img {
   &-item {
     display: block;
     width: 25rem;
+    cursor: pointer;
   }
 }
 
