@@ -36,27 +36,39 @@ class DOMMeshObject {
   el!: Element;
   rect!: DOMRect;
   mesh!: THREE.Mesh | THREE.Points;
+  meshSizeType!: "size" | "scale";
   constructor(
     el: Element,
     scene: THREE.Scene,
     material: THREE.Material = new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-    isPoints = false
+    isPoints = false,
+    meshSizeType = "size"
   ) {
     this.el = el;
     const rect = el.getBoundingClientRect();
     this.rect = rect;
     const { width, height } = rect;
-    const geometry = new THREE.PlaneBufferGeometry(
-      width,
-      height,
-      width,
-      height
-    );
-    const mesh = isPoints
-      ? new THREE.Points(geometry, material)
-      : new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    this.mesh = mesh;
+    if (meshSizeType === "size") {
+      const geometry = new THREE.PlaneBufferGeometry(
+        width,
+        height,
+        width,
+        height
+      );
+      const mesh = isPoints
+        ? new THREE.Points(geometry, material)
+        : new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+      this.mesh = mesh;
+    } else if (meshSizeType === "scale") {
+      const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+      const mesh = isPoints
+        ? new THREE.Points(geometry, material)
+        : new THREE.Mesh(geometry, material);
+      mesh.scale.set(width, height, 1);
+      scene.add(mesh);
+      this.mesh = mesh;
+    }
   }
   // 同步位置
   setPosition(deltaY = window.scrollY) {
@@ -80,14 +92,22 @@ class ImageDOMMeshObjGroup {
   addObject(
     image: HTMLImageElement,
     scene: THREE.Scene,
-    mat: THREE.ShaderMaterial
+    mat: THREE.ShaderMaterial,
+    isPoints = false,
+    meshSizeType = "size"
   ) {
     const texture = new THREE.Texture(image);
     texture.needsUpdate = true;
     const material = mat.clone();
     material.uniforms.uTexture.value = texture;
     this.materials.push(material);
-    const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
+    const imageDOMMeshObj = new DOMMeshObject(
+      image,
+      scene,
+      material,
+      isPoints,
+      meshSizeType
+    );
     this.imageDOMMeshObjs.push(imageDOMMeshObj);
     return imageDOMMeshObj;
   }

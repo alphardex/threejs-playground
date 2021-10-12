@@ -81,7 +81,7 @@ class UnrollImages extends Base {
           value: 0,
         },
         uAngle: {
-          value: ky.deg2rad(30),
+          value: ky.deg2rad(15),
         },
       },
     });
@@ -93,7 +93,13 @@ class UnrollImages extends Base {
     const { scene, unrollImagesMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(image, scene, unrollImagesMaterial);
+      imageDOMMeshObjGroup.addObject(
+        image,
+        scene,
+        unrollImagesMaterial,
+        false,
+        "scale"
+      );
     });
     imageDOMMeshObjGroup.setObjsPosition();
     this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
@@ -159,7 +165,7 @@ class UnrollImages extends Base {
       },
       {
         value: 1,
-        duration: 2,
+        duration: 3,
         ease: "power2.out",
       }
     );
