@@ -26,6 +26,7 @@ class UnrollImages extends Base {
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
+  params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -37,6 +38,11 @@ class UnrollImages extends Base {
       far: 2000,
     };
     this.scroller = new Scroller();
+    this.params = {
+      revealAngle: 15,
+      revealDuration: 3,
+      revealStagger: 0,
+    };
   }
   // 初始化
   async init() {
@@ -47,7 +53,10 @@ class UnrollImages extends Base {
     this.createEverything();
     this.addListeners();
     this.setLoop();
-    this.revealMultipleImages(this.imageDOMMeshObjGroup.imageDOMMeshObjs, 0.25);
+    this.revealMultipleImages(
+      this.imageDOMMeshObjGroup.imageDOMMeshObjs,
+      this.params.revealStagger
+    );
   }
   // 创建一切
   createEverything() {
@@ -79,7 +88,7 @@ class UnrollImages extends Base {
           value: 0,
         },
         uAngle: {
-          value: ky.deg2rad(15),
+          value: ky.deg2rad(this.params.revealAngle),
         },
       },
     });
@@ -163,7 +172,7 @@ class UnrollImages extends Base {
       },
       {
         value: 1,
-        duration: 3,
+        duration: this.params.revealDuration,
         ease: "power2.out",
       }
     );
@@ -180,7 +189,7 @@ class UnrollImages extends Base {
       },
       {
         value: 1,
-        duration: 3,
+        duration: this.params.revealDuration,
         ease: "power2.out",
         stagger,
       }
