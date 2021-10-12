@@ -7,8 +7,6 @@ uniform float uAngle;
 varying vec2 vUv;
 varying vec3 vPosition;
 
-varying float vFrontShadow;
-
 vec3 unroll(vec3 p,float angle,float progress){
     float rad=.1;
     float rolls=4.;
