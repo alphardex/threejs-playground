@@ -47,9 +47,7 @@ class UnrollImages extends Base {
     this.createEverything();
     this.addListeners();
     this.setLoop();
-    this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((img) => {
-      this.revealImage(img);
-    });
+    this.revealMultipleImages(this.imageDOMMeshObjGroup.imageDOMMeshObjs, 0.25);
   }
   // 创建一切
   createEverything() {
@@ -157,9 +155,9 @@ class UnrollImages extends Base {
   }
   // 展开图片
   revealImage(imageDOMMeshObj: DOMMeshObject) {
-    const uniforms = (imageDOMMeshObj.mesh.material as any).uniforms;
+    const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
     gsap.fromTo(
-      uniforms.uProgress,
+      uProgress,
       {
         value: 0,
       },
@@ -167,6 +165,24 @@ class UnrollImages extends Base {
         value: 1,
         duration: 3,
         ease: "power2.out",
+      }
+    );
+  }
+  // 展开多个图片
+  revealMultipleImages(imageDOMMeshObjs: DOMMeshObject[], stagger = 0) {
+    const alluProgress = imageDOMMeshObjs.map(
+      (obj) => (obj.mesh.material as any).uniforms.uProgress
+    );
+    gsap.fromTo(
+      alluProgress,
+      {
+        value: 0,
+      },
+      {
+        value: 1,
+        duration: 3,
+        ease: "power2.out",
+        stagger,
       }
     );
   }
