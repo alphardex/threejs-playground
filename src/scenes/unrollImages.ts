@@ -40,7 +40,8 @@ class UnrollImages extends Base {
     this.scroller = new Scroller();
     this.params = {
       revealAngle: 15,
-      revealDuration: 3,
+      revealDuration: 40,
+      revealEase: "power2.out",
       revealStagger: 0,
     };
   }
@@ -173,7 +174,7 @@ class UnrollImages extends Base {
       {
         value: 1,
         duration: this.params.revealDuration,
-        ease: "power2.out",
+        ease: this.params.revealEase,
       }
     );
   }
@@ -190,7 +191,7 @@ class UnrollImages extends Base {
       {
         value: 1,
         duration: this.params.revealDuration,
-        ease: "power2.out",
+        ease: this.params.revealEase,
         stagger,
       }
     );
