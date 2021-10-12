@@ -1,5 +1,7 @@
 #pragma glslify:rotate=require(glsl-rotate)
+#pragma glslify:HALF_PI=require(glsl-constants/HALF_PI)
 #pragma glslify:PI=require(glsl-constants/PI)
+#pragma glslify:rotateByOrigin=require(../../modules/rotateByOrigin)
 
 uniform float uProgress;
 uniform float uAngle;
@@ -11,30 +13,29 @@ vec3 unroll(vec3 p,float angle,float progress){
     float rad=.1;
     float rolls=4.;
     vec3 zAxis=vec3(0.,0.,1.);
-    vec3 d=vec3(-.5,.5,0.);
-    vec3 d2=vec3(-.5,.5,rad);
+    vec3 origin=vec3(-.5,.5,0.);// 旋转中心为左上角
+    vec3 origin2=vec3(-.5,.5,rad);
     float sc=sin(angle)+cos(angle);
+    float totalAngle=rolls*PI;
     
-    p-=d;
-    p=rotate(p,zAxis,-angle);
-    p+=d;
+    // rotate forward
+    p=rotateByOrigin(p,zAxis,-angle,origin);
     
     float offset=(p.x+.5)/sc;
-    float finalProgress=clamp((progress-offset*.99)/.01,0.,1.);
+    float finalProgress=clamp((progress-offset)/.01,0.,1.);
     
-    p.z=rad+rad*(1.-offset/2.)*sin(-offset*rolls*PI-.5*PI);
-    p.x=-.5+rad*(1.-offset/2.)*cos(-offset*rolls*PI+.5*PI);
+    p.z=rad+rad*(1.-offset/2.)*sin(-offset*totalAngle-HALF_PI);
+    p.x=-.5+rad*(1.-offset/2.)*cos(-offset*totalAngle+HALF_PI);
     
-    p-=d;
-    p=rotate(p,zAxis,angle);
-    p+=d;
+    // rotate back
+    p=rotateByOrigin(p,zAxis,angle,origin);
     
-    p-=d2;
-    p=rotate(p,vec3(sin(angle),cos(angle),0.),-PI*progress*rolls);
+    // unroll
+    p=rotateByOrigin(p,vec3(sin(angle),cos(angle),0.),-progress*totalAngle,origin2);
     p+=vec3(
-        -.5+progress*cos(angle)*sc,
-        .5-progress*sin(angle)*sc,
-        rad*(1.-progress/2.)
+        progress*cos(angle)*sc,
+        -progress*sin(angle)*sc,
+        -progress*rad/2.
     );
     
     p=mix(p,position,finalProgress);
