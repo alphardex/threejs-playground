@@ -47,8 +47,9 @@ class UnrollImages extends Base {
     this.createEverything();
     this.addListeners();
     this.setLoop();
-    this.revealImage(this.imageDOMMeshObjGroup.imageDOMMeshObjs[0]);
-    this.revealImage(this.imageDOMMeshObjGroup.imageDOMMeshObjs[1]);
+    this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((img) => {
+      this.revealImage(img);
+    });
   }
   // 创建一切
   createEverything() {
