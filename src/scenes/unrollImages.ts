@@ -40,7 +40,7 @@ class UnrollImages extends Base {
     this.scroller = new Scroller();
     this.params = {
       revealAngle: 15,
-      revealDuration: 40,
+      revealDuration: 3,
       revealEase: "power2.out",
       revealStagger: 0,
     };
