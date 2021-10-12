@@ -167,59 +167,41 @@ class UnrollImages extends Base {
   // 展开图片
   revealImage(imageDOMMeshObj: DOMMeshObject) {
     const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
-    gsap.fromTo(
-      uProgress,
-      {
-        value: 0,
-      },
-      {
-        value: 1,
-        duration: this.params.revealDuration,
-        ease: this.params.revealEase,
-      }
-    );
+    gsap.to(uProgress, {
+      value: 1,
+      duration: this.params.revealDuration,
+      ease: this.params.revealEase,
+    });
   }
   // 展开多个图片
   revealMultipleImages(imageDOMMeshObjs: DOMMeshObject[], stagger = 0) {
     const alluProgress = imageDOMMeshObjs.map(
       (obj) => (obj.mesh.material as any).uniforms.uProgress
     );
-    gsap.fromTo(
-      alluProgress,
-      {
-        value: 0,
-      },
-      {
-        value: 1,
-        duration: this.params.revealDuration,
-        ease: this.params.revealEase,
-        stagger,
-      }
-    );
+    gsap.to(alluProgress, {
+      value: 1,
+      duration: this.params.revealDuration,
+      ease: this.params.revealEase,
+      stagger,
+    });
   }
   // 收起图片
   hideImage(imageDOMMeshObj: DOMMeshObject) {
     const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
-    gsap.fromTo(
-      uProgress,
-      {
-        value: 1,
-      },
-      {
-        value: 0,
-        duration: this.params.revealDuration,
-        ease: this.params.revealEase,
-      }
-    );
+    gsap.to(uProgress, {
+      value: 0,
+      duration: this.params.revealDuration,
+      ease: this.params.revealEase,
+    });
   }
   // 点击更改图片状态
   onClickToggleImages() {
     this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((obj) => {
       obj.el.addEventListener("click", () => {
         const uProgress = (obj.mesh.material as any).uniforms.uProgress;
-        if (uProgress.value < 0.1) {
+        if (uProgress.value < 0.5) {
           this.revealImage(obj);
-        } else if (uProgress.value > 0.9) {
+        } else if (uProgress.value > 0.5) {
           this.hideImage(obj);
         }
       });
