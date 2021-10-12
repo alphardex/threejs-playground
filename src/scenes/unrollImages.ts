@@ -81,7 +81,7 @@ class UnrollImages extends Base {
           value: 0,
         },
         uAngle: {
-          value: 0,
+          value: ky.deg2rad(30),
         },
       },
     });
