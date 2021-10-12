@@ -24,9 +24,9 @@ import { defineComponent, onMounted } from "vue";
 export default defineComponent({
   name: "UnrollImages",
   setup() {
-    const start = () => {
+    const start = async () => {
       const unrollImages = new UnrollImages(".unroll-images", false);
-      unrollImages.init();
+      await unrollImages.init();
     };
     onMounted(() => {
       start();
