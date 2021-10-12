@@ -42,7 +42,7 @@ class UnrollImages extends Base {
       revealAngle: 15,
       revealDuration: 3,
       revealEase: "power2.out",
-      revealStagger: 0,
+      revealStagger: 0.25,
     };
   }
   // 初始化
