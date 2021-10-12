@@ -1,8 +1,15 @@
 import * as THREE from "three";
+import ky from "kyouka";
+import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { preloadImages, ImageDOMMeshObjGroup, Scroller } from "@/utils/dom";
+import {
+  preloadImages,
+  ImageDOMMeshObjGroup,
+  Scroller,
+  DOMMeshObject,
+} from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import unrollImagesMainVertexShader from "../shaders/unrollImages/main/vertex.glsl";
@@ -40,6 +47,8 @@ class UnrollImages extends Base {
     this.createEverything();
     this.addListeners();
     this.setLoop();
+    this.revealImage(this.imageDOMMeshObjGroup.imageDOMMeshObjs[0]);
+    this.revealImage(this.imageDOMMeshObjGroup.imageDOMMeshObjs[1]);
   }
   // 创建一切
   createEverything() {
@@ -53,6 +62,7 @@ class UnrollImages extends Base {
       vertexShader: unrollImagesMainVertexShader,
       fragmentShader: unrollImagesMainFragmentShader,
       side: THREE.DoubleSide,
+      transparent: true,
       uniforms: {
         uTime: {
           value: 0,
@@ -65,6 +75,12 @@ class UnrollImages extends Base {
         },
         uTexture: {
           value: null,
+        },
+        uProgress: {
+          value: 0,
+        },
+        uAngle: {
+          value: 0,
         },
       },
     });
@@ -131,6 +147,21 @@ class UnrollImages extends Base {
     const uniforms = this.customPass.uniforms;
     const elapsedTime = this.clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
+  }
+  // 展开图片
+  revealImage(imageDOMMeshObj: DOMMeshObject) {
+    const uniforms = (imageDOMMeshObj.mesh.material as any).uniforms;
+    gsap.fromTo(
+      uniforms.uProgress,
+      {
+        value: 0,
+      },
+      {
+        value: 1,
+        duration: 2,
+        ease: "power2.out",
+      }
+    );
   }
 }
 
