@@ -1,8 +1,14 @@
 import * as THREE from "three";
+import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { preloadImages, ImageDOMMeshObjGroup, Scroller } from "@/utils/dom";
+import {
+  preloadImages,
+  ImageDOMMeshObjGroup,
+  Scroller,
+  DOMMeshObject,
+} from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import imageRippleMainVertexShader from "../shaders/imageRipple/main/vertex.glsl";
@@ -19,6 +25,7 @@ class ImageRipple extends Base {
   imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
+  params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -30,6 +37,11 @@ class ImageRipple extends Base {
       far: 2000,
     };
     this.scroller = new Scroller();
+    this.params = {
+      distortDuration: 3,
+      distortEase: "power2.out",
+      distortStagger: 0.25,
+    };
   }
   // 初始化
   async init() {
@@ -40,6 +52,10 @@ class ImageRipple extends Base {
     this.createEverything();
     this.addListeners();
     this.setLoop();
+    this.distortMultipleImages(
+      this.imageDOMMeshObjGroup.imageDOMMeshObjs,
+      this.params.distortStagger
+    );
   }
   // 创建一切
   createEverything() {
@@ -66,6 +82,21 @@ class ImageRipple extends Base {
         uTexture: {
           value: null,
         },
+        uProgress: {
+          value: 0.5,
+        },
+        uScale: {
+          value: 0.5,
+        },
+        uDistortion: {
+          value: 0.5,
+        },
+        uStrength: {
+          value: 0.5,
+        },
+        uCompleted: {
+          value: 1,
+        },
       },
     });
     this.imageRippleMaterial = imageRippleMaterial;
@@ -76,7 +107,13 @@ class ImageRipple extends Base {
     const { scene, imageRippleMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(image, scene, imageRippleMaterial);
+      imageDOMMeshObjGroup.addObject(
+        image,
+        scene,
+        imageRippleMaterial,
+        false,
+        "scale"
+      );
     });
     imageDOMMeshObjGroup.setObjsPosition();
     this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
@@ -131,6 +168,27 @@ class ImageRipple extends Base {
     const uniforms = this.customPass.uniforms;
     const elapsedTime = this.clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
+  }
+  // 扭曲图片
+  distortImage(imageDOMMeshObj: DOMMeshObject) {
+    const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
+    gsap.to(uProgress, {
+      value: 1,
+      duration: this.params.distortDuration,
+      ease: this.params.distortEase,
+    });
+  }
+  // 扭曲多个图片
+  distortMultipleImages(imageDOMMeshObjs: DOMMeshObject[], stagger = 0) {
+    const alluProgress = imageDOMMeshObjs.map(
+      (obj) => (obj.mesh.material as any).uniforms.uProgress
+    );
+    gsap.to(alluProgress, {
+      value: 1,
+      duration: this.params.distortDuration,
+      ease: this.params.distortEase,
+      stagger,
+    });
   }
 }
 
