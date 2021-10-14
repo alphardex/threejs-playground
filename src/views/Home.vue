@@ -231,7 +231,7 @@
       </li>
       <li>
         <router-link :to="{ name: 'ImageRipple' }">
-          ImageRipple
+          ImageRipple(BUG)
         </router-link>
       </li>
     </ul>

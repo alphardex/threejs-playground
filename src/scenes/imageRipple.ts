@@ -38,7 +38,7 @@ class ImageRipple extends Base {
     };
     this.scroller = new Scroller();
     this.params = {
-      distortDuration: 3,
+      distortDuration: 15,
       distortEase: "power2.out",
       distortStagger: 0.25,
     };
