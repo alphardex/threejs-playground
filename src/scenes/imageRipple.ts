@@ -83,19 +83,7 @@ class ImageRipple extends Base {
           value: null,
         },
         uProgress: {
-          value: 0.5,
-        },
-        uScale: {
-          value: 0.5,
-        },
-        uDistortion: {
-          value: 0.5,
-        },
-        uStrength: {
-          value: 0.5,
-        },
-        uCompleted: {
-          value: 1,
+          value: 0,
         },
       },
     });
@@ -107,13 +95,7 @@ class ImageRipple extends Base {
     const { scene, imageRippleMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(
-        image,
-        scene,
-        imageRippleMaterial,
-        false,
-        "scale"
-      );
+      imageDOMMeshObjGroup.addObject(image, scene, imageRippleMaterial);
     });
     imageDOMMeshObjGroup.setObjsPosition();
     this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
