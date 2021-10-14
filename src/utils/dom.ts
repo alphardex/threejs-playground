@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import imagesLoaded from "imagesloaded";
-import { MeshSizeType, MeshType, Scroll } from "@/types";
+import { HTMLIVCElement, MeshSizeType, MeshType, Scroll } from "@/types";
 
 // 获取归一化的鼠标位置
 const getNormalizedMousePos = (e: MouseEvent | Touch) => {
@@ -32,11 +32,11 @@ const getPointsInPath = (path: SVGPathElement, pointNum = 4) => {
 
 // 用于同步HTML元素与WebGL的平面元素
 class Maku {
-  el!: HTMLImageElement; // 图片元素
-  rect!: DOMRect; // 图片元素矩阵
+  el!: HTMLIVCElement; // 元素
+  rect!: DOMRect; // 元素矩阵
   mesh!: THREE.Mesh | THREE.Points; // 网格
   constructor(
-    el: HTMLImageElement,
+    el: HTMLIVCElement,
     material: THREE.ShaderMaterial,
     scene: THREE.Scene,
     meshType: MeshType = "mesh",
