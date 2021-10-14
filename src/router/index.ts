@@ -53,6 +53,7 @@ import TimeTravel from "../views/TimeTravel.vue";
 import PixelRiver from "../views/PixelRiver.vue";
 import ImagePlane from "../views/ImagePlane.vue";
 import UnrollImages from "../views/UnrollImages.vue";
+import ImageRipple from "../views/ImageRipple.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -319,6 +320,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/unroll-images",
     name: "UnrollImages",
     component: UnrollImages,
+  },
+  {
+    path: "/image-ripple",
+    name: "ImageRipple",
+    component: ImageRipple,
   },
   {
     path: "/:pathMatch(.*)*",

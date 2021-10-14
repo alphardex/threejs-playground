@@ -229,6 +229,11 @@
           UnrollImages
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ImageRipple' }">
+          ImageRipple
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
