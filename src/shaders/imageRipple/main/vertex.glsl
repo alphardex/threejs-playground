@@ -1,5 +1,3 @@
-#pragma glslify:PI=require(glsl-constants/PI)
-
 varying vec2 vUv;
 varying vec3 vPosition;
 
