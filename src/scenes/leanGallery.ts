@@ -2,7 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import NormalizeWheel from "normalize-wheel";
 import * as dat from "dat.gui";
-import { DOMMeshObject, preloadImages } from "@/utils/dom";
+import { getScreenFov, Maku, MakuGroup, preloadImages } from "@/utils/dom";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
@@ -20,9 +20,8 @@ import leanGalleryPostprocessingFragmentShader from "../shaders/leanGallery/post
 class LeanGallery extends Base {
   clock!: THREE.Clock;
   images!: HTMLImageElement[];
-  imageDOMMeshObjs!: DOMMeshObject[];
+  makuGroup: MakuGroup;
   leanGalleryMaterial!: THREE.ShaderMaterial;
-  materials!: THREE.ShaderMaterial[];
   customPass!: ShaderPass;
   scroll!: any;
   params!: any;
@@ -30,15 +29,14 @@ class LeanGallery extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 600);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 100,
       far: 2000,
     };
     this.images = [...document.querySelectorAll("img")];
-    this.imageDOMMeshObjs = [];
-    this.materials = [];
+    this.makuGroup = new MakuGroup();
     this.scroll = {
       current: 0,
       target: 0,
@@ -71,7 +69,7 @@ class LeanGallery extends Base {
   // 创建一切
   createEverything() {
     this.createLeanGalleryMaterial();
-    this.createImageDOMMeshObjs();
+    this.createMakus();
     this.setImagesPosition();
     this.createPostprocessingEffect();
   }
@@ -99,25 +97,20 @@ class LeanGallery extends Base {
     this.leanGalleryMaterial = leanGalleryMaterial;
   }
   // 创建图片DOM物体
-  createImageDOMMeshObjs() {
-    const { images, scene, leanGalleryMaterial } = this;
-    const imageDOMMeshObjs = images.map((image) => {
-      const texture = new THREE.Texture(image);
-      texture.needsUpdate = true;
-      const material = leanGalleryMaterial.clone();
-      material.uniforms.uTexture.value = texture;
-      this.materials.push(material);
-      const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
-      return imageDOMMeshObj;
+  createMakus() {
+    const makuGroup = new MakuGroup();
+    const { scene, leanGalleryMaterial } = this;
+    const images = [...document.querySelectorAll("img")];
+    images.map((image) => {
+      const maku = new Maku(image, leanGalleryMaterial, scene);
+      makuGroup.add(maku);
     });
-    this.imageDOMMeshObjs = imageDOMMeshObjs;
+    makuGroup.setPositions();
+    this.makuGroup = makuGroup;
   }
   // 设置图片位置
   setImagesPosition(deltaY = window.scrollY) {
-    const { imageDOMMeshObjs } = this;
-    imageDOMMeshObjs.forEach((obj) => {
-      obj.setPosition(deltaY);
-    });
+    this.makuGroup.setPositions(deltaY);
   }
   // 监听事件
   addListeners() {

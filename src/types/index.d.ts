@@ -43,3 +43,7 @@ export interface Scroll {
   delta: number;
   direction: "up" | "down" | "";
 }
+
+export type MeshType = "mesh" | "points";
+
+export type MeshSizeType = "size" | "scale";

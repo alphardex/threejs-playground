@@ -2,7 +2,13 @@ import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { preloadImages, ImageDOMMeshObjGroup, Scroller } from "@/utils/dom";
+import {
+  preloadImages,
+  MakuGroup,
+  Scroller,
+  Maku,
+  getScreenFov,
+} from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import imagePlaneMainVertexShader from "../shaders/imagePlane/main/vertex.glsl";
@@ -16,14 +22,14 @@ import imagePlanePostprocessingFragmentShader from "../shaders/imagePlane/postpr
 class ImagePlane extends Base {
   clock!: THREE.Clock;
   imagePlaneMaterial!: THREE.ShaderMaterial;
-  imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
+  makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 600);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 100,
@@ -44,7 +50,7 @@ class ImagePlane extends Base {
   // 创建一切
   createEverything() {
     this.createImagePlaneMaterial();
-    this.createImageDOMMeshObjGroup();
+    this.createMakuGroup();
     this.createPostprocessingEffect();
   }
   // 创建材质
@@ -71,15 +77,16 @@ class ImagePlane extends Base {
     this.imagePlaneMaterial = imagePlaneMaterial;
   }
   // 创建图片DOM物体组
-  createImageDOMMeshObjGroup() {
-    const imageDOMMeshObjGroup = new ImageDOMMeshObjGroup();
+  createMakuGroup() {
+    const makuGroup = new MakuGroup();
     const { scene, imagePlaneMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(image, scene, imagePlaneMaterial);
+      const maku = new Maku(image, imagePlaneMaterial, scene);
+      makuGroup.add(maku);
     });
-    imageDOMMeshObjGroup.setObjsPosition();
-    this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
+    makuGroup.setPositions();
+    this.makuGroup = makuGroup;
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -124,7 +131,7 @@ class ImagePlane extends Base {
   syncScroll() {
     this.scroller.syncScroll();
     const currentScrollY = this.scroller.scroll.current;
-    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
+    this.makuGroup.setPositions(currentScrollY);
   }
   // 更新Pass的时间
   updatePassTime() {

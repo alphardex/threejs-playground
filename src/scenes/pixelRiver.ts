@@ -5,7 +5,13 @@ import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { preloadImages, ImageDOMMeshObjGroup, Scroller } from "@/utils/dom";
+import {
+  preloadImages,
+  MakuGroup,
+  Scroller,
+  Maku,
+  getScreenFov,
+} from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";
@@ -19,7 +25,7 @@ import pixelRiverPostprocessingFragmentShader from "../shaders/pixelRiver/postpr
 class PixelRiver extends Base {
   clock!: THREE.Clock;
   pixelRiverMaterial!: THREE.ShaderMaterial;
-  imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
+  makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
   params!: any;
@@ -27,7 +33,7 @@ class PixelRiver extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 600);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 100,
@@ -55,7 +61,7 @@ class PixelRiver extends Base {
   // 创建一切
   createEverything() {
     this.createPixelRiverMaterial();
-    this.createImageDOMMeshObjGroup();
+    this.createMakuGroup();
     this.createPostprocessingEffect();
   }
   // 创建材质
@@ -82,15 +88,16 @@ class PixelRiver extends Base {
     this.pixelRiverMaterial = pixelRiverMaterial;
   }
   // 创建图片DOM物体组
-  createImageDOMMeshObjGroup() {
-    const imageDOMMeshObjGroup = new ImageDOMMeshObjGroup();
+  createMakuGroup() {
+    const makuGroup = new MakuGroup();
     const { scene, pixelRiverMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(image, scene, pixelRiverMaterial);
+      const maku = new Maku(image, pixelRiverMaterial, scene);
+      makuGroup.add(maku);
     });
-    imageDOMMeshObjGroup.setObjsPosition();
-    this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
+    makuGroup.setPositions();
+    this.makuGroup = makuGroup;
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -150,7 +157,7 @@ class PixelRiver extends Base {
   syncScroll() {
     this.scroller.syncScroll();
     const currentScrollY = this.scroller.scroll.current;
-    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
+    this.makuGroup.setPositions(currentScrollY);
   }
   // 更新Pass的时间
   updatePassTime() {
@@ -169,7 +176,7 @@ class PixelRiver extends Base {
   }
   // 更新图片状态
   updateMeshState() {
-    this.imageDOMMeshObjGroup.imageDOMMeshObjs.forEach((obj) => {
+    this.makuGroup.makus.forEach((obj) => {
       const progress = this.params.progress;
       gsap.to(obj.mesh.rotation, {
         z: ky.deg2rad(90) * progress,

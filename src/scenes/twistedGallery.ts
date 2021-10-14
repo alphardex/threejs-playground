@@ -9,7 +9,7 @@ import twistedGalleryMainFragmentShader from "../shaders/twistedGallery/main/fra
 import twistedGalleryPostprocessingVertexShader from "../shaders/twistedGallery/postprocessing/vertex.glsl";
 // @ts-ignore
 import twistedGalleryPostprocessingFragmentShader from "../shaders/twistedGallery/postprocessing/fragment.glsl";
-import { DOMMeshObject, preloadImages } from "@/utils/dom";
+import { getScreenFov, Maku, MakuGroup, preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
 import gsap from "gsap";
@@ -19,10 +19,8 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
 class TwistedGallery extends Base {
   clock!: THREE.Clock;
-  images!: HTMLImageElement[];
-  imageDOMMeshObjs!: DOMMeshObject[];
+  makuGroup!: MakuGroup;
   distortImageMaterial!: THREE.ShaderMaterial;
-  materials!: THREE.ShaderMaterial[];
   scroll!: any;
   customPass!: ShaderPass;
   scrollSpeed!: number;
@@ -30,15 +28,12 @@ class TwistedGallery extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 600);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 100,
       far: 2000,
     };
-    this.images = [...document.querySelectorAll("img")];
-    this.imageDOMMeshObjs = [];
-    this.materials = [];
     this.scrollSpeed = 0;
   }
   // 初始化
@@ -58,7 +53,7 @@ class TwistedGallery extends Base {
   // 创建一切
   createEverything() {
     this.createDistortImageMaterial();
-    this.createImageDOMMeshObjs();
+    this.createMakus();
     this.setImagesPosition();
     this.createMainEffect();
     this.createPostprocessingEffect();
@@ -90,30 +85,20 @@ class TwistedGallery extends Base {
     this.distortImageMaterial = distortImageMaterial;
   }
   // 创建图片DOM物体
-  createImageDOMMeshObjs() {
-    this.materials = [];
-    this.imageDOMMeshObjs.forEach((obj) => {
-      const { mesh } = obj;
-      this.scene.remove(mesh);
+  createMakus() {
+    const makuGroup = new MakuGroup();
+    const { scene, distortImageMaterial } = this;
+    const images = [...document.querySelectorAll("img")];
+    images.map((image) => {
+      const maku = new Maku(image, distortImageMaterial, scene);
+      makuGroup.add(maku);
     });
-    const { images, scene, distortImageMaterial } = this;
-    const imageDOMMeshObjs = images.map((image) => {
-      const texture = new THREE.Texture(image);
-      texture.needsUpdate = true;
-      const material = distortImageMaterial.clone();
-      material.uniforms.uTexture.value = texture;
-      this.materials.push(material);
-      const imageDOMMeshObj = new DOMMeshObject(image, scene, material);
-      return imageDOMMeshObj;
-    });
-    this.imageDOMMeshObjs = imageDOMMeshObjs;
+    makuGroup.setPositions();
+    this.makuGroup = makuGroup;
   }
   // 设置图片位置
   setImagesPosition() {
-    const { imageDOMMeshObjs } = this;
-    imageDOMMeshObjs.forEach((obj) => {
-      obj.setPosition();
-    });
+    this.makuGroup.setPositions();
   }
   // 监听滚动
   listenScroll() {
@@ -127,8 +112,7 @@ class TwistedGallery extends Base {
   }
   // 创建主要特效
   createMainEffect() {
-    const { imageDOMMeshObjs } = this;
-    imageDOMMeshObjs.forEach((obj) => {
+    this.makuGroup.makus.forEach((obj) => {
       const { el, mesh } = obj;
       const material = mesh.material as any;
       el.addEventListener("mouseenter", () => {
@@ -190,8 +174,9 @@ class TwistedGallery extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    if (!ky.isEmpty(this.materials)) {
-      this.materials.forEach((material) => {
+    if (!ky.isEmpty(this.makuGroup.makus)) {
+      this.makuGroup.makus.forEach((maku) => {
+        const material = maku.mesh.material as THREE.ShaderMaterial;
         material.uniforms.uTime.value = elapsedTime;
       });
     }

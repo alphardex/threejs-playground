@@ -9,7 +9,7 @@ import particleExplodeFragmentShader from "../shaders/particleExplode/fragment.g
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { DOMMeshObject, preloadImages } from "@/utils/dom";
+import { getScreenFov, Maku, preloadImages } from "@/utils/dom";
 import gsap from "gsap";
 
 class ParticleExplode extends Base {
@@ -17,14 +17,14 @@ class ParticleExplode extends Base {
   particleExplodeMaterial!: THREE.ShaderMaterial;
   params!: any;
   bloomPass!: UnrealBloomPass;
-  imageDOMMeshObj!: DOMMeshObject;
+  maku!: Maku;
   image!: Element;
   isOpen!: boolean;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 1500);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 0.1,
@@ -84,19 +84,16 @@ class ParticleExplode extends Base {
   // 创建点
   createPoints() {
     const image = document.querySelector("img")!;
-    this.image = image;
-    const texture = new THREE.Texture(image);
-    texture.needsUpdate = true;
-    const material = this.particleExplodeMaterial.clone();
-    material.uniforms.uTexture.value = texture;
-    const imageDOMMeshObj = new DOMMeshObject(
+    const maku = new Maku(
       image,
+      this.particleExplodeMaterial,
       this.scene,
-      material,
-      true
+      "points",
+      "size",
+      { width: 128, height: 128 }
     );
-    imageDOMMeshObj.setPosition();
-    this.imageDOMMeshObj = imageDOMMeshObj;
+    maku.setPosition();
+    this.maku = maku;
   }
   // 创建后期特效
   createPostprocessingEffect() {
@@ -117,9 +114,8 @@ class ParticleExplode extends Base {
   }
   // 创建点击效果
   createClickEffect() {
-    const material = this.imageDOMMeshObj.mesh.material as any;
-    const image = this.image;
-    image.addEventListener("click", () => {
+    const material = this.maku.mesh.material as any;
+    this.maku.el.addEventListener("click", () => {
       if (!this.isOpen) {
         gsap.to(material.uniforms.uProgress, {
           value: 3,
@@ -139,8 +135,8 @@ class ParticleExplode extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mousePos;
-    if (this.imageDOMMeshObj) {
-      const material = this.imageDOMMeshObj.mesh.material as any;
+    if (this.maku) {
+      const material = this.maku.mesh.material as any;
       material.uniforms.uTime.value = elapsedTime;
       material.uniforms.uMouse.value = mousePos;
     }
@@ -149,7 +145,7 @@ class ParticleExplode extends Base {
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI();
-    const material = this.imageDOMMeshObj.mesh.material as any;
+    const material = this.maku.mesh.material as any;
     const uniforms = material.uniforms;
     const params = this.params;
     gui

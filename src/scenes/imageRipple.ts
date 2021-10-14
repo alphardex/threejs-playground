@@ -5,9 +5,10 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import {
   preloadImages,
-  ImageDOMMeshObjGroup,
+  MakuGroup,
   Scroller,
-  DOMMeshObject,
+  Maku,
+  getScreenFov,
 } from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
@@ -22,7 +23,7 @@ import imageRipplePostprocessingFragmentShader from "../shaders/imageRipple/post
 class ImageRipple extends Base {
   clock!: THREE.Clock;
   imageRippleMaterial!: THREE.ShaderMaterial;
-  imageDOMMeshObjGroup: ImageDOMMeshObjGroup;
+  makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
   params!: any;
@@ -30,7 +31,7 @@ class ImageRipple extends Base {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 0, 600);
-    const fov = this.getScreenFov();
+    const fov = getScreenFov(this.cameraPosition.z);
     this.perspectiveCameraParams = {
       fov,
       near: 100,
@@ -53,14 +54,14 @@ class ImageRipple extends Base {
     this.addListeners();
     this.setLoop();
     this.distortMultipleImages(
-      this.imageDOMMeshObjGroup.imageDOMMeshObjs,
+      this.makuGroup.makus,
       this.params.distortStagger
     );
   }
   // 创建一切
   createEverything() {
     this.createImagePlaneMaterial();
-    this.createImageDOMMeshObjGroup();
+    this.createMakuGroup();
     this.createPostprocessingEffect();
   }
   // 创建材质
@@ -90,15 +91,16 @@ class ImageRipple extends Base {
     this.imageRippleMaterial = imageRippleMaterial;
   }
   // 创建图片DOM物体组
-  createImageDOMMeshObjGroup() {
-    const imageDOMMeshObjGroup = new ImageDOMMeshObjGroup();
+  createMakuGroup() {
+    const makuGroup = new MakuGroup();
     const { scene, imageRippleMaterial } = this;
     const images = [...document.querySelectorAll("img")];
     images.map((image) => {
-      imageDOMMeshObjGroup.addObject(image, scene, imageRippleMaterial);
+      const maku = new Maku(image, imageRippleMaterial, scene);
+      makuGroup.add(maku);
     });
-    imageDOMMeshObjGroup.setObjsPosition();
-    this.imageDOMMeshObjGroup = imageDOMMeshObjGroup;
+    makuGroup.setPositions();
+    this.makuGroup = makuGroup;
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -143,7 +145,7 @@ class ImageRipple extends Base {
   syncScroll() {
     this.scroller.syncScroll();
     const currentScrollY = this.scroller.scroll.current;
-    this.imageDOMMeshObjGroup.setObjsPosition(currentScrollY);
+    this.makuGroup.setPositions(currentScrollY);
   }
   // 更新Pass的时间
   updatePassTime() {
@@ -152,7 +154,7 @@ class ImageRipple extends Base {
     uniforms.uTime.value = elapsedTime;
   }
   // 扭曲图片
-  distortImage(imageDOMMeshObj: DOMMeshObject) {
+  distortImage(imageDOMMeshObj: Maku) {
     const uProgress = (imageDOMMeshObj.mesh.material as any).uniforms.uProgress;
     gsap.to(uProgress, {
       value: 1,
@@ -161,8 +163,8 @@ class ImageRipple extends Base {
     });
   }
   // 扭曲多个图片
-  distortMultipleImages(imageDOMMeshObjs: DOMMeshObject[], stagger = 0) {
-    const alluProgress = imageDOMMeshObjs.map(
+  distortMultipleImages(makus: Maku[], stagger = 0) {
+    const alluProgress = makus.map(
       (obj) => (obj.mesh.material as any).uniforms.uProgress
     );
     gsap.to(alluProgress, {

@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import imagesLoaded from "imagesloaded";
-import { lerp } from "./math";
-import { Scroll } from "@/types";
+import { MeshSizeType, MeshType, Scroll } from "@/types";
 
 // 获取归一化的鼠标位置
 const getNormalizedMousePos = (e: MouseEvent | Touch) => {
@@ -32,43 +31,58 @@ const getPointsInPath = (path: SVGPathElement, pointNum = 4) => {
 };
 
 // 用于同步HTML元素与WebGL的平面元素
-class DOMMeshObject {
-  el!: Element;
-  rect!: DOMRect;
-  mesh!: THREE.Mesh | THREE.Points;
-  meshSizeType!: "size" | "scale";
+class Maku {
+  el!: HTMLImageElement; // 图片元素
+  rect!: DOMRect; // 图片元素矩阵
+  mesh!: THREE.Mesh | THREE.Points; // 网格
   constructor(
-    el: Element,
+    el: HTMLImageElement,
+    material: THREE.ShaderMaterial,
     scene: THREE.Scene,
-    material: THREE.Material = new THREE.MeshBasicMaterial({ color: 0xff0000 }),
-    isPoints = false,
-    meshSizeType = "size"
+    meshType: MeshType = "mesh",
+    meshSizeType: MeshSizeType = "size",
+    segments = {
+      width: 64,
+      height: 64,
+    }
   ) {
     this.el = el;
+
+    const texture = new THREE.Texture(el);
+    texture.needsUpdate = true;
+    const materialCopy = material.clone();
+    materialCopy.uniforms.uTexture.value = texture;
+
     const rect = el.getBoundingClientRect();
-    this.rect = rect;
     const { width, height } = rect;
-    if (meshSizeType === "size") {
-      const geometry = new THREE.PlaneBufferGeometry(
+    this.rect = rect;
+
+    const geometryMap = {
+      size: new THREE.PlaneBufferGeometry(
         width,
         height,
-        width,
-        height
-      );
-      const mesh = isPoints
-        ? new THREE.Points(geometry, material)
-        : new THREE.Mesh(geometry, material);
-      scene.add(mesh);
-      this.mesh = mesh;
-    } else if (meshSizeType === "scale") {
-      const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
-      const mesh = isPoints
-        ? new THREE.Points(geometry, material)
-        : new THREE.Mesh(geometry, material);
+        segments.width,
+        segments.height
+      ),
+      scale: new THREE.PlaneBufferGeometry(
+        1,
+        1,
+        segments.width,
+        segments.height
+      ),
+    };
+    const geometry = geometryMap[meshSizeType];
+
+    const meshMap = {
+      points: new THREE.Points(geometry, materialCopy),
+      mesh: new THREE.Mesh(geometry, materialCopy),
+    };
+    const mesh = meshMap[meshType];
+    if (meshSizeType === "scale") {
       mesh.scale.set(width, height, 1);
-      scene.add(mesh);
-      this.mesh = mesh;
     }
+    scene.add(mesh);
+    this.mesh = mesh;
   }
   // 同步位置
   setPosition(deltaY = window.scrollY) {
@@ -81,40 +95,20 @@ class DOMMeshObject {
 }
 
 // 同步元素的集合
-class ImageDOMMeshObjGroup {
-  imageDOMMeshObjs: DOMMeshObject[];
-  materials: THREE.ShaderMaterial[];
+class MakuGroup {
+  makus: Maku[];
   constructor() {
-    this.imageDOMMeshObjs = [];
-    this.materials = [];
+    this.makus = [];
   }
   // 添加元素
-  addObject(
-    image: HTMLImageElement,
-    scene: THREE.Scene,
-    mat: THREE.ShaderMaterial,
-    isPoints = false,
-    meshSizeType = "size"
-  ) {
-    const texture = new THREE.Texture(image);
-    texture.needsUpdate = true;
-    const material = mat.clone();
-    material.uniforms.uTexture.value = texture;
-    this.materials.push(material);
-    const imageDOMMeshObj = new DOMMeshObject(
-      image,
-      scene,
-      material,
-      isPoints,
-      meshSizeType
-    );
-    this.imageDOMMeshObjs.push(imageDOMMeshObj);
-    return imageDOMMeshObj;
+  add(maku: Maku) {
+    this.makus.push(maku);
+    return maku;
   }
   // 批量同步元素位置
-  setObjsPosition(deltaY = window.scrollY) {
-    const { imageDOMMeshObjs } = this;
-    imageDOMMeshObjs.forEach((obj) => {
+  setPositions(deltaY = window.scrollY) {
+    const { makus } = this;
+    makus.forEach((obj) => {
       obj.setPosition(deltaY);
     });
   }
@@ -144,7 +138,7 @@ class Scroller {
   }
   // 同步滚动的数据
   syncScroll() {
-    this.scroll.current = lerp(
+    this.scroll.current = THREE.MathUtils.lerp(
       this.scroll.current,
       this.scroll.target,
       this.scroll.ease
@@ -155,11 +149,17 @@ class Scroller {
   }
 }
 
+// 获取跟屏幕同像素的fov角度
+const getScreenFov = (z: number) => {
+  return THREE.MathUtils.radToDeg(2 * Math.atan(window.innerHeight / 2 / z));
+};
+
 export {
   getNormalizedMousePos,
   preloadImages,
   getPointsInPath,
-  DOMMeshObject,
-  ImageDOMMeshObjGroup,
+  Maku,
+  MakuGroup,
   Scroller,
+  getScreenFov,
 };
