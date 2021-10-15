@@ -54,6 +54,7 @@ import PixelRiver from "../views/PixelRiver.vue";
 import ImagePlane from "../views/ImagePlane.vue";
 import UnrollImages from "../views/UnrollImages.vue";
 import ImageRipple from "../views/ImageRipple.vue";
+import FloatPaper from "../views/FloatPaper.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -325,6 +326,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/image-ripple",
     name: "ImageRipple",
     component: ImageRipple,
+  },
+  {
+    path: "/float-paper",
+    name: "FloatPaper",
+    component: FloatPaper,
   },
   {
     path: "/:pathMatch(.*)*",
