@@ -5,7 +5,7 @@ varying vec2 vUv;
 varying vec3 vPosition;
 
 vec3 distort(vec3 p){
-    float freq=.2;
+    float freq=.25;
     float angle=(uTime*10.+uv.x*20.-uv.y*10.)*freq;
     float amp=uFloat*10.;
     float strength=sin(angle)*amp;
