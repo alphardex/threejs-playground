@@ -22,6 +22,7 @@ import imagePlanePostprocessingFragmentShader from "../shaders/imagePlane/postpr
 class ImagePlane extends Base {
   clock!: THREE.Clock;
   imagePlaneMaterial!: THREE.ShaderMaterial;
+  images!: HTMLImageElement[];
   makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
@@ -35,6 +36,8 @@ class ImagePlane extends Base {
       near: 100,
       far: 2000,
     };
+    this.images = [...document.querySelectorAll("img")];
+    this.makuGroup = new MakuGroup();
     this.scroller = new Scroller();
   }
   // 初始化
@@ -78,15 +81,12 @@ class ImagePlane extends Base {
   }
   // 创建图片DOM物体组
   createMakuGroup() {
-    const makuGroup = new MakuGroup();
-    const { scene, imagePlaneMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(image, imagePlaneMaterial, scene);
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
+    this.makuGroup.clear();
+    const { images, scene, imagePlaneMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, imagePlaneMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 创建后期处理特效
   createPostprocessingEffect() {

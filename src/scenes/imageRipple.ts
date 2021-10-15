@@ -23,6 +23,7 @@ import imageRipplePostprocessingFragmentShader from "../shaders/imageRipple/post
 class ImageRipple extends Base {
   clock!: THREE.Clock;
   imageRippleMaterial!: THREE.ShaderMaterial;
+  images!: HTMLImageElement[];
   makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
@@ -37,6 +38,8 @@ class ImageRipple extends Base {
       near: 100,
       far: 2000,
     };
+    this.images = [...document.querySelectorAll("img")];
+    this.makuGroup = new MakuGroup();
     this.scroller = new Scroller();
     this.params = {
       distortDuration: 15,
@@ -92,15 +95,12 @@ class ImageRipple extends Base {
   }
   // 创建图片DOM物体组
   createMakuGroup() {
-    const makuGroup = new MakuGroup();
-    const { scene, imageRippleMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(image, imageRippleMaterial, scene);
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
+    this.makuGroup.clear();
+    const { images, scene, imageRippleMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, imageRippleMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 创建后期处理特效
   createPostprocessingEffect() {

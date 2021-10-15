@@ -24,6 +24,7 @@ import unrollImagesPostprocessingFragmentShader from "../shaders/unrollImages/po
 class UnrollImages extends Base {
   clock!: THREE.Clock;
   unrollImagesMaterial!: THREE.ShaderMaterial;
+  images!: HTMLImageElement[];
   makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
@@ -38,6 +39,8 @@ class UnrollImages extends Base {
       near: 100,
       far: 2000,
     };
+    this.images = [...document.querySelectorAll("img")];
+    this.makuGroup = new MakuGroup();
     this.scroller = new Scroller();
     this.params = {
       revealAngle: 15,
@@ -96,21 +99,12 @@ class UnrollImages extends Base {
   }
   // 创建图片DOM物体组
   createMakuGroup() {
-    const makuGroup = new MakuGroup();
-    const { scene, unrollImagesMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(
-        image,
-        unrollImagesMaterial,
-        scene,
-        "mesh",
-        "scale"
-      );
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
+    this.makuGroup.clear();
+    const { images, scene, unrollImagesMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, unrollImagesMaterial, scene, "mesh", "scale")
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 创建后期处理特效
   createPostprocessingEffect() {

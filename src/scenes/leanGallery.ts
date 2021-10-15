@@ -1,12 +1,15 @@
 import * as THREE from "three";
 import ky from "kyouka";
-import NormalizeWheel from "normalize-wheel";
-import * as dat from "dat.gui";
-import { getScreenFov, Maku, MakuGroup, preloadImages } from "@/utils/dom";
+import {
+  getScreenFov,
+  Maku,
+  MakuGroup,
+  preloadImages,
+  Scroller,
+} from "@/utils/dom";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import { lerp } from "@/utils/math";
 import { Base } from "./base";
 // @ts-ignore
 import leanGalleryMainVertexShader from "../shaders/leanGallery/main/vertex.glsl";
@@ -23,7 +26,7 @@ class LeanGallery extends Base {
   makuGroup: MakuGroup;
   leanGalleryMaterial!: THREE.ShaderMaterial;
   customPass!: ShaderPass;
-  scroll!: any;
+  scroller: Scroller;
   params!: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -37,14 +40,7 @@ class LeanGallery extends Base {
     };
     this.images = [...document.querySelectorAll("img")];
     this.makuGroup = new MakuGroup();
-    this.scroll = {
-      current: 0,
-      target: 0,
-      ease: 0.05,
-      last: 0,
-      delta: 0,
-      direction: "",
-    };
+    this.scroller = new Scroller();
     this.params = {
       leanAngle: -12,
       scrollSpeedStrength: 0.5,
@@ -70,7 +66,6 @@ class LeanGallery extends Base {
   createEverything() {
     this.createLeanGalleryMaterial();
     this.createMakus();
-    this.setImagesPosition();
     this.createPostprocessingEffect();
   }
   // 创建材质
@@ -98,45 +93,21 @@ class LeanGallery extends Base {
   }
   // 创建图片DOM物体
   createMakus() {
-    const makuGroup = new MakuGroup();
-    const { scene, leanGalleryMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(image, leanGalleryMaterial, scene);
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
-  }
-  // 设置图片位置
-  setImagesPosition(deltaY = window.scrollY) {
-    this.makuGroup.setPositions(deltaY);
+    this.makuGroup.clear();
+    const { images, scene, leanGalleryMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, leanGalleryMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 监听事件
   addListeners() {
     this.onResize();
     this.onScroll();
   }
-  // 监听鼠标滚轮
-  onScroll() {
-    window.addEventListener("mousewheel", (e) => {
-      const normalized = NormalizeWheel(e);
-      const speed = normalized.pixelY;
-      const scrollY = speed * this.params.scrollSpeedStrength;
-      this.scroll.target += scrollY;
-    });
-  }
   // 监听滚动
-  listenForScroll() {
-    this.scroll.current = lerp(
-      this.scroll.current,
-      this.scroll.target,
-      this.scroll.ease
-    );
-    this.scroll.delta = this.scroll.current - this.scroll.last;
-    this.scroll.direction = this.scroll.delta > 0 ? "down" : "up";
-    this.scroll.last = this.scroll.current;
-    this.setImagesPosition(this.scroll.current);
+  onScroll() {
+    this.scroller.listenForScroll();
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
@@ -162,9 +133,20 @@ class LeanGallery extends Base {
   }
   // 动画
   update() {
-    this.listenForScroll();
+    this.syncScroll();
+    this.updatePass();
+  }
+  // 同步滚动
+  syncScroll() {
+    this.scroller.syncScroll();
+    const currentScrollY = this.scroller.scroll.current;
+    this.makuGroup.setPositions(currentScrollY);
+  }
+  // 更新pass
+  updatePass() {
     if (this.customPass) {
-      const RGBShiftStrength = this.scroll.delta * this.params.RGBShiftSpeed;
+      const RGBShiftStrength =
+        this.scroller.scroll.delta * this.params.RGBShiftSpeed;
       this.customPass.uniforms.uRGBShiftStrength.value = RGBShiftStrength;
     }
   }

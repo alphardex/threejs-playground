@@ -1,5 +1,8 @@
 <template>
-  <main class="lean-gallery-dom w-screen h-screen overflow-hidden">
+  <div
+    class="lean-gallery fixed z-0 inset-0 w-screen h-screen pointer-events-none"
+  ></div>
+  <main class="lean-gallery-dom w-screen h-screen">
     <div>
       <div class="flex-center flex-wrap" v-for="n in 6" :key="n">
         <div class="m-4">
@@ -15,9 +18,9 @@
           <img class="w-180 h-90" src="../assets/lean-gallery/4.jpg" alt="" />
         </div>
       </div>
+      <div class="h-20"></div>
     </div>
   </main>
-  <div class="lean-gallery fixed -z-1 inset-0 w-screen h-screen"></div>
 </template>
 
 <script lang="ts">

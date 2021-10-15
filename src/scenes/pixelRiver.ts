@@ -25,6 +25,7 @@ import pixelRiverPostprocessingFragmentShader from "../shaders/pixelRiver/postpr
 class PixelRiver extends Base {
   clock!: THREE.Clock;
   pixelRiverMaterial!: THREE.ShaderMaterial;
+  images!: HTMLImageElement[];
   makuGroup: MakuGroup;
   scroller!: Scroller;
   customPass!: ShaderPass;
@@ -39,6 +40,8 @@ class PixelRiver extends Base {
       near: 100,
       far: 2000,
     };
+    this.images = [...document.querySelectorAll("img")];
+    this.makuGroup = new MakuGroup();
     this.scroller = new Scroller();
     this.params = {
       progress: 0.7,
@@ -89,15 +92,12 @@ class PixelRiver extends Base {
   }
   // 创建图片DOM物体组
   createMakuGroup() {
-    const makuGroup = new MakuGroup();
-    const { scene, pixelRiverMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(image, pixelRiverMaterial, scene);
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
+    this.makuGroup.clear();
+    const { images, scene, pixelRiverMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, pixelRiverMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 创建后期处理特效
   createPostprocessingEffect() {
