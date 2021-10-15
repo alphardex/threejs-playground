@@ -1,6 +1,9 @@
 <template>
+  <div
+    class="twisted-gallery fixed z-0 w-screen h-screen pointer-events-none"
+  ></div>
   <main class="overflow-hidden">
-    <div data-scroll>
+    <div class="bg-black" data-scroll>
       <div class="relative w-screen h-screen flex-center">
         <img
           class="w-240 h-120 opacity-0"
@@ -45,7 +48,6 @@
       </div>
     </div>
   </main>
-  <div class="twisted-gallery fixed -z-1 inset-0 w-screen h-screen"></div>
 </template>
 
 <script lang="ts">
