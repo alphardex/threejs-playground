@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import ky from "kyouka";
+import { Maku, getScreenFov } from "maku.js";
+import gsap from "gsap";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
@@ -9,8 +10,7 @@ import particleExplodeFragmentShader from "../shaders/particleExplode/fragment.g
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { getScreenFov, Maku, preloadImages } from "@/utils/dom";
-import gsap from "gsap";
+import { preloadImages } from "@/utils/dom";
 
 class ParticleExplode extends Base {
   clock!: THREE.Clock;

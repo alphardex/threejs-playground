@@ -1,17 +1,12 @@
 import * as THREE from "three";
 import ky from "kyouka";
+import { Maku, MakuGroup, getScreenFov, Scroller } from "maku.js";
 import gsap from "gsap";
 import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import {
-  preloadImages,
-  MakuGroup,
-  Scroller,
-  Maku,
-  getScreenFov,
-} from "@/utils/dom";
+import { preloadImages } from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";

@@ -1,14 +1,9 @@
 import * as THREE from "three";
+import { MakuGroup, Scroller, Maku, getScreenFov } from "maku.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-import {
-  preloadImages,
-  MakuGroup,
-  Scroller,
-  Maku,
-  getScreenFov,
-} from "@/utils/dom";
+import { preloadImages } from "@/utils/dom";
 import { Base } from "./base";
 // @ts-ignore
 import imagePlaneMainVertexShader from "../shaders/imagePlane/main/vertex.glsl";

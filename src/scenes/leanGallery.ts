@@ -1,12 +1,7 @@
 import * as THREE from "three";
+import { MakuGroup, Scroller, Maku, getScreenFov } from "maku.js";
 import ky from "kyouka";
-import {
-  getScreenFov,
-  Maku,
-  MakuGroup,
-  preloadImages,
-  Scroller,
-} from "@/utils/dom";
+import { preloadImages } from "@/utils/dom";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";

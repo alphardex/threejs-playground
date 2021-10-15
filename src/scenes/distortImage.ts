@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
 import ky from "kyouka";
+import { Maku, MakuGroup, getScreenFov } from "maku.js";
 import { Base } from "./base";
 // @ts-ignore
 import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
@@ -26,7 +27,7 @@ import distortImageNoiseFragmentShader from "../shaders/distortImage/postprocess
 import distortImageTwistVertexShader from "../shaders/distortImage/main/twist/vertex.glsl";
 // @ts-ignore
 import distortImageTwistFragmentShader from "../shaders/distortImage/main/twist/fragment.glsl";
-import { Maku, MakuGroup, preloadImages, getScreenFov } from "@/utils/dom";
+import { preloadImages } from "@/utils/dom";
 // @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
 import gsap from "gsap";
