@@ -17,8 +17,8 @@ class ParticleExplode extends Base {
   particleExplodeMaterial!: THREE.ShaderMaterial;
   params!: any;
   bloomPass!: UnrealBloomPass;
+  image!: HTMLImageElement;
   maku!: Maku;
-  image!: Element;
   isOpen!: boolean;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -30,6 +30,7 @@ class ParticleExplode extends Base {
       near: 0.1,
       far: 5000,
     };
+    this.image = document.querySelector("img")!;
     this.params = {
       exposure: 1,
       bloomStrength: 0,
@@ -45,7 +46,7 @@ class ParticleExplode extends Base {
     this.createRenderer();
     this.createParticleExplodeMaterial();
     await preloadImages();
-    this.createPoints();
+    this.createMaku();
     this.createPostprocessingEffect();
     this.createClickEffect();
     this.createLight();
@@ -82,15 +83,18 @@ class ParticleExplode extends Base {
     this.particleExplodeMaterial = particleExplodeMaterial;
   }
   // 创建点
-  createPoints() {
-    const image = document.querySelector("img")!;
+  createMaku() {
+    const { image, particleExplodeMaterial, scene } = this;
     const maku = new Maku(
       image,
-      this.particleExplodeMaterial,
-      this.scene,
+      particleExplodeMaterial,
+      scene,
       "points",
       "size",
-      { width: 128, height: 128 }
+      {
+        width: 128,
+        height: 128,
+      }
     );
     maku.setPosition();
     this.maku = maku;

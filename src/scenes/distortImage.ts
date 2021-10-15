@@ -154,15 +154,12 @@ class DistortImage extends Base {
   }
   // 创建图片DOM物体
   createMakus() {
-    this.makuGroup.makus.forEach((obj) => {
-      const { mesh } = obj;
-      this.scene.remove(mesh);
-    });
+    this.makuGroup.clear();
     const { images, scene, distortImageMaterial } = this;
-    images.map((image) => {
-      const maku = new Maku(image, distortImageMaterial, scene);
-      this.makuGroup.add(maku);
-    });
+    const makus = images.map(
+      (image) => new Maku(image, distortImageMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 设置图片位置
   setImagesPosition() {
@@ -192,8 +189,7 @@ class DistortImage extends Base {
   }
   // 创建主要特效
   createMainEffect() {
-    const { makuGroup } = this;
-    makuGroup.makus.forEach((obj) => {
+    this.makuGroup.makus.forEach((obj) => {
       const { el, mesh } = obj;
       const material = mesh.material as THREE.ShaderMaterial;
       el.addEventListener("mouseenter", () => {

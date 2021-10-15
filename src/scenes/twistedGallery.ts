@@ -19,6 +19,7 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
 class TwistedGallery extends Base {
   clock!: THREE.Clock;
+  images!: HTMLImageElement[];
   makuGroup!: MakuGroup;
   distortImageMaterial!: THREE.ShaderMaterial;
   scroll!: any;
@@ -34,6 +35,8 @@ class TwistedGallery extends Base {
       near: 100,
       far: 2000,
     };
+    this.images = [...document.querySelectorAll("img")];
+    this.makuGroup = new MakuGroup();
     this.scrollSpeed = 0;
   }
   // 初始化
@@ -86,15 +89,12 @@ class TwistedGallery extends Base {
   }
   // 创建图片DOM物体
   createMakus() {
-    const makuGroup = new MakuGroup();
-    const { scene, distortImageMaterial } = this;
-    const images = [...document.querySelectorAll("img")];
-    images.map((image) => {
-      const maku = new Maku(image, distortImageMaterial, scene);
-      makuGroup.add(maku);
-    });
-    makuGroup.setPositions();
-    this.makuGroup = makuGroup;
+    this.makuGroup.clear();
+    const { images, scene, distortImageMaterial } = this;
+    const makus = images.map(
+      (image) => new Maku(image, distortImageMaterial, scene)
+    );
+    this.makuGroup.addMultiple(makus);
   }
   // 设置图片位置
   setImagesPosition() {
