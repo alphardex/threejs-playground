@@ -1,6 +1,6 @@
 <template>
   <div
-    class="lean-gallery fixed z-0 inset-0 w-screen h-screen pointer-events-none"
+    class="lean-gallery fixed z-0 inset-0 w-screen h-screen pointer-events-none bg-black"
   ></div>
   <main class="lean-gallery-dom w-screen h-screen">
     <div>
