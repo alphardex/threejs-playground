@@ -37,9 +37,6 @@
         >
       </li>
       <li>
-        <router-link :to="{ name: 'KineticText' }">KineticText</router-link>
-      </li>
-      <li>
         <router-link :to="{ name: 'LineWave' }">LineWave</router-link>
       </li>
       <li>
@@ -87,14 +84,10 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'RayTracing' }">
-          RayTracing
-        </router-link>
+        <router-link :to="{ name: 'RayTracing' }"> RayTracing </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'SpikyBlob' }">
-          SpikyBlob
-        </router-link>
+        <router-link :to="{ name: 'SpikyBlob' }"> SpikyBlob </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'ParticleShape' }">
@@ -102,9 +95,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'FloatBubbles' }">
-          FloatBubbles
-        </router-link>
+        <router-link :to="{ name: 'FloatBubbles' }"> FloatBubbles </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'NoiseMaterial' }">
@@ -112,17 +103,13 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'NoiseWave' }">
-          NoiseWave
-        </router-link>
+        <router-link :to="{ name: 'NoiseWave' }"> NoiseWave </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'TwistedShape' }">TwistedShape</router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'CurlTube' }">
-          CurlTube
-        </router-link>
+        <router-link :to="{ name: 'CurlTube' }"> CurlTube </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'ThousandFollow' }">
@@ -135,34 +122,19 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'VueLogo' }">
-          VueLogo
-        </router-link>
+        <router-link :to="{ name: 'VueLogo' }"> VueLogo </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'CylinderOrbitText' }">
-          CylinderOrbitText
-        </router-link>
+        <router-link :to="{ name: 'FBOParticles' }"> FBOParticles </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'FBOParticles' }">
-          FBOParticles
-        </router-link>
+        <router-link :to="{ name: 'LeanGallery' }"> LeanGallery </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'LeanGallery' }">
-          LeanGallery
-        </router-link>
+        <router-link :to="{ name: 'CloudySky' }"> CloudySky </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'CloudySky' }">
-          CloudySky
-        </router-link>
-      </li>
-      <li>
-        <router-link :to="{ name: 'SimpleFBM' }">
-          SimpleFBM
-        </router-link>
+        <router-link :to="{ name: 'SimpleFBM' }"> SimpleFBM </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'RayMarchingPlayground' }">
@@ -180,14 +152,10 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'NakedEye' }">
-          NakedEye
-        </router-link>
+        <router-link :to="{ name: 'NakedEye' }"> NakedEye </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'WaveCloth' }">
-          WaveCloth
-        </router-link>
+        <router-link :to="{ name: 'WaveCloth' }"> WaveCloth </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'DominosEffect' }">
@@ -195,9 +163,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'NoiseMarble' }">
-          NoiseMarble
-        </router-link>
+        <router-link :to="{ name: 'NoiseMarble' }"> NoiseMarble </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'MorphParticles' }">
@@ -210,24 +176,16 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'TimeTravel' }">
-          TimeTravel
-        </router-link>
+        <router-link :to="{ name: 'TimeTravel' }"> TimeTravel </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'PixelRiver' }">
-          PixelRiver
-        </router-link>
+        <router-link :to="{ name: 'PixelRiver' }"> PixelRiver </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'ImagePlane' }">
-          ImagePlane
-        </router-link>
+        <router-link :to="{ name: 'ImagePlane' }"> ImagePlane </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'UnrollImages' }">
-          UnrollImages
-        </router-link>
+        <router-link :to="{ name: 'UnrollImages' }"> UnrollImages </router-link>
       </li>
       <li>
         <router-link :to="{ name: 'ImageRipple' }">
@@ -235,9 +193,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'FloatPaper' }">
-          FloatPaper
-        </router-link>
+        <router-link :to="{ name: 'FloatPaper' }"> FloatPaper </router-link>
       </li>
     </ul>
     <teleport to="#dialogs">

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import * as dat from "dat.gui";
 import { Base } from "./base";
 // @ts-ignore
@@ -54,7 +55,7 @@ class TwistedShape extends Base {
   }
   // 创建扭曲图形
   createTwistedShape() {
-    const geometry = new THREE.ParametricBufferGeometry(sphube, 400, 400);
+    const geometry = new ParametricGeometry(sphube, 400, 400);
     const material = this.material;
     this.createMesh({ geometry, material });
   }
@@ -88,18 +89,8 @@ class TwistedShape extends Base {
       .max(2)
       .step(0.01)
       .name("velocity");
-    gui
-      .add(material.uniforms.uAxis.value, "x")
-      .min(0)
-      .max(1)
-      .step(1)
-      .name("X");
-    gui
-      .add(material.uniforms.uAxis.value, "y")
-      .min(0)
-      .max(1)
-      .step(1)
-      .name("Y");
+    gui.add(material.uniforms.uAxis.value, "x").min(0).max(1).step(1).name("X");
+    gui.add(material.uniforms.uAxis.value, "y").min(0).max(1).step(1).name("Y");
     gui
       .add(material.uniforms.uDistortion, "value")
       .min(0)

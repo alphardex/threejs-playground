@@ -61,7 +61,6 @@ class Stack extends Base {
     const geometry = new THREE.BoxGeometry(width, height, depth);
     const material = new THREE.MeshToonMaterial({
       color,
-      flatShading: true,
     });
     const position = new THREE.Vector3(x, y, z);
     const box = this.createMesh({

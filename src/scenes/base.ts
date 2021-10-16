@@ -206,14 +206,8 @@ class Base {
         } else if (this.camera instanceof THREE.OrthographicCamera) {
           this.updateOrthographicCameraParams();
           const camera = this.camera as THREE.OrthographicCamera;
-          const {
-            left,
-            right,
-            top,
-            bottom,
-            near,
-            far,
-          } = this.orthographicCameraParams;
+          const { left, right, top, bottom, near, far } =
+            this.orthographicCameraParams;
           camera.left = left;
           camera.right = right;
           camera.top = top;

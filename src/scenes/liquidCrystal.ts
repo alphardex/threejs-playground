@@ -51,7 +51,7 @@ class LiquidCrystal extends Base {
         },
         // https://tympanus.net/codrops/2020/09/30/creating-mirrors-in-react-three-fiber-and-three-js/
         uIriMap: {
-          value: new ThinFilmFresnelMap(1000, 1.2, 3.2, 64),
+          value: new ThinFilmFresnelMap(1000, 1.2, 3.2, 64).texture,
         },
         uIriBoost: {
           value: this.params.iriBoost,

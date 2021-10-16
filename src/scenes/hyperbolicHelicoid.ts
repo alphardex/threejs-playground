@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "./base";
@@ -97,7 +98,7 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   }
   // 创建双曲螺旋体
   createHyperbolicHelicoid() {
-    const geometry = new THREE.ParametricGeometry(
+    const geometry = new ParametricGeometry(
       hyperbolicHelicoidFunction,
       128,
       128
@@ -172,16 +173,8 @@ ${hyperbolicHelicoidColorFragmentShader}`;
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI({ width: 300 });
-    gui
-      .add(this.params, "ballRotateRadius")
-      .min(0)
-      .max(1)
-      .step(0.01);
-    gui
-      .add(this.params, "speed")
-      .min(0)
-      .max(1)
-      .step(0.01);
+    gui.add(this.params, "ballRotateRadius").min(0).max(1).step(0.01);
+    gui.add(this.params, "speed").min(0).max(1).step(0.01);
   }
 }
 

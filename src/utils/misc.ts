@@ -3,17 +3,22 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
+import {
+  TextGeometry,
+  TextGeometryParameters,
+} from "three/examples/jsm/geometries/TextGeometry";
+import { FontLoader, Font } from "three/examples/jsm/loaders/FontLoader";
 import { point2Array } from "./math";
 
 // 创建文本
 const createText = (
   text = "",
-  config: THREE.TextGeometryParameters,
+  config: TextGeometryParameters,
   material: THREE.Material = new THREE.MeshStandardMaterial({
     color: "#ffffff",
   })
 ) => {
-  const geo = new THREE.TextGeometry(text, config);
+  const geo = new TextGeometry(text, config);
   const mesh = new THREE.Mesh(geo, material);
   return mesh;
 };
@@ -57,8 +62,8 @@ const loadFBXModel = (url: string): Promise<THREE.Object3D> => {
 };
 
 // 加载字体
-const loadFont = (url: string): Promise<THREE.Font> => {
-  const loader = new THREE.FontLoader();
+const loadFont = (url: string): Promise<Font> => {
+  const loader = new FontLoader();
   return new Promise((resolve) => {
     loader.load(url, (font) => {
       resolve(font);
