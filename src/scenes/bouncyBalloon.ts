@@ -18,12 +18,14 @@ import {
   SSAOEffect,
   EffectPass,
 } from "postprocessing";
+import { getViewport } from "@/utils/misc";
 
 class BouncyBalloon extends PhysicsBase {
   ballMat: THREE.MeshLambertMaterial;
   balls: MeshPhysicsObject[];
   planes: MeshPhysicsObject[];
   mouseFollowBall: MeshPhysicsObject;
+  viewport!: any;
   params: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
@@ -47,7 +49,7 @@ class BouncyBalloon extends PhysicsBase {
     this.createWorld();
     this.createScene();
     this.createPerspectiveCamera();
-    this.getViewport();
+    this.viewport = getViewport(this.camera);
     this.createRenderer();
     this.changeRendererParams();
     this.createBallMaterial();

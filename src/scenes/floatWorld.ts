@@ -4,6 +4,7 @@ import { floatWorldFontConfig, floatWorldFontUrl } from "@/consts/floatWorld";
 import { Base } from "./base";
 import { CinematicCamera } from "three/examples/jsm/cameras/CinematicCamera.js";
 import { calcAspect } from "@/utils/math";
+import { createText, loadFont } from "@/utils/misc";
 
 class FloatWorld extends Base {
   meshes!: THREE.Mesh[];
@@ -40,12 +41,12 @@ class FloatWorld extends Base {
   }
   // 创建文字
   async createFloatText() {
-    const font = await this.loadFont(floatWorldFontUrl);
+    const font = await loadFont(floatWorldFontUrl);
     const config = {
       font,
       ...floatWorldFontConfig,
     };
-    const mesh = this.createText(
+    const mesh = createText(
       "alphardex CSS Mahoutsukai",
       config,
       new THREE.MeshNormalMaterial()

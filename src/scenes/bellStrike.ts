@@ -20,6 +20,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import * as dat from "dat.gui";
+import { loadAudio, loadFBXModel, loadModel } from "@/utils/misc";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
@@ -74,7 +75,8 @@ class BellStrike extends PhysicsBase {
     if (this.debug) {
       this.createOrbitControls();
     }
-    await this.loadAudio(bellAudioUrl);
+    const buffer = await loadAudio(bellAudioUrl);
+    this.sound.setBuffer(buffer);
     await this.createPavilion();
     await this.createBell();
     // await this.createCloud();
@@ -194,7 +196,7 @@ class BellStrike extends PhysicsBase {
   }
   // 创建云朵
   async createCloud() {
-    const mesh = await this.loadFBXModel(cloudModelUrl);
+    const mesh = await loadFBXModel(cloudModelUrl);
     mesh.scale.set(0.5, 0.5, 0.5);
     const cloudCount = 6;
     const cloudGap = 4;
@@ -218,7 +220,7 @@ class BellStrike extends PhysicsBase {
   }
   // 创建亭子
   async createPavilion() {
-    const model = await this.loadModel(pavilionModelUrl);
+    const model = await loadModel(pavilionModelUrl);
     const mesh = model.children[2];
     mesh.position.set(0, 6.5, 0);
     mesh.scale.set(0.002, 0.002, 0.002);
@@ -232,7 +234,7 @@ class BellStrike extends PhysicsBase {
   async createBell() {
     const loader = new THREE.TextureLoader();
     const texture = loader.load(bellTextureUrl);
-    const model = await this.loadModel(bellModelUrl);
+    const model = await loadModel(bellModelUrl);
     const mesh = model.children[0].parent!.children[3];
     mesh.traverse((obj) => {
       // @ts-ignore

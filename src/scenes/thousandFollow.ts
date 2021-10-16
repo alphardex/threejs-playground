@@ -9,6 +9,7 @@ import {
   thousandFollowFontConfig,
   thousandFollowFontUrl,
 } from "@/consts/thousandFollow";
+import { createText, loadFont } from "@/utils/misc";
 
 class ThousandFollow extends Base {
   clock!: THREE.Clock;
@@ -147,13 +148,13 @@ class ThousandFollow extends Base {
   }
   // 创建文字
   async createMainText(text: string) {
-    const font = await this.loadFont(thousandFollowFontUrl);
+    const font = await loadFont(thousandFollowFontUrl);
     const config = {
       font,
       ...thousandFollowFontConfig,
     };
     const material = this.textMaterial;
-    const mesh = this.createText(text, config, material);
+    const mesh = createText(text, config, material);
     mesh.geometry.center();
     this.scene.add(mesh);
   }

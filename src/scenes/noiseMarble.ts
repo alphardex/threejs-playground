@@ -13,6 +13,7 @@ import noiseMarbleFragmentMainShader from "../shaders/noiseMarble/fragmentMain.g
 // @ts-ignore
 import noiseMarbleFragmentColorShader from "../shaders/noiseMarble/fragmentColor.glsl";
 import { displacementMapUrl, hdrUrl, heightMapUrl } from "@/consts/noiseMarble";
+import { loadHDR } from "@/utils/misc";
 
 class NoiseMarble extends Base {
   clock!: THREE.Clock;
@@ -92,7 +93,7 @@ class NoiseMarble extends Base {
   }
   // 加载envmap
   async loadEnvmap() {
-    const envmap = await this.loadHDR(hdrUrl);
+    const envmap = await loadHDR(hdrUrl, this.renderer);
     this.scene.environment = envmap;
   }
   // 创建材质

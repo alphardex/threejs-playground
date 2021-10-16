@@ -7,6 +7,7 @@ import morphParticlesVertexShader from "../shaders/morphParticles/vertex.glsl";
 // @ts-ignore
 import morphParticlesFragmentShader from "../shaders/morphParticles/fragment.glsl";
 import gsap from "gsap";
+import { sampleParticlesPositionFromMesh } from "@/utils/misc";
 
 class MorphParticles extends Base {
   clock!: THREE.Clock;
@@ -73,7 +74,7 @@ class MorphParticles extends Base {
 
     // sphere
     const sphereGeometry = new THREE.SphereBufferGeometry(1, 128, 128);
-    const spherePositions = this.sampleParticlesPositionFromMesh(
+    const spherePositions = sampleParticlesPositionFromMesh(
       sphereGeometry.toNonIndexed()
     );
     geometry.setAttribute(
@@ -83,7 +84,7 @@ class MorphParticles extends Base {
 
     // box
     const boxGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 128, 128);
-    const boxPositions = this.sampleParticlesPositionFromMesh(
+    const boxPositions = sampleParticlesPositionFromMesh(
       boxGeometry.toNonIndexed()
     );
     geometry.setAttribute(
@@ -93,7 +94,7 @@ class MorphParticles extends Base {
 
     // torus
     const torusGeometry = new THREE.TorusBufferGeometry(0.7, 0.3, 128, 128);
-    const torusPositions = this.sampleParticlesPositionFromMesh(
+    const torusPositions = sampleParticlesPositionFromMesh(
       torusGeometry.toNonIndexed()
     );
     geometry.setAttribute(

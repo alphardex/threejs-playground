@@ -14,7 +14,7 @@
         <div
           class="text-center text-white text-lg text-glow whitespace-no-wrap"
         >
-          请登录 常熟零距离房产系统
+          Welcome to three.js
         </div>
         <!-- 用户名 -->
         <input
@@ -52,7 +52,7 @@
           <div
             class="btn btn-primary px-2 py-1 text-xs glass-2 activate bg-black-5"
           >
-            切换界面
+            登出系统
           </div>
         </div>
       </div>

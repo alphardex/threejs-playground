@@ -7,6 +7,7 @@ import { faceModelUrl } from "@/consts/lineWave";
 import lineWaveVertexShader from "../shaders/lineWave/vertex.glsl";
 // @ts-ignore
 import lineWaveFragmentShader from "../shaders/lineWave/fragment.glsl";
+import { loadModel } from "@/utils/misc";
 
 class LineWave extends Base {
   rt!: THREE.WebGLRenderTarget;
@@ -92,7 +93,7 @@ class LineWave extends Base {
   }
   // 创建人脸
   async createFace() {
-    const model = await this.loadModel(faceModelUrl);
+    const model = await loadModel(faceModelUrl);
     const mesh = model.children[0].children[0];
     mesh.scale.set(0.05, 0.05, 0.05);
     mesh.position.set(0, 0, this.params.faceZ);

@@ -13,6 +13,7 @@ import FBOParticlesBasicFragmentShader from "../shaders/FBOParticles/basic/fragm
 // @ts-ignore
 import FBOParticlesGPUFragmentShader from "../shaders/FBOParticles/gpu/fragment.glsl";
 import { faceModelUrl } from "@/consts/FBOParticles";
+import { loadModel } from "@/utils/misc";
 
 class FBOParticles extends Base {
   clock!: THREE.Clock;
@@ -90,7 +91,7 @@ class FBOParticles extends Base {
   }
   // 获取模型
   async getModel() {
-    const model = await this.loadModel(faceModelUrl);
+    const model = await loadModel(faceModelUrl);
     const mesh = model.children[0].children[0].children[4] as THREE.Mesh;
     mesh.geometry.scale(0.1, 0.1, 0.1);
     mesh.geometry.rotateX(ky.deg2rad(90));

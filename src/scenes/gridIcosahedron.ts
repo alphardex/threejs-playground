@@ -19,6 +19,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import gsap from "gsap";
+import { getBaryCoord } from "@/utils/math";
 
 class GridIcosahedron extends Base {
   clock!: THREE.Clock;
@@ -120,7 +121,7 @@ class GridIcosahedron extends Base {
   // 创建二十面体边框
   createIcoEdge() {
     const geometry = new THREE.IcosahedronBufferGeometry(1.001, 1);
-    this.getBaryCoord(geometry);
+    getBaryCoord(geometry);
     const material = this.gridIcosahedronEdgeMaterial;
     this.createMesh({
       geometry,

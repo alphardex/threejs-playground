@@ -1,17 +1,12 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-import ky from "kyouka";
 import { MeshObject } from "@/types";
-import { calcAspect, point2Array } from "@/utils/math";
+import { calcAspect } from "@/utils/math";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { getNormalizedMousePos } from "@/utils/dom";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import Stats from "three/examples/jsm/libs/stats.module";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
-import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 
 class Base {
   debug: boolean;
@@ -32,7 +27,6 @@ class Base {
   composer!: EffectComposer;
   shaderMaterial!: THREE.ShaderMaterial;
   mouseSpeed!: number;
-  viewport!: any;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -257,79 +251,12 @@ class Base {
       }
     });
   }
-  // 创建文本
-  createText(
-    text = "",
-    config: THREE.TextGeometryParameters,
-    material: THREE.Material = new THREE.MeshStandardMaterial({
-      color: "#ffffff",
-    })
-  ) {
-    const geo = new THREE.TextGeometry(text, config);
-    const mesh = new THREE.Mesh(geo, material);
-    return mesh;
-  }
   // 创建音效源
   createAudioSource() {
     const listener = new THREE.AudioListener();
     this.camera.add(listener);
     const sound = new THREE.Audio(listener);
     this.sound = sound;
-  }
-  // 加载音效
-  loadAudio(url: string): Promise<AudioBuffer> {
-    const loader = new THREE.AudioLoader();
-    return new Promise((resolve) => {
-      loader.load(url, (buffer) => {
-        this.sound.setBuffer(buffer);
-        resolve(buffer);
-      });
-    });
-  }
-  // 加载模型
-  loadModel(url: string): Promise<THREE.Object3D> {
-    const loader = new GLTFLoader();
-    return new Promise((resolve, reject) => {
-      loader.load(
-        url,
-        (gltf) => {
-          const model = gltf.scene;
-          console.log(model);
-          resolve(model);
-        },
-        undefined,
-        (err) => {
-          console.log(err);
-          reject();
-        }
-      );
-    });
-  }
-  // 加载FBX模型
-  loadFBXModel(url: string): Promise<THREE.Object3D> {
-    const loader = new FBXLoader();
-    return new Promise((resolve, reject) => {
-      loader.load(
-        url,
-        (obj) => {
-          resolve(obj);
-        },
-        undefined,
-        (err) => {
-          console.log(err);
-          reject();
-        }
-      );
-    });
-  }
-  // 加载字体
-  loadFont(url: string): Promise<THREE.Font> {
-    const loader = new THREE.FontLoader();
-    return new Promise((resolve) => {
-      loader.load(url, (font) => {
-        resolve(font);
-      });
-    });
   }
   // 创建点选模型
   createRaycaster() {
@@ -377,27 +304,6 @@ class Base {
     const { object } = intersect;
     return target === object ? intersect : null;
   }
-  // 获取跟屏幕同像素的fov角度
-  getScreenFov() {
-    return ky.rad2deg(
-      2 * Math.atan(window.innerHeight / 2 / this.cameraPosition.z)
-    );
-  }
-  // 获取重心坐标系
-  getBaryCoord(bufferGeometry: THREE.BufferGeometry) {
-    // https://gist.github.com/mattdesl/e399418558b2b52b58f5edeafea3c16c
-    const length = bufferGeometry.attributes.position.array.length;
-    const count = length / 3;
-    const bary = [];
-    for (let i = 0; i < count; i++) {
-      bary.push(0, 0, 1, 0, 1, 0, 1, 0, 0);
-    }
-    const aCenter = new Float32Array(bary);
-    bufferGeometry.setAttribute(
-      "aCenter",
-      new THREE.BufferAttribute(aCenter, 3)
-    );
-  }
   // 追踪鼠标速度
   trackMouseSpeed() {
     // https://stackoverflow.com/questions/6417036/track-mouse-speed-with-js
@@ -420,67 +326,6 @@ class Base {
     document.addEventListener("mouseleave", () => {
       this.mouseSpeed = 0;
     });
-  }
-  // 使用PCFSoft阴影
-  usePCFSoftShadowMap() {
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  }
-  // 使用VSM阴影
-  useVSMShadowMap() {
-    this.renderer.shadowMap.type = THREE.VSMShadowMap;
-  }
-  // 将相机的方向设为z轴
-  setCameraUpZ() {
-    this.camera.up.set(0, 0, 1);
-  }
-  // 获取viewport
-  getViewport() {
-    const { camera } = this;
-    const position = new THREE.Vector3();
-    const target = new THREE.Vector3();
-    const distance = camera.getWorldPosition(position).distanceTo(target);
-    const fov = ((camera as any).fov * Math.PI) / 180; // convert vertical fov to radians
-    const h = 2 * Math.tan(fov / 2) * distance; // visible height
-    const w = h * (window.innerWidth / window.innerHeight);
-    const viewport = { width: w, height: h };
-    this.viewport = viewport;
-  }
-  // 加载HDR
-  loadHDR(url: string): Promise<THREE.Texture> {
-    const loader = new RGBELoader();
-    return new Promise((resolve, reject) => {
-      loader.load(
-        url,
-        (texture) => {
-          const generator = new THREE.PMREMGenerator(this.renderer);
-          const envmap = generator.fromEquirectangular(texture).texture;
-          texture.dispose();
-          generator.dispose();
-          resolve(envmap);
-        },
-        undefined,
-        (err) => {
-          console.log(err);
-          reject();
-        }
-      );
-    });
-  }
-  // 从mesh上取样微粒位置信息
-  sampleParticlesPositionFromMesh(
-    geometry: THREE.BufferGeometry,
-    count = 10000
-  ) {
-    const material = new THREE.MeshBasicMaterial();
-    const mesh = new THREE.Mesh(geometry, material);
-    const sampler = new MeshSurfaceSampler(mesh).build();
-    const particlesPosition = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const position = new THREE.Vector3();
-      sampler.sample(position);
-      particlesPosition.set(point2Array(position), i * 3);
-    }
-    return particlesPosition;
   }
 }
 

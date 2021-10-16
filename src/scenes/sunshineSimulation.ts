@@ -8,6 +8,7 @@ import {
   buildingModelUrl,
   buildingPositions,
 } from "@/consts/sunshineSimulation";
+import { loadModel } from "@/utils/misc";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;
@@ -61,6 +62,14 @@ class SunshineSimulation extends Base {
     this.setSunshineInfoById();
     this.updateCameraPositionNoon();
   }
+  // 将相机的方向设为z轴
+  setCameraUpZ() {
+    this.camera.up.set(0, 0, 1);
+  }
+  // 使用VSM阴影
+  useVSMShadowMap() {
+    this.renderer.shadowMap.type = THREE.VSMShadowMap;
+  }
   // 创建地面
   createGround() {
     const geometry = new THREE.PlaneGeometry(400, 400);
@@ -92,7 +101,7 @@ class SunshineSimulation extends Base {
     const { height, testMesh } = params;
     let building;
     if (!this.buildingModel) {
-      const model = await this.loadModel(buildingModelUrl);
+      const model = await loadModel(buildingModelUrl);
       building = model.children[0];
       this.buildingModel = building;
       building.rotation.x = ky.deg2rad(-90);

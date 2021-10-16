@@ -3,6 +3,7 @@ import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { PhysicsBase } from "./base";
 import { menuFontConfig, menuFontUrl } from "@/consts/menu";
+import { createText, loadFont } from "@/utils/misc";
 
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
@@ -23,6 +24,7 @@ class LetterObject extends MeshPhysicsObject {
 }
 
 class Menu extends PhysicsBase {
+  // @ts-ignore
   meshPhysicsObjs!: LetterObject[];
   menuItems!: Element[];
   margin!: number;
@@ -78,7 +80,7 @@ class Menu extends PhysicsBase {
   }
   // 创建菜单
   async createMenu() {
-    const font = await this.loadFont(menuFontUrl);
+    const font = await loadFont(menuFontUrl);
     this.menuItems.forEach((item, i) => {
       this.createGround(i);
       const word = new THREE.Group();
@@ -89,7 +91,7 @@ class Menu extends PhysicsBase {
           font,
           ...menuFontConfig,
         };
-        const mesh = this.createText(
+        const mesh = createText(
           letter,
           config,
           new THREE.MeshPhongMaterial({ color: new THREE.Color("#31C9BB") })
