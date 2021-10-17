@@ -22,7 +22,6 @@ class Base {
   controls!: OrbitControls;
   mousePos!: THREE.Vector2;
   raycaster!: THREE.Raycaster;
-  sound!: THREE.Audio;
   stats!: Stats;
   composer!: EffectComposer;
   shaderMaterial!: THREE.ShaderMaterial;
