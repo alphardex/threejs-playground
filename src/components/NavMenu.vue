@@ -1,6 +1,16 @@
 <template>
   <div
-    class="nav-menu fixed z-2 w-full max-w-full flex items-center text-white bg-black-transparent-1"
+    class="
+      nav-menu
+      fixed
+      z-2
+      w-full
+      max-w-full
+      flex
+      items-center
+      text-white
+      bg-black-transparent-1
+    "
     v-if="navItems && navItems.length"
   >
     <div
@@ -11,7 +21,11 @@
       :class="{ active: sceneId === item.img }"
     >
       <div
-        class="nav-menu-item-wrapper relative border-2 border-solid border-white"
+        class="
+          nav-menu-item-wrapper
+          relative
+          border-2 border-solid border-white
+        "
       >
         <img
           class="nav-menu-item-img"

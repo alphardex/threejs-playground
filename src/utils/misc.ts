@@ -76,7 +76,6 @@ const loadAudio = (url: string): Promise<AudioBuffer> => {
   const loader = new THREE.AudioLoader();
   return new Promise((resolve) => {
     loader.load(url, (buffer) => {
-      //   this.sound.setBuffer(buffer);
       resolve(buffer);
     });
   });

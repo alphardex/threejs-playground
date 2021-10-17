@@ -6,20 +6,6 @@ const simplex = new SimplexNoise(Math.random);
 
 const calcAspect = (el: HTMLElement) => el.clientWidth / el.clientHeight;
 
-const plane = (u: number, v: number, target: THREE.Vector3) => {
-  const [x, y, z] = [u, v, 0];
-  target.set(x, y, z);
-};
-
-const sphere = (u: number, v: number, target: THREE.Vector3) => {
-  const phi = Math.PI * 2 * u;
-  const theta = Math.PI * 2 * v;
-  const x = Math.cos(theta) * Math.sin(phi);
-  const y = Math.sin(theta) * Math.sin(phi);
-  const z = Math.cos(phi);
-  target.set(x, y, z);
-};
-
 // https://mathworld.wolfram.com/HyperbolicHelicoid.html
 const hyperbolicHelicoidFunction = (
   u: number,
@@ -92,43 +78,6 @@ const computeCurl = (x: number, y: number, z: number) => {
   return curl;
 };
 
-const lerp = (p1: number, p2: number, t: number) => {
-  return p1 + (p2 - p1) * t;
-};
-
-// https://gist.github.com/gre/1650294
-const EasingFunctions = {
-  // no easing, no acceleration
-  linear: (t) => t,
-  // accelerating from zero velocity
-  easeInQuad: (t) => t * t,
-  // decelerating to zero velocity
-  easeOutQuad: (t) => t * (2 - t),
-  // acceleration until halfway, then deceleration
-  easeInOutQuad: (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
-  // accelerating from zero velocity
-  easeInCubic: (t) => t * t * t,
-  // decelerating to zero velocity
-  easeOutCubic: (t) => --t * t * t + 1,
-  // acceleration until halfway, then deceleration
-  easeInOutCubic: (t) =>
-    t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
-  // accelerating from zero velocity
-  easeInQuart: (t) => t * t * t * t,
-  // decelerating to zero velocity
-  easeOutQuart: (t) => 1 - --t * t * t * t,
-  // acceleration until halfway, then deceleration
-  easeInOutQuart: (t) =>
-    t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t,
-  // accelerating from zero velocity
-  easeInQuint: (t) => t * t * t * t * t,
-  // decelerating to zero velocity
-  easeOutQuint: (t) => 1 + --t * t * t * t * t,
-  // acceleration until halfway, then deceleration
-  easeInOutQuint: (t) =>
-    t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t,
-};
-
 // 三维点
 class Point {
   x: number;
@@ -178,8 +127,6 @@ export {
   hyperbolicHelicoidFunction,
   sphube,
   computeCurl,
-  lerp,
-  EasingFunctions,
   Point,
   array2Point,
   point2Array,

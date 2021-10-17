@@ -8,11 +8,13 @@ export default () => {
     showBackdrop.value = false;
   };
 
-  const openDialog = (fn: Function, closable = true) => () => {
-    showBackdrop.value = true;
-    isBackdropClosable.value = closable;
-    fn();
-  };
+  const openDialog =
+    (fn: Function, closable = true) =>
+    () => {
+      showBackdrop.value = true;
+      isBackdropClosable.value = closable;
+      fn();
+    };
 
   return {
     showBackdrop,

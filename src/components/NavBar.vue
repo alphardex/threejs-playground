@@ -16,7 +16,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "NavBar",
   props: {
-    navItems: Array
-  }
+    navItems: Array,
+  },
 });
 </script>
