@@ -128,24 +128,14 @@ class RayMarchingBall extends Base {
       .max(3)
       .step(0.01)
       .name("oscilationPower");
-    gui
-      .add(uniforms.uScale, "value")
-      .min(0)
-      .max(20)
-      .step(0.1)
-      .name("scale");
+    gui.add(uniforms.uScale, "value").min(0).max(20).step(0.1).name("scale");
     gui
       .add(uniforms.uScaleUv, "value")
       .min(0)
       .max(5)
       .step(0.01)
       .name("scaleUv");
-    gui
-      .add(uniforms.uEye, "value")
-      .min(0)
-      .max(8)
-      .step(0.01)
-      .name("eye");
+    gui.add(uniforms.uEye, "value").min(0).max(8).step(0.01).name("eye");
     gui
       .add(uniforms.uVelocity, "value")
       .min(0)

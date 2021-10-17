@@ -221,9 +221,8 @@ class DistortImage extends Base {
     const composer = new EffectComposer(this.renderer);
     const renderPass = new RenderPass(this.scene, this.camera);
     composer.addPass(renderPass);
-    const shaderConfig = this.postprocessingShaderConfig[
-      this.params.postprocessing
-    ];
+    const shaderConfig =
+      this.postprocessingShaderConfig[this.params.postprocessing];
     const customPass = new ShaderPass({
       vertexShader: shaderConfig.vertexShader,
       fragmentShader: shaderConfig.fragmentShader,

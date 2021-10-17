@@ -202,26 +202,10 @@ class PixelRiver extends Base {
   createDebugPanel() {
     const gui = new dat.GUI();
     const params = this.params;
-    gui
-      .add(params, "progress")
-      .min(0)
-      .max(1)
-      .step(0.01);
-    gui
-      .add(params, "waveScale")
-      .min(0)
-      .max(10)
-      .step(0.01);
-    gui
-      .add(params, "distA")
-      .min(0)
-      .max(1)
-      .step(0.01);
-    gui
-      .add(params, "distB")
-      .min(0)
-      .max(20)
-      .step(0.01);
+    gui.add(params, "progress").min(0).max(1).step(0.01);
+    gui.add(params, "waveScale").min(0).max(10).step(0.01);
+    gui.add(params, "distA").min(0).max(1).step(0.01);
+    gui.add(params, "distB").min(0).max(20).step(0.01);
   }
 }
 

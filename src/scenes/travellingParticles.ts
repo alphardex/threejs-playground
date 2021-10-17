@@ -80,9 +80,9 @@ class TravellingParticles extends Base {
   }
   // 获取svg路径的点线数据
   getSvgPathsPointLineData() {
-    const paths = ([
+    const paths = [
       ...document.querySelectorAll(".svg-particles path"),
-    ] as unknown) as SVGPathElement[];
+    ] as unknown as SVGPathElement[];
     paths.forEach((path) => {
       const points: THREE.Vector3[] = [];
       const pathPoints = getPointsInPath(path, this.pointSize);

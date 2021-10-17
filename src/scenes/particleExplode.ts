@@ -158,11 +158,7 @@ class ParticleExplode extends Base {
       .max(3)
       .step(0.01)
       .name("progress");
-    gui
-      .add(params, "bloomStrength")
-      .min(0)
-      .max(10)
-      .step(0.01);
+    gui.add(params, "bloomStrength").min(0).max(10).step(0.01);
   }
 }
 

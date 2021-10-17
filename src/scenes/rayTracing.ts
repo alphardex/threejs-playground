@@ -129,16 +129,8 @@ class RayTracing extends Base {
       .min(0.01)
       .max(0.99)
       .name("uMorphPower");
-    gui
-      .add(uniforms.uAngle, "value")
-      .min(0)
-      .max(6.28)
-      .name("uAngle");
-    gui
-      .add(uniforms.uZDistance, "value")
-      .min(0)
-      .max(10)
-      .name("uZDistance");
+    gui.add(uniforms.uAngle, "value").min(0).max(6.28).name("uAngle");
+    gui.add(uniforms.uZDistance, "value").min(0).max(10).name("uZDistance");
   }
 }
 

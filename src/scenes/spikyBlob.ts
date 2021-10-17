@@ -136,7 +136,8 @@ class SpikyBlob extends Base {
         this.params.rotationYSpeed;
       this.spikyBlob.rotation.x +=
         this.impulse.y * this.params.rotationAcceleration;
-      this.spikyBlobMaterial.uniforms.uSceneRotationY.value = this.spikyBlob.rotation.y;
+      this.spikyBlobMaterial.uniforms.uSceneRotationY.value =
+        this.spikyBlob.rotation.y;
       this.spikyBlobMaterial.uniforms.uImpulse.value = new THREE.Vector2(
         this.impulse.x,
         this.impulse.y

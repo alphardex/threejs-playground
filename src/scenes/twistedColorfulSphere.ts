@@ -107,12 +107,7 @@ class TwistedColorfulSphere extends Base {
   createDebugPanel() {
     const gui = new dat.GUI();
     const uniforms = this.twistedColorfulSphereMaterial.uniforms;
-    gui
-      .add(uniforms.uSpeed, "value")
-      .min(0)
-      .max(5)
-      .step(0.01)
-      .name("speed");
+    gui.add(uniforms.uSpeed, "value").min(0).max(5).step(0.01).name("speed");
     gui
       .add(uniforms.uNoiseDensity, "value")
       .min(0)

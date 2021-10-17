@@ -115,7 +115,8 @@ class CurlTube extends Base {
   // 创建管道材质
   createTubeMaterial() {
     const tubeMaterial = this.scatterMaterial.clone();
-    tubeMaterial.uniforms.uScatterDivider.value = this.params.tubeScatterDivider;
+    tubeMaterial.uniforms.uScatterDivider.value =
+      this.params.tubeScatterDivider;
     tubeMaterial.uniforms.uIsTube.value = 1;
     this.tubeMaterial = tubeMaterial;
   }
@@ -181,7 +182,8 @@ class CurlTube extends Base {
   // 创建平面材质
   createPlaneMaterial() {
     const planeMaterial = this.scatterMaterial.clone();
-    planeMaterial.uniforms.uScatterDivider.value = this.params.planeScatterDivider;
+    planeMaterial.uniforms.uScatterDivider.value =
+      this.params.planeScatterDivider;
     planeMaterial.uniforms.uIsPlane.value = 1;
     this.planeMaterial = planeMaterial;
   }

@@ -171,7 +171,8 @@ class FBOParticles extends Base {
     if (this.FBOParticlesMaterial) {
       this.FBOParticlesMaterial.uniforms.uTime.value = elapsedTime;
       this.FBOParticlesMaterial.uniforms.uMouse.value = mousePos;
-      this.FBOParticlesMaterial.uniforms.uPositionTexture.value = positionTexture;
+      this.FBOParticlesMaterial.uniforms.uPositionTexture.value =
+        positionTexture;
     }
     if (this.positionVariable) {
       this.positionVariable.material.uniforms.uTime.value = elapsedTime;

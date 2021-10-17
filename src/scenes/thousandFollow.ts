@@ -113,7 +113,8 @@ class ThousandFollow extends Base {
   // 创建平面材质
   createPlaneMaterial() {
     const planeMaterial = this.scatterMaterial.clone();
-    planeMaterial.uniforms.uScatterDivider.value = this.params.planeScatterDivider;
+    planeMaterial.uniforms.uScatterDivider.value =
+      this.params.planeScatterDivider;
     planeMaterial.uniforms.uIsPlane.value = 1;
     this.planeMaterial = planeMaterial;
   }
@@ -142,7 +143,8 @@ class ThousandFollow extends Base {
   // 创建文字材质
   createTextMaterial() {
     const textMaterial = this.scatterMaterial.clone();
-    textMaterial.uniforms.uScatterDivider.value = this.params.textScatterDivider;
+    textMaterial.uniforms.uScatterDivider.value =
+      this.params.textScatterDivider;
     textMaterial.uniforms.uIsText.value = 1;
     this.textMaterial = textMaterial;
   }
