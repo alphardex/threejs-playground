@@ -143,7 +143,6 @@ class MorphParticles extends Base {
   changeParticles() {
     let currentTransition = this.currentTransition;
     const uniforms = this.morphParticlesMaterial.uniforms;
-    console.log(currentTransition);
     if (currentTransition === 0) {
       gsap.to(uniforms.uTransition1, {
         value: 1,

@@ -53,7 +53,6 @@ class FloatPaper extends Base {
   }
   // 创建材质
   createFloatPaperMaterial() {
-    console.log(floatPaperMainVertexShader);
     const floatPaperMaterial = new THREE.ShaderMaterial({
       vertexShader: floatPaperMainVertexShader,
       fragmentShader: floatPaperMainFragmentShader,
