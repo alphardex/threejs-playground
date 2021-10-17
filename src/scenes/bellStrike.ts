@@ -102,6 +102,13 @@ class BellStrike extends PhysicsBase {
       this.createHint();
     });
   }
+  // 创建音效源
+  createAudioSource() {
+    const listener = new THREE.AudioListener();
+    this.camera.add(listener);
+    const sound = new THREE.Audio(listener);
+    this.sound = sound;
+  }
   // 创建光
   createLight() {
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -451,11 +458,7 @@ class BellStrike extends PhysicsBase {
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI({ width: 320 });
-    gui
-      .add(this.params, "force")
-      .min(0)
-      .max(25)
-      .step(0.1);
+    gui.add(this.params, "force").min(0).max(25).step(0.1);
     gui
       .add(this.params, "bellMass")
       .min(0)
@@ -464,16 +467,8 @@ class BellStrike extends PhysicsBase {
       .onChange((value) => {
         this.bellObj.body.mass = value;
       });
-    gui
-      .add(this.params, "bellAngularDamping")
-      .min(0)
-      .max(1)
-      .step(0.01);
-    gui
-      .add(this.params, "stickLinearDamping")
-      .min(0)
-      .max(1)
-      .step(0.01);
+    gui.add(this.params, "bellAngularDamping").min(0).max(1).step(0.01);
+    gui.add(this.params, "stickLinearDamping").min(0).max(1).step(0.01);
   }
   // 状态
   get status() {

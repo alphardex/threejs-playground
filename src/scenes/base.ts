@@ -129,10 +129,6 @@ class Base {
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
   }
-  // 允许投影
-  enableShadow() {
-    this.renderer.shadowMap.enabled = true;
-  }
   // 调整渲染器尺寸
   resizeRendererToDisplaySize() {
     const { renderer } = this;
@@ -244,13 +240,6 @@ class Base {
         this.renderer.render(this.scene, this.camera);
       }
     });
-  }
-  // 创建音效源
-  createAudioSource() {
-    const listener = new THREE.AudioListener();
-    this.camera.add(listener);
-    const sound = new THREE.Audio(listener);
-    this.sound = sound;
   }
   // 创建点选模型
   createRaycaster() {

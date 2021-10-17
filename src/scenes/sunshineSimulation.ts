@@ -66,6 +66,10 @@ class SunshineSimulation extends Base {
   setCameraUpZ() {
     this.camera.up.set(0, 0, 1);
   }
+  // 允许投影
+  enableShadow() {
+    this.renderer.shadowMap.enabled = true;
+  }
   // 使用VSM阴影
   useVSMShadowMap() {
     this.renderer.shadowMap.type = THREE.VSMShadowMap;

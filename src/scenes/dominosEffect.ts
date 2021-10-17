@@ -51,6 +51,10 @@ class DominosEffect extends PhysicsBase {
     this.addListeners();
     this.setLoop();
   }
+  // 允许投影
+  enableShadow() {
+    this.renderer.shadowMap.enabled = true;
+  }
   // 创建地面材质
   createGroundMaterial() {
     const groundColor = this.params.groundColor;

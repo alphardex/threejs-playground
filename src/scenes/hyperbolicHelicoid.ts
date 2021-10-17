@@ -63,6 +63,10 @@ class HyperbolicHelicoid extends Base {
     this.addListeners();
     this.setLoop();
   }
+  // 允许投影
+  enableShadow() {
+    this.renderer.shadowMap.enabled = true;
+  }
   // 使用PCFSoft阴影
   usePCFSoftShadowMap() {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
