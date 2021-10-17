@@ -46,7 +46,7 @@ class GridIcosahedron extends Base {
     this.createIcoEdge();
     this.createPostprocessingEffect();
     this.createLight();
-    this.trackMouseSpeed();
+    this.mouseTracker.trackMouseSpeed();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -156,8 +156,8 @@ class GridIcosahedron extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
-    const mouseSpeed = this.mouseSpeed * 5;
+    const mousePos = this.mouseTracker.mousePos;
+    const mouseSpeed = this.mouseTracker.mouseSpeed * 5;
     if (this.gridIcosahedronShapeMaterial) {
       this.gridIcosahedronShapeMaterial.uniforms.uTime.value = elapsedTime;
       this.gridIcosahedronShapeMaterial.uniforms.uMouse.value = mousePos;

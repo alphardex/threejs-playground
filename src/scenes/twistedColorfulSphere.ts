@@ -29,7 +29,7 @@ class TwistedColorfulSphere extends Base {
     this.createTwistedColorfulSphereMaterial();
     this.createSphere();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     // this.createDebugPanel();
     this.addListeners();
@@ -97,7 +97,7 @@ class TwistedColorfulSphere extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.twistedColorfulSphereMaterial) {
       this.twistedColorfulSphereMaterial.uniforms.uTime.value = elapsedTime;
       this.twistedColorfulSphereMaterial.uniforms.uMouse.value = mousePos;

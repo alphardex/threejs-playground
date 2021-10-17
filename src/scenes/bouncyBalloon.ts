@@ -60,7 +60,7 @@ class BouncyBalloon extends PhysicsBase {
     this.hideSomeObjs();
     this.createLight();
     this.createPostprocessingEffect();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -211,7 +211,7 @@ class BouncyBalloon extends PhysicsBase {
   }
   // 大球跟踪鼠标
   mouseBallFollow() {
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     const x = (mousePos.x * this.viewport.width) / 2;
     const y = (mousePos.y * this.viewport.height) / 2;
     const pos = new CANNON.Vec3(x, y, 2.5);

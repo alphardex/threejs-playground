@@ -42,7 +42,7 @@ class FBOParticles extends Base {
     this.createFBOParticlesGeometry();
     this.createPoints();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -167,7 +167,7 @@ class FBOParticles extends Base {
     ) as any;
     const positionTexture = positionVariable.texture;
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.FBOParticlesMaterial) {
       this.FBOParticlesMaterial.uniforms.uTime.value = elapsedTime;
       this.FBOParticlesMaterial.uniforms.uMouse.value = mousePos;

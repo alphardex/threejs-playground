@@ -50,7 +50,7 @@ class ParticleExplode extends Base {
     this.createPostprocessingEffect();
     this.createClickEffect();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     // this.createDebugPanel();
     this.addListeners();
@@ -138,7 +138,7 @@ class ParticleExplode extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.maku) {
       const material = this.maku.mesh.material as any;
       material.uniforms.uTime.value = elapsedTime;

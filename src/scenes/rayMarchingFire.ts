@@ -33,7 +33,7 @@ class RayMarchingFire extends Base {
     this.createPlane();
     this.createLight();
     // this.createDebugPanel();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -79,7 +79,7 @@ class RayMarchingFire extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.rayMarchingFireMaterial) {
       this.rayMarchingFireMaterial.uniforms.uTime.value = elapsedTime;
       this.rayMarchingFireMaterial.uniforms.uMouse.value = mousePos;

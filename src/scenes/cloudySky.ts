@@ -28,7 +28,6 @@ class CloudySky extends Base {
     this.createCloudySkyMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -71,10 +70,8 @@ class CloudySky extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
     if (this.cloudySkyMaterial) {
       this.cloudySkyMaterial.uniforms.uTime.value = elapsedTime;
-      this.cloudySkyMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }

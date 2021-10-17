@@ -42,7 +42,7 @@ class CylinderOrbitText extends Base {
     this.createPerspectiveCamera();
     this.createRenderer(true);
     await this.createKineticText(this.params.text);
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -153,13 +153,13 @@ class CylinderOrbitText extends Base {
       this.renderer.setRenderTarget(null);
     }
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.cylinderOrbitTextMaterial) {
       this.cylinderOrbitTextMaterial.uniforms.uTime.value = elapsedTime;
       this.cylinderOrbitTextMaterial.uniforms.uMouse.value = mousePos;
     }
     if (this.mesh) {
-      this.mesh.rotation.z = this.mousePos.x;
+      this.mesh.rotation.z = this.mouseTracker.mousePos.x;
     }
   }
 }

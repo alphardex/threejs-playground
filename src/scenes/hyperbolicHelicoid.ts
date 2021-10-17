@@ -57,7 +57,7 @@ class HyperbolicHelicoid extends Base {
     this.createHyperbolicHelicoid();
     this.createTwoBalls();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     // this.createDebugPanel();
     this.addListeners();

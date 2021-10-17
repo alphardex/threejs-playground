@@ -57,7 +57,7 @@ class ShapeTransition extends Base {
     this.createShapes();
     this.createLight();
     this.createOrbitControls();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -180,7 +180,7 @@ class ShapeTransition extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     this.materials.forEach((material) => {
       material.uniforms.uTime.value = elapsedTime;
       material.uniforms.uMouse.value = mousePos;

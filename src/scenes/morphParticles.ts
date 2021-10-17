@@ -33,7 +33,7 @@ class MorphParticles extends Base {
     this.createParticles();
     this.createLight();
     // this.createDebugPanel();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.onClickParticles();
     this.addListeners();
     this.setLoop();
@@ -110,7 +110,7 @@ class MorphParticles extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.morphParticlesMaterial) {
       this.morphParticlesMaterial.uniforms.uTime.value = elapsedTime;
       this.morphParticlesMaterial.uniforms.uMouse.value = mousePos;

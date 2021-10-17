@@ -28,7 +28,7 @@ class LiquidCrystal extends Base {
     this.createRenderer();
     this.createLiquidCrystalMaterial();
     this.createSphere();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -73,7 +73,7 @@ class LiquidCrystal extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const time = elapsedTime * this.params.timeScale;
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.liquidCrystalMaterial) {
       this.liquidCrystalMaterial.uniforms.uTime.value = time;
       this.liquidCrystalMaterial.uniforms.uMouse.value = mousePos;

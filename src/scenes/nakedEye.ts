@@ -24,7 +24,7 @@ class NakedEye extends Base {
     this.createNakedEyeMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -70,7 +70,7 @@ class NakedEye extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.nakedEyeMaterial) {
       this.nakedEyeMaterial.uniforms.uTime.value = elapsedTime;
       this.nakedEyeMaterial.uniforms.uMouse.value = mousePos;

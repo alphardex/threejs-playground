@@ -54,7 +54,7 @@ class SunshineSimulation extends Base {
     this.createGround();
     this.createBuildingModelGroup();
     this.createSunLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -251,7 +251,7 @@ class SunshineSimulation extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
   }
   // 状态
   get status() {

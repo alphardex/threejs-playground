@@ -47,7 +47,7 @@ class FloatBubbles extends Base {
     this.createBubble();
     this.createBubbles();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -117,7 +117,7 @@ class FloatBubbles extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.floatBubblesMaterial) {
       this.uniforms.uTime.value = elapsedTime;
       this.bubble.rotation.z = elapsedTime / 5;

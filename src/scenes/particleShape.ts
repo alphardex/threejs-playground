@@ -42,7 +42,7 @@ class ParticleShape extends Base {
     await this.createShape();
     this.createPostprocessingEffect();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     // this.createDebugPanel();
     this.createOrbitControls();
     this.addListeners();
@@ -110,7 +110,7 @@ class ParticleShape extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.particleShapeMaterial) {
       this.particleShapeMaterial.uniforms.uTime.value = elapsedTime;
       this.particleShapeMaterial.uniforms.uMouse.value = mousePos;

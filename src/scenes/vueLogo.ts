@@ -23,7 +23,7 @@ class VueLogo extends Base {
     this.createVueLogoMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -60,7 +60,7 @@ class VueLogo extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.vueLogoMaterial) {
       this.vueLogoMaterial.uniforms.uTime.value = elapsedTime;
       this.vueLogoMaterial.uniforms.uMouse.value = mousePos;

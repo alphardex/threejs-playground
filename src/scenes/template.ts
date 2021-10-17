@@ -23,7 +23,7 @@ class Template extends Base {
     this.createTemplateMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -60,7 +60,7 @@ class Template extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.templateMaterial) {
       this.templateMaterial.uniforms.uTime.value = elapsedTime;
       this.templateMaterial.uniforms.uMouse.value = mousePos;

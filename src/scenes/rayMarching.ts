@@ -23,7 +23,7 @@ class RayMarching extends Base {
     this.createRayMarchingMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     // this.createDebugPanel();
     this.setLoop();
@@ -81,7 +81,7 @@ class RayMarching extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.rayMarchingMaterial) {
       this.rayMarchingMaterial.uniforms.uTime.value = elapsedTime;
       this.rayMarchingMaterial.uniforms.uMouse.value = mousePos;

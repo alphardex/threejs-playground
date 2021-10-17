@@ -60,7 +60,7 @@ class WaveCloth extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.waveClothMaterial) {
       this.waveClothMaterial.uniforms.uTime.value = elapsedTime;
       this.waveClothMaterial.uniforms.uMouse.value = mousePos;

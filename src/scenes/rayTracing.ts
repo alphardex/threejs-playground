@@ -32,7 +32,7 @@ class RayTracing extends Base {
     this.createPlane();
     this.createLight();
     // this.createDebugPanel();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
     this.animate();
@@ -103,7 +103,7 @@ class RayTracing extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.rayTracingMaterial) {
       this.rayTracingMaterial.uniforms.uTime.value = elapsedTime;
       this.rayTracingMaterial.uniforms.uMouse.value = mousePos;

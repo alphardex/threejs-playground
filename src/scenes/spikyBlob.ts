@@ -56,7 +56,7 @@ class SpikyBlob extends Base {
     this.createSpikyBlobMaterial();
     this.createSphere();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     // this.createDebugPanel();
     this.addListeners();
@@ -112,7 +112,7 @@ class SpikyBlob extends Base {
   }
   // 根据鼠标移动计算力的大小
   calcImpulse() {
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     const deltaX = mousePos.x - this.lastMousePos.x;
     const deltaY = mousePos.y - this.lastMousePos.y;
     const direction =
@@ -126,7 +126,7 @@ class SpikyBlob extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.spikyBlobMaterial) {
       this.spikyBlobMaterial.uniforms.uTime.value = elapsedTime;
       this.spikyBlobMaterial.uniforms.uMouse.value = mousePos;

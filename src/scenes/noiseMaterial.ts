@@ -103,7 +103,7 @@ class NoiseMaterial extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.noiseMaterialMaterial) {
       this.noiseMaterialMaterial.uniforms.uTime.value = elapsedTime;
       this.noiseMaterialMaterial.uniforms.uMouse.value = mousePos;

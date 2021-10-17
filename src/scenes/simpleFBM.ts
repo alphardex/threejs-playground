@@ -23,7 +23,7 @@ class SimpleFBM extends Base {
     this.createSimpleFBMMaterial();
     this.createPlane();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -60,7 +60,7 @@ class SimpleFBM extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.simpleFBMMaterial) {
       this.simpleFBMMaterial.uniforms.uTime.value = elapsedTime;
       this.simpleFBMMaterial.uniforms.uMouse.value = mousePos;

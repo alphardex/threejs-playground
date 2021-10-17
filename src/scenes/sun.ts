@@ -40,7 +40,7 @@ class Sun extends Base {
     this.createSunRingMaterial();
     this.createSunRing();
     this.createLight();
-    this.trackMousePos();
+    this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -156,7 +156,7 @@ class Sun extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.sunNoiseMaterial && this.sunShapeMaterial) {
       this.cubeCamera.update(this.renderer, this.cubeScene);
       this.sunNoiseMaterial.uniforms.uTime.value = elapsedTime;
