@@ -34,3 +34,19 @@ export interface SunshinePos {
   sunshinePos: any;
   sunshinePosCalc: Point3D;
 }
+
+export interface PerspectiveCameraParams {
+  fov?: number;
+  near?: number;
+  far?: number;
+}
+
+export interface OrthographicCameraParams {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+  zoom?: number;
+  near?: number;
+  far?: number;
+}

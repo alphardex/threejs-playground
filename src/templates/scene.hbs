@@ -1,15 +1,11 @@
 import * as THREE from "three";
-import ky from "kyouka";
-import * as dat from "dat.gui";
 import { Base } from "./base";
-// @ts-ignore
 import {{name}}VertexShader from "../shaders/{{name}}/vertex.glsl";
-// @ts-ignore
 import {{name}}FragmentShader from "../shaders/{{name}}/fragment.glsl";
 
 class {{nameUpper}} extends Base {
-  clock!: THREE.Clock;
-  {{name}}Material!: THREE.ShaderMaterial;
+  clock: THREE.Clock;
+  {{name}}Material: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();

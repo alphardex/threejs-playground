@@ -5,22 +5,18 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "./base";
-// @ts-ignore
 import imagePlaneMainVertexShader from "../shaders/imagePlane/main/vertex.glsl";
-// @ts-ignore
 import imagePlaneMainFragmentShader from "../shaders/imagePlane/main/fragment.glsl";
-// @ts-ignore
 import imagePlanePostprocessingVertexShader from "../shaders/imagePlane/postprocessing/vertex.glsl";
-// @ts-ignore
 import imagePlanePostprocessingFragmentShader from "../shaders/imagePlane/postprocessing/fragment.glsl";
 
 class ImagePlane extends Base {
-  clock!: THREE.Clock;
-  imagePlaneMaterial!: THREE.ShaderMaterial;
-  images!: HTMLImageElement[];
+  clock: THREE.Clock;
+  imagePlaneMaterial: THREE.ShaderMaterial;
+  images: HTMLImageElement[];
   makuGroup: MakuGroup;
-  scroller!: Scroller;
-  customPass!: ShaderPass;
+  scroller: Scroller;
+  customPass: ShaderPass;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();

@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-import { MeshObject } from "@/types";
+import {
+  MeshObject,
+  OrthographicCameraParams,
+  PerspectiveCameraParams,
+} from "@/types";
 import { calcAspect } from "@/utils/math";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -11,20 +15,20 @@ import { MouseTracker } from "@/utils/dom";
 class Base {
   debug: boolean;
   container: HTMLElement | null;
-  perspectiveCameraParams!: Record<string, any>;
-  orthographicCameraParams!: Record<string, any>;
-  cameraPosition!: THREE.Vector3;
-  lookAtPosition!: THREE.Vector3;
-  rendererParams!: Record<string, any>;
-  mouseTracker!: MouseTracker;
-  scene!: THREE.Scene;
-  camera!: THREE.PerspectiveCamera | THREE.OrthographicCamera;
-  renderer!: THREE.WebGLRenderer;
-  controls!: OrbitControls;
-  raycaster!: THREE.Raycaster;
-  stats!: Stats;
-  composer!: EffectComposer;
-  shaderMaterial!: THREE.ShaderMaterial;
+  perspectiveCameraParams: PerspectiveCameraParams;
+  orthographicCameraParams: OrthographicCameraParams;
+  cameraPosition: THREE.Vector3;
+  lookAtPosition: THREE.Vector3;
+  rendererParams: THREE.WebGLRendererParameters;
+  mouseTracker: MouseTracker;
+  scene: THREE.Scene;
+  stats: Stats;
+  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
+  renderer: THREE.WebGLRenderer;
+  controls: OrbitControls;
+  shaderMaterial: THREE.ShaderMaterial;
+  composer: EffectComposer;
+  raycaster: THREE.Raycaster;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -41,11 +45,8 @@ class Base {
     this.cameraPosition = new THREE.Vector3(0, 3, 10);
     this.lookAtPosition = new THREE.Vector3(0, 0, 0);
     this.rendererParams = {
-      outputEncoding: THREE.LinearEncoding,
-      config: {
-        alpha: true,
-        antialias: true,
-      },
+      alpha: true,
+      antialias: true,
     };
     this.mouseTracker = new MouseTracker();
   }
@@ -66,7 +67,7 @@ class Base {
     if (this.debug) {
       scene.add(new THREE.AxesHelper());
       const stats = Stats();
-      this.container!.appendChild(stats.dom);
+      this.container.appendChild(stats.dom);
       this.stats = stats;
     }
     this.scene = scene;
@@ -75,7 +76,7 @@ class Base {
   createPerspectiveCamera() {
     const { perspectiveCameraParams, cameraPosition, lookAtPosition } = this;
     const { fov, near, far } = perspectiveCameraParams;
-    const aspect = calcAspect(this.container!);
+    const aspect = calcAspect(this.container);
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.position.copy(cameraPosition);
     camera.lookAt(lookAtPosition);
@@ -101,7 +102,7 @@ class Base {
   updateOrthographicCameraParams() {
     const { container } = this;
     const { zoom, near, far } = this.orthographicCameraParams;
-    const aspect = calcAspect(container!);
+    const aspect = calcAspect(container);
     this.orthographicCameraParams = {
       left: -zoom * aspect,
       right: zoom * aspect,
@@ -113,16 +114,12 @@ class Base {
     };
   }
   // 创建渲染
-  createRenderer(useWebGL1 = false) {
+  createRenderer() {
     const { rendererParams } = this;
-    const { outputEncoding, config } = rendererParams;
-    const renderer = !useWebGL1
-      ? new THREE.WebGLRenderer(config)
-      : new THREE.WebGL1Renderer(config);
-    renderer.setSize(this.container!.clientWidth, this.container!.clientHeight);
-    renderer.outputEncoding = outputEncoding;
+    const renderer = new THREE.WebGLRenderer(rendererParams);
+    renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.resizeRendererToDisplaySize();
-    this.container?.appendChild(renderer.domElement);
+    this.container.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.renderer.setClearColor(0x000000, 0);
   }
@@ -192,7 +189,7 @@ class Base {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
       } else {
         if (this.camera instanceof THREE.PerspectiveCamera) {
-          const aspect = calcAspect(this.container!);
+          const aspect = calcAspect(this.container);
           const camera = this.camera as THREE.PerspectiveCamera;
           camera.aspect = aspect;
           camera.updateProjectionMatrix();
@@ -210,8 +207,8 @@ class Base {
           camera.updateProjectionMatrix();
         }
         this.renderer.setSize(
-          this.container!.clientWidth,
-          this.container!.clientHeight
+          this.container.clientWidth,
+          this.container.clientHeight
         );
       }
     });
@@ -265,9 +262,9 @@ class Base {
 }
 
 class PhysicsBase extends Base {
-  world!: CANNON.World;
-  gravity!: CANNON.Vec3;
-  meshPhysicsObjs!: MeshPhysicsObject[];
+  world: CANNON.World;
+  gravity: CANNON.Vec3;
+  meshPhysicsObjs: MeshPhysicsObject[];
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.gravity = new CANNON.Vec3(0, -9.82, 0);

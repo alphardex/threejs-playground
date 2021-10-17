@@ -27,7 +27,7 @@ class RayTracing extends Base {
   init() {
     this.createScene();
     this.createOrthographicCamera();
-    this.createRenderer(true);
+    this.createRenderer();
     this.createRayTracingMaterial();
     this.createPlane();
     this.createLight();

@@ -97,7 +97,7 @@ class KineticText extends Base {
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
-    this.createRenderer(true);
+    this.createRenderer();
     await this.createKineticText(this.params.text);
     this.createLight();
     this.createOrbitControls();

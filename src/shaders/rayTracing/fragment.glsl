@@ -3,7 +3,6 @@
 #pragma glslify:rotation3d=require(glsl-rotate/rotation-3d)
 #pragma glslify:rand=require(glsl-random)
 #pragma glslify:roundedboxNormal=require(../modules/roundedboxNormal)
-#pragma glslify:inverse=require(glsl-inverse)
 #pragma glslify:QUARTER_PI=require(glsl-constants/QUARTER_PI)
 #pragma glslify:centerUv=require(../modules/centerUv)
 

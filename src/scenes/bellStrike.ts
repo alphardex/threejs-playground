@@ -37,13 +37,6 @@ class BellStrike extends PhysicsBase {
   params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
-    this.rendererParams = {
-      outputEncoding: THREE.sRGBEncoding,
-      config: {
-        alpha: true,
-        antialias: true,
-      },
-    };
     this.perspectiveCameraParams = {
       fov: 45,
       near: 1,
@@ -67,6 +60,7 @@ class BellStrike extends PhysicsBase {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
+    this.changeRendererParams();
     // 出于移动端性能考虑，这里未开启投影
     // this.enableShadow()
     this.addListeners();
@@ -102,6 +96,10 @@ class BellStrike extends PhysicsBase {
       this.detectCollision();
       this.createHint();
     });
+  }
+  // 改变渲染器参数
+  changeRendererParams() {
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
   }
   // 创建音效源
   createAudioSource() {
