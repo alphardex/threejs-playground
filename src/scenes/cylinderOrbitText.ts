@@ -8,7 +8,7 @@ import createGeometry from "three-bmfont-text";
 // @ts-ignore
 import MSDFShader from "three-bmfont-text/shaders/msdf";
 import { fontAtlas, fontFile } from "@/consts/cylinderOrbitText";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import cylinderOrbitTextVertexShader from "../shaders/cylinderOrbitText/vertex.glsl";
 // @ts-ignore

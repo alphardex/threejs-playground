@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-import { PhysicsBase } from "./base";
+import { PhysicsBase } from "@/commons/base";
 import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import {

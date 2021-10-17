@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import gsap from "gsap";
 import ky from "kyouka";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 
 class Stack extends Base {
   box!: THREE.Mesh;

@@ -13,7 +13,7 @@ import {
   skyParams,
   woodTextureUrl,
 } from "@/consts/bellStrike";
-import { PhysicsBase } from "./base";
+import { PhysicsBase } from "@/commons/base";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";

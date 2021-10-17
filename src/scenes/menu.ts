@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
-import { PhysicsBase } from "./base";
+import { PhysicsBase } from "@/commons/base";
 import { menuFontConfig, menuFontUrl } from "@/consts/menu";
 import { createText, loadFont } from "@/utils/misc";
 

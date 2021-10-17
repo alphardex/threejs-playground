@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import * as dat from "dat.gui";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import twistedShapeVertexShader from "../shaders/twistedShape/vertex.glsl";
 // @ts-ignore

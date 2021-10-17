@@ -7,7 +7,7 @@ import loadFont from "load-bmfont";
 import createGeometry from "three-bmfont-text";
 // @ts-ignore
 import MSDFShader from "three-bmfont-text/shaders/msdf";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import { fontAtlas, fontFile } from "@/consts/kineticText";
 // @ts-ignore
 import kineticTextTorusKnotVertexShader from "../shaders/kineticText/torusKnot/vertex.glsl";

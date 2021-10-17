@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import rayMarchingVertexShader from "../shaders/rayMarching/vertex.glsl";
 // @ts-ignore

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import gsap from "gsap";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import { tunnelTexture } from "@/consts/timeTravel";
 
 class TimeTravel extends Base {

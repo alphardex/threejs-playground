@@ -4,7 +4,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import imagePlaneMainVertexShader from "../shaders/imagePlane/main/vertex.glsl";
 import imagePlaneMainFragmentShader from "../shaders/imagePlane/main/fragment.glsl";
 import imagePlanePostprocessingVertexShader from "../shaders/imagePlane/postprocessing/vertex.glsl";

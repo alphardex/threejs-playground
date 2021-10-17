@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import rayMarchingBallVertexShader from "../shaders/rayMarchingBall/vertex.glsl";
 // @ts-ignore

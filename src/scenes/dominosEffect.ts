@@ -1,10 +1,9 @@
 import * as THREE from "three";
 import ky from "kyouka";
-import { PhysicsBase } from "./base";
+import { PhysicsBase } from "@/commons/base";
 import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import {
-  arrays2Point,
   Point,
   point2Array,
   point2CannonVec,

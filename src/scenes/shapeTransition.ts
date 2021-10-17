@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import shapeTransitionVertexShader from "../shaders/shapeTransition/vertex.glsl";
 // @ts-ignore

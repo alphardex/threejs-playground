@@ -2,7 +2,7 @@ import * as THREE from "three";
 import * as dat from "dat.gui";
 import ky from "kyouka";
 import { Maku, MakuGroup, getScreenFov } from "maku.js";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
 // @ts-ignore

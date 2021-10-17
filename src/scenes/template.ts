@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import templateVertexShader from "../shaders/template/vertex.glsl";
 import templateFragmentShader from "../shaders/template/fragment.glsl";
 

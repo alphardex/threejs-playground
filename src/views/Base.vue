@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Base } from "@/scenes/base";
+import { Base } from "@/commons/base";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({

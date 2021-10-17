@@ -7,7 +7,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";
 // @ts-ignore

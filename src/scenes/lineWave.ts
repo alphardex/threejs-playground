@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import { faceModelUrl } from "@/consts/lineWave";
 // @ts-ignore
 import lineWaveVertexShader from "../shaders/lineWave/vertex.glsl";

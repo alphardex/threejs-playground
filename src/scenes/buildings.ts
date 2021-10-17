@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import ky from "kyouka";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 
 class Buildings extends Base {
   ground!: THREE.Mesh;

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import gsap from "gsap";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import noiseMaterialVertexShader from "../shaders/noiseMaterial/vertex.glsl";
 // @ts-ignore

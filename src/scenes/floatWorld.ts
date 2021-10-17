@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import { floatWorldFontConfig, floatWorldFontUrl } from "@/consts/floatWorld";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 import { CinematicCamera } from "three/examples/jsm/cameras/CinematicCamera.js";
 import { calcAspect } from "@/utils/math";
 import { createText, loadFont } from "@/utils/misc";

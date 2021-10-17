@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import hyperbolicHelicoidColorFragmentShader from "../shaders/hyperbolicHelicoid/color/fragment.glsl";
 // @ts-ignore

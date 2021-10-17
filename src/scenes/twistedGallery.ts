@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import { Maku, MakuGroup, getScreenFov } from "maku.js";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import twistedGalleryMainVertexShader from "../shaders/twistedGallery/main/vertex.glsl";
 // @ts-ignore

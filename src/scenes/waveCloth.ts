@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Base } from "./base";
+import { Base } from "@/commons/base";
 // @ts-ignore
 import waveClothVertexShader from "../shaders/waveCloth/vertex.glsl";
 // @ts-ignore
