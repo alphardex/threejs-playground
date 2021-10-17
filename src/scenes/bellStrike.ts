@@ -33,6 +33,7 @@ class BellStrike extends PhysicsBase {
   isStriked!: boolean;
   startWish!: boolean;
   number!: number;
+  sound!: THREE.Audio;
   params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
