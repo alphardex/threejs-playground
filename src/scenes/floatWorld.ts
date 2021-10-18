@@ -3,7 +3,7 @@ import ky from "kyouka";
 import { floatWorldFontConfig, floatWorldFontUrl } from "@/consts/floatWorld";
 import { Base } from "@/commons/base";
 import { CinematicCamera } from "three/examples/jsm/cameras/CinematicCamera.js";
-import { calcAspect } from "@/utils/math";
+import { calcAspect } from "@/utils/dom";
 import { createText, loadFont } from "@/utils/misc";
 
 class FloatWorld extends Base {

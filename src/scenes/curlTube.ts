@@ -6,7 +6,7 @@ import { Base } from "@/commons/base";
 import curlTubeVertexShader from "../shaders/curlTube/vertex.glsl";
 // @ts-ignore
 import curlTubeFragmentShader from "../shaders/curlTube/fragment.glsl";
-import { computeCurl } from "@/utils/math";
+import { computeCurl } from "@/utils/noise";
 import { RaycastSelector } from "@/utils/misc";
 
 class CurlTube extends Base {

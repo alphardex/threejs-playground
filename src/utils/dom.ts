@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import imagesLoaded from "imagesloaded";
 
+// 计算元素比例
+const calcAspect = (el: HTMLElement) => el.clientWidth / el.clientHeight;
+
 // 获取归一化的鼠标位置
 const getNormalizedMousePos = (e: MouseEvent | Touch) => {
   return {
@@ -83,4 +86,10 @@ class MouseTracker {
   }
 }
 
-export { getNormalizedMousePos, preloadImages, getPointsInPath, MouseTracker };
+export {
+  calcAspect,
+  getNormalizedMousePos,
+  preloadImages,
+  getPointsInPath,
+  MouseTracker,
+};

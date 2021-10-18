@@ -5,7 +5,7 @@ import {
   OrthographicCameraParams,
   PerspectiveCameraParams,
 } from "@/types";
-import { calcAspect } from "@/utils/math";
+import { calcAspect } from "@/utils/dom";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";

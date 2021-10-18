@@ -7,7 +7,7 @@ import { Base } from "@/commons/base";
 import hyperbolicHelicoidColorFragmentShader from "../shaders/hyperbolicHelicoid/color/fragment.glsl";
 // @ts-ignore
 import hyperbolicHelicoidFunctionFragmentShader from "../shaders/hyperbolicHelicoid/function/fragment.glsl";
-import { hyperbolicHelicoidFunction } from "@/utils/math";
+import { hyperbolicHelicoidFunction } from "@/utils/parametric";
 import {
   hyperbolicHelicoidMatcapTextureUrl1,
   hyperbolicHelicoidMatcapTextureUrl2,

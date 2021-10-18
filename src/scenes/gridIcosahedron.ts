@@ -19,7 +19,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import gsap from "gsap";
-import { getBaryCoord } from "@/utils/math";
+import { getBaryCoord } from "@/utils/misc";
 
 class GridIcosahedron extends Base {
   clock!: THREE.Clock;

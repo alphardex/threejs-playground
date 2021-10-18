@@ -6,7 +6,7 @@ import { Base } from "@/commons/base";
 import twistedShapeVertexShader from "../shaders/twistedShape/vertex.glsl";
 // @ts-ignore
 import twistedShapeFragmentShader from "../shaders/twistedShape/fragment.glsl";
-import { sphube } from "@/utils/math";
+import { sphubeFunction } from "@/utils/parametric";
 
 class TwistedShape extends Base {
   clock!: THREE.Clock;
@@ -55,7 +55,7 @@ class TwistedShape extends Base {
   }
   // 创建扭曲图形
   createTwistedShape() {
-    const geometry = new ParametricGeometry(sphube, 400, 400);
+    const geometry = new ParametricGeometry(sphubeFunction, 400, 400);
     const material = this.material;
     this.createMesh({ geometry, material });
   }
