@@ -1,5 +1,5 @@
 <template>
-  <div class="template w-screen h-screen bg-blue-grad-1"></div>
+  <div class="template w-screen h-screen bg-black"></div>
 </template>
 
 <script lang="ts">
@@ -7,7 +7,7 @@ import Template from "@/scenes/template";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
-  name: "Base",
+  name: "Template",
   setup() {
     const start = () => {
       const template = new Template(".template", false);
