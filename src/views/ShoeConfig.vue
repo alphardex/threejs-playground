@@ -1,8 +1,13 @@
 <template>
   <div class="shoe-config w-screen h-screen bg-black"></div>
   <div v-if="shoeConfig">
-    <div class="absolute z-5 hv-center" v-show="selectedShoeComponent">
-      <input type="color" v-model="color" />
+    <div class="absolute z-5 top-12 right-12" v-if="selectedShoeComponent">
+      <div class="card">
+        <div class="flex items-center space-x-4">
+          <div>{{ selectedShoeComponent.name }}</div>
+          <input type="color" v-model="color" @change="onChangeColor" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -35,8 +40,16 @@ export default defineComponent({
     const onClick = () => {
       const obj = state.shoeConfig.onSelectShoeComponent();
       if (obj) {
+        const hexColor = `#${(obj as any).material.color.getHexString()}`;
+        state.color = hexColor;
         state.selectedShoeComponent = obj;
       }
+    };
+    // 改变颜色时
+    const onChangeColor = () => {
+      const newColor = state.color;
+      const obj = state.selectedShoeComponent as any;
+      obj.material.color.set(newColor);
     };
     // 监听点击
     const addClickListener = () => {
@@ -46,7 +59,7 @@ export default defineComponent({
       start();
       addClickListener();
     });
-    return { ...toRefs(state) };
+    return { ...toRefs(state), onChangeColor };
   },
 });
 </script>

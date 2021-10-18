@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import ky from "kyouka";
 import { Base } from "@/commons/base";
 import shoeConfigVertexShader from "../shaders/shoeConfig/vertex.glsl";
 import shoeConfigFragmentShader from "../shaders/shoeConfig/fragment.glsl";
@@ -72,12 +71,7 @@ class ShoeConfig extends Base {
     const modelParts = this.modelParts;
     const shoeComponents = modelParts.slice(2);
     const intersect = this.raycastSelector.getFirstIntersect(shoeComponents);
-    if (intersect) {
-      const obj = intersect.object;
-      return obj;
-    } else {
-      return null;
-    }
+    return intersect.object ? intersect.object : null;
   }
   // 动画
   update() {
