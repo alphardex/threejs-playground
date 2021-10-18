@@ -188,11 +188,6 @@
         <router-link :to="{ name: 'UnrollImages' }"> UnrollImages </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'ImageRipple' }">
-          ImageRipple(BUG)
-        </router-link>
-      </li>
-      <li>
         <router-link :to="{ name: 'FloatPaper' }"> FloatPaper </router-link>
       </li>
       <li>
