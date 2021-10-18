@@ -1,4 +1,4 @@
-module.exports = function(plop) {
+module.exports = function (plop) {
   // create your generators here
   plop.setGenerator("scene", {
     description: "generate a three.js scene",
