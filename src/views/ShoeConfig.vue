@@ -34,7 +34,9 @@ export default defineComponent({
     // 点击时
     const onClick = () => {
       const obj = state.shoeConfig.onSelectShoeComponent();
-      state.selectedShoeComponent = obj;
+      if (obj) {
+        state.selectedShoeComponent = obj;
+      }
     };
     // 监听点击
     const addClickListener = () => {
