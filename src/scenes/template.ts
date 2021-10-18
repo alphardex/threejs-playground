@@ -1,11 +1,10 @@
 import * as THREE from "three";
 import { Base } from "@/commons/base";
-import templateVertexShader from "../shaders/template/vertex.glsl";
-import templateFragmentShader from "../shaders/template/fragment.glsl";
+import vertexShader from "../shaders/template/vertex.glsl";
+import fragmentShader from "../shaders/template/fragment.glsl";
 
 class Template extends Base {
   clock: THREE.Clock;
-  templateMaterial: THREE.ShaderMaterial;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -16,7 +15,7 @@ class Template extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createTemplateMaterial();
+    this.createShaderMaterial();
     this.createPlane();
     this.createLight();
     this.mouseTracker.trackMousePos();
@@ -25,10 +24,10 @@ class Template extends Base {
     this.setLoop();
   }
   // 创建材质
-  createTemplateMaterial() {
-    const templateMaterial = new THREE.ShaderMaterial({
-      vertexShader: templateVertexShader,
-      fragmentShader: templateFragmentShader,
+  createShaderMaterial() {
+    const shaderMaterial = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -42,12 +41,12 @@ class Template extends Base {
         },
       },
     });
-    this.templateMaterial = templateMaterial;
+    this.shaderMaterial = shaderMaterial;
   }
   // 创建平面
   createPlane() {
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
-    const material = this.templateMaterial;
+    const material = this.shaderMaterial;
     this.createMesh({
       geometry,
       material,
@@ -57,9 +56,9 @@ class Template extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mouseTracker.mousePos;
-    if (this.templateMaterial) {
-      this.templateMaterial.uniforms.uTime.value = elapsedTime;
-      this.templateMaterial.uniforms.uMouse.value = mousePos;
+    if (this.shaderMaterial) {
+      this.shaderMaterial.uniforms.uTime.value = elapsedTime;
+      this.shaderMaterial.uniforms.uMouse.value = mousePos;
     }
   }
 }
