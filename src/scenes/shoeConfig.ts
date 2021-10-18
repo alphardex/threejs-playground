@@ -71,7 +71,7 @@ class ShoeConfig extends Base {
     const modelParts = this.modelParts;
     const shoeComponents = modelParts.slice(2);
     const intersect = this.raycastSelector.getFirstIntersect(shoeComponents);
-    return intersect.object ? intersect.object : null;
+    return intersect?.object ? intersect.object : null;
   }
   // 动画
   update() {

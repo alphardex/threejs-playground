@@ -5,7 +5,7 @@
       <div class="card">
         <div class="flex items-center space-x-4">
           <div>{{ selectedShoeComponent.name }}</div>
-          <input type="color" v-model="color" @change="onChangeColor" />
+          <input type="color" v-model="color" @input="onChangeColor" />
         </div>
       </div>
     </div>
