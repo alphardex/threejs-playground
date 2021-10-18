@@ -1,5 +1,5 @@
 <template>
-  <div class="template w-screen h-screen bg-black"></div>
+  <div class="template w-screen h-screen bg-black overflow-hidden"></div>
 </template>
 
 <script lang="ts">
