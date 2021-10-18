@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import ky from "kyouka";
 import { Base } from "@/commons/base";
 import shoeConfigVertexShader from "../shaders/shoeConfig/vertex.glsl";
 import shoeConfigFragmentShader from "../shaders/shoeConfig/fragment.glsl";
@@ -14,6 +15,7 @@ class ShoeConfig extends Base {
   clock: THREE.Clock;
   shoeConfigMaterial: THREE.ShaderMaterial;
   raycastSelector: RaycastSelector;
+  modelParts: THREE.Object3D[];
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -36,7 +38,6 @@ class ShoeConfig extends Base {
   // 创建选择器
   createRaycastSelector() {
     this.raycastSelector = new RaycastSelector(this.scene, this.camera);
-    this.raycastSelector.highlightIntersect();
   }
   // 创建材质
   createShoeConfigMaterial() {
@@ -64,16 +65,19 @@ class ShoeConfig extends Base {
     this.scene.add(model);
     const modelParts = flatModel(model);
     printModel(modelParts);
-    const Scene = modelParts[0];
-    const Shoe = modelParts[1];
-    const shoe = modelParts[2];
-    const shoe_1 = modelParts[3];
-    const shoe_2 = modelParts[4];
-    const shoe_3 = modelParts[5];
-    const shoe_4 = modelParts[6];
-    const shoe_5 = modelParts[7];
-    const shoe_6 = modelParts[8];
-    const shoe_7 = modelParts[9];
+    this.modelParts = modelParts;
+  }
+  // 选中鞋的部件时
+  onSelectShoeComponent() {
+    const modelParts = this.modelParts;
+    const shoeComponents = modelParts.slice(2);
+    const intersect = this.raycastSelector.getFirstIntersect(shoeComponents);
+    if (intersect) {
+      const obj = intersect.object;
+      return obj;
+    } else {
+      return null;
+    }
   }
   // 动画
   update() {

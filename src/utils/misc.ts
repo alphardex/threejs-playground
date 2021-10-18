@@ -178,17 +178,16 @@ class RaycastSelector {
     this.mouseTracker.trackMousePos();
   }
   // 获取点击物
-  getInterSects(): THREE.Intersection[] {
+  getInterSects(
+    targets: THREE.Object3D[] = this.scene.children
+  ): THREE.Intersection[] {
     this.raycaster.setFromCamera(this.mouseTracker.mousePos, this.camera);
-    const intersects = this.raycaster.intersectObjects(
-      this.scene.children,
-      true
-    );
+    const intersects = this.raycaster.intersectObjects(targets, true);
     return intersects;
   }
   // 获取第一个选中物
-  getFirstIntersect() {
-    const intersects = this.getInterSects();
+  getFirstIntersect(targets: THREE.Object3D[] = this.scene.children) {
+    const intersects = this.getInterSects(targets);
     const intersect = intersects[0];
     if (!intersect || !intersect.face) {
       return null;
