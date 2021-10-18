@@ -9,7 +9,7 @@ import {
   thousandFollowFontConfig,
   thousandFollowFontUrl,
 } from "@/consts/thousandFollow";
-import { createText, loadFont } from "@/utils/misc";
+import { createText, loadFont, RaycastSelector } from "@/utils/misc";
 
 class ThousandFollow extends Base {
   clock!: THREE.Clock;
@@ -19,6 +19,7 @@ class ThousandFollow extends Base {
   textMaterial!: THREE.ShaderMaterial;
   plane!: THREE.Mesh;
   mousePosOnPlane!: THREE.Vector3;
+  raycastSelector: RaycastSelector;
   colorParams!: any;
   params!: any;
   constructor(sel: string, debug: boolean) {
@@ -48,7 +49,7 @@ class ThousandFollow extends Base {
     this.createPlaneScene();
     this.createPlaneMaterial();
     this.createPlane();
-    this.createRaycaster();
+    this.raycastSelector = new RaycastSelector(this.planeScene, this.camera);
     this.trackMouseOnPlane();
     this.createTextMaterial();
     await this.createMainText("1000");
@@ -134,7 +135,7 @@ class ThousandFollow extends Base {
   // 追踪鼠标在平面上的位置
   trackMouseOnPlane() {
     window.addEventListener("mousemove", (e) => {
-      const target = this.onChooseIntersect(this.plane, this.planeScene);
+      const target = this.raycastSelector.onChooseIntersect(this.plane);
       if (target) {
         this.mousePosOnPlane = target.point;
       }

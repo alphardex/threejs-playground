@@ -28,7 +28,6 @@ class Base {
   controls: OrbitControls;
   shaderMaterial: THREE.ShaderMaterial;
   composer: EffectComposer;
-  raycaster: THREE.Raycaster;
   constructor(sel: string, debug = false) {
     this.debug = debug;
     this.container = document.querySelector(sel);
@@ -234,30 +233,6 @@ class Base {
         this.renderer.render(this.scene, this.camera);
       }
     });
-  }
-  // 创建点选模型
-  createRaycaster() {
-    this.raycaster = new THREE.Raycaster();
-    this.mouseTracker.trackMousePos();
-  }
-  // 获取点击物
-  getInterSects(container = this.scene): THREE.Intersection[] {
-    this.raycaster.setFromCamera(this.mouseTracker.mousePos, this.camera);
-    const intersects = this.raycaster.intersectObjects(
-      container.children,
-      true
-    );
-    return intersects;
-  }
-  // 选中点击物时
-  onChooseIntersect(target: THREE.Object3D, container = this.scene) {
-    const intersects = this.getInterSects(container);
-    const intersect = intersects[0];
-    if (!intersect || !intersect.face) {
-      return null;
-    }
-    const { object } = intersect;
-    return target === object ? intersect : null;
   }
 }
 

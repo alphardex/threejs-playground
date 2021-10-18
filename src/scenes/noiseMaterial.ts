@@ -8,12 +8,14 @@ import noiseMaterialVertexShader from "../shaders/noiseMaterial/vertex.glsl";
 // @ts-ignore
 import noiseMaterialFragmentShader from "../shaders/noiseMaterial/fragment.glsl";
 import { perlinNoiseTextureUrl } from "@/consts/noiseMaterial";
+import { RaycastSelector } from "@/utils/misc";
 
 class NoiseMaterial extends Base {
   clock!: THREE.Clock;
   noiseMaterialMaterial!: THREE.ShaderMaterial;
   mesh!: THREE.Mesh;
   isOpen!: boolean;
+  raycastSelector: RaycastSelector;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -24,11 +26,11 @@ class NoiseMaterial extends Base {
   init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     this.createNoiseMaterialMaterial();
     this.createBox();
     this.createLight();
-    this.createRaycaster();
     this.createOrbitControls();
     this.createClickEffect();
     // this.createDebugPanel();
@@ -83,7 +85,7 @@ class NoiseMaterial extends Base {
   // 点击物体时
   onClickMesh() {
     const mesh = this.mesh;
-    if (this.onChooseIntersect(mesh)) {
+    if (this.raycastSelector.onChooseIntersect(mesh)) {
       const material = this.noiseMaterialMaterial;
       if (!this.isOpen) {
         gsap.to(material.uniforms.uTransitionProgress, {

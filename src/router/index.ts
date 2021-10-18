@@ -55,6 +55,7 @@ import ImagePlane from "../views/ImagePlane.vue";
 import UnrollImages from "../views/UnrollImages.vue";
 import ImageRipple from "../views/ImageRipple.vue";
 import FloatPaper from "../views/FloatPaper.vue";
+import ShoeConfig from "../views/ShoeConfig.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -331,6 +332,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/float-paper",
     name: "FloatPaper",
     component: FloatPaper,
+  },
+  {
+    path: "/shoe-config",
+    name: "ShoeConfig",
+    component: ShoeConfig,
   },
   {
     path: "/:pathMatch(.*)*",

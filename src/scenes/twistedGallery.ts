@@ -17,6 +17,7 @@ import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { RaycastSelector } from "@/utils/misc";
 
 class TwistedGallery extends Base {
   clock!: THREE.Clock;
@@ -26,6 +27,7 @@ class TwistedGallery extends Base {
   scroll!: any;
   customPass!: ShaderPass;
   scrollSpeed!: number;
+  raycastSelector: RaycastSelector;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -44,12 +46,12 @@ class TwistedGallery extends Base {
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     await preloadImages();
     this.createEverything();
     this.listenScroll();
     this.createLight();
-    this.createRaycaster();
     this.createOrbitControls();
     this.addListeners();
     this.setLoop();
@@ -130,7 +132,7 @@ class TwistedGallery extends Base {
       });
     });
     window.addEventListener("mousemove", () => {
-      const intersect = this.getInterSects()[0];
+      const intersect = this.raycastSelector.getInterSects()[0];
       if (intersect) {
         const obj = intersect.object as any;
         if (obj.material.uniforms) {

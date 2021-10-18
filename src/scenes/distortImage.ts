@@ -34,6 +34,7 @@ import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { RaycastSelector } from "@/utils/misc";
 
 class DistortImage extends Base {
   clock!: THREE.Clock;
@@ -49,6 +50,7 @@ class DistortImage extends Base {
   customPass!: ShaderPass;
   scrollSpeed!: number;
   scrollSpeedTarget!: number;
+  raycastSelector: RaycastSelector;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -104,12 +106,12 @@ class DistortImage extends Base {
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     await preloadImages();
     this.createEverything();
     this.listenScroll();
     this.createLight();
-    this.createRaycaster();
     this.createOrbitControls();
     this.createDebugPanel();
     this.addListeners();
@@ -207,7 +209,7 @@ class DistortImage extends Base {
       });
     });
     window.addEventListener("mousemove", () => {
-      const intersect = this.getInterSects()[0];
+      const intersect = this.raycastSelector.getInterSects()[0];
       if (intersect) {
         const obj = intersect.object as any;
         if (obj.material.uniforms) {

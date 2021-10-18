@@ -7,6 +7,7 @@ import curlTubeVertexShader from "../shaders/curlTube/vertex.glsl";
 // @ts-ignore
 import curlTubeFragmentShader from "../shaders/curlTube/fragment.glsl";
 import { computeCurl } from "@/utils/math";
+import { RaycastSelector } from "@/utils/misc";
 
 class CurlTube extends Base {
   clock!: THREE.Clock;
@@ -17,6 +18,7 @@ class CurlTube extends Base {
   plane!: THREE.Mesh;
   mousePosOnPlane!: THREE.Vector3;
   mouseSpot!: THREE.Mesh;
+  raycastSelector: RaycastSelector;
   colorParams!: any;
   params!: any;
   constructor(sel: string, debug: boolean) {
@@ -53,7 +55,7 @@ class CurlTube extends Base {
     this.createPlaneScene();
     this.createPlaneMaterial();
     this.createPlane();
-    this.createRaycaster();
+    this.raycastSelector = new RaycastSelector(this.planeScene, this.camera);
     this.trackMouseOnPlane();
     // this.createSpot();
     // this.createOrbitControls();
@@ -203,7 +205,7 @@ class CurlTube extends Base {
   // 追踪鼠标在平面上的位置
   trackMouseOnPlane() {
     window.addEventListener("mousemove", (e) => {
-      const target = this.onChooseIntersect(this.plane, this.planeScene);
+      const target = this.raycastSelector.onChooseIntersect(this.plane);
       if (target) {
         this.mousePosOnPlane = target.point;
       }

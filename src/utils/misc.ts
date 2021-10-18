@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
@@ -9,6 +10,7 @@ import {
 } from "three/examples/jsm/geometries/TextGeometry";
 import { FontLoader, Font } from "three/examples/jsm/loaders/FontLoader";
 import { point2Array } from "./math";
+import { MouseTracker } from "./dom";
 
 // 创建文本
 const createText = (
@@ -24,14 +26,22 @@ const createText = (
 };
 
 // 加载GLTF模型
-const loadModel = (url: string): Promise<THREE.Object3D> => {
+const loadModel = (
+  url: string,
+  useDraco = true,
+  dracoPath = "./static/draco/"
+): Promise<THREE.Object3D> => {
   const loader = new GLTFLoader();
+  if (useDraco) {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(dracoPath);
+    loader.setDRACOLoader(dracoLoader);
+  }
   return new Promise((resolve, reject) => {
     loader.load(
       url,
       (gltf) => {
         const model = gltf.scene;
-        console.log(model);
         resolve(model);
       },
       undefined,
@@ -41,6 +51,26 @@ const loadModel = (url: string): Promise<THREE.Object3D> => {
       }
     );
   });
+};
+
+// 遍历模型，使其扁平化
+const flatModel = (model: THREE.Object3D): THREE.Object3D[] => {
+  const modelPartsArray = [];
+  model.traverse((obj) => {
+    modelPartsArray.push(obj);
+  });
+  return modelPartsArray;
+};
+
+// 打印扁平模型的所有部分
+const printModel = (modelParts: THREE.Object3D[], modelName = "modelParts") => {
+  const strArray = modelParts.map((obj, i) => {
+    const row = `const ${obj.name} = ${modelName}[${i}];`;
+    return row;
+  });
+  const str = strArray.join("\n");
+  console.log(str);
+  return str;
 };
 
 // 加载FBX模型
@@ -135,13 +165,81 @@ const getViewport = (camera: THREE.Camera) => {
   return viewport;
 };
 
+class RaycastSelector {
+  scene: THREE.Scene;
+  camera: THREE.Camera;
+  raycaster: THREE.Raycaster;
+  mouseTracker: MouseTracker;
+  constructor(scene: THREE.Scene, camera: THREE.Camera) {
+    this.scene = scene;
+    this.camera = camera;
+    this.raycaster = new THREE.Raycaster();
+    this.mouseTracker = new MouseTracker();
+    this.mouseTracker.trackMousePos();
+  }
+  // 获取点击物
+  getInterSects(): THREE.Intersection[] {
+    this.raycaster.setFromCamera(this.mouseTracker.mousePos, this.camera);
+    const intersects = this.raycaster.intersectObjects(
+      this.scene.children,
+      true
+    );
+    return intersects;
+  }
+  // 获取第一个选中物
+  getFirstIntersect() {
+    const intersects = this.getInterSects();
+    const intersect = intersects[0];
+    if (!intersect || !intersect.face) {
+      return null;
+    }
+    return intersect;
+  }
+  // 选中点击物时
+  onChooseIntersect(target: THREE.Object3D) {
+    const intersect = this.getFirstIntersect();
+    if (!intersect) {
+      return null;
+    }
+    const object = intersect.object;
+    return target === object ? intersect : null;
+  }
+  // 高亮选中物
+  highlightIntersect(color = "#ff0000") {
+    document.addEventListener("click", () => {
+      const intersect = this.getFirstIntersect();
+      if (!intersect) {
+        return null;
+      }
+      const object = intersect.object as THREE.Mesh;
+      const material = object.material as any;
+      console.log(object.name);
+      if (!material.isHighlighted) {
+        material.isHighlighted = true;
+        material.originColor = new THREE.Color(
+          material.color.r,
+          material.color.g,
+          material.color.b
+        );
+        material.color.set(color);
+      } else {
+        material.isHighlighted = false;
+        material.color.set(material.originColor);
+      }
+    });
+  }
+}
+
 export {
   createText,
   loadModel,
+  flatModel,
+  printModel,
   loadFBXModel,
   loadFont,
   loadAudio,
   loadHDR,
   sampleParticlesPositionFromMesh,
   getViewport,
+  RaycastSelector,
 };

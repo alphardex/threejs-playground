@@ -20,7 +20,12 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import * as dat from "dat.gui";
-import { loadAudio, loadFBXModel, loadModel } from "@/utils/misc";
+import {
+  loadAudio,
+  loadFBXModel,
+  loadModel,
+  RaycastSelector,
+} from "@/utils/misc";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;
@@ -34,6 +39,7 @@ class BellStrike extends PhysicsBase {
   startWish!: boolean;
   number!: number;
   sound!: THREE.Audio;
+  raycastSelector: RaycastSelector;
   params!: Record<string, any>;
   constructor(sel: string, debug = false) {
     super(sel, debug);
@@ -59,6 +65,7 @@ class BellStrike extends PhysicsBase {
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     this.changeRendererParams();
     // 出于移动端性能考虑，这里未开启投影
@@ -91,7 +98,6 @@ class BellStrike extends PhysicsBase {
     await ky.sleep(500);
     this.loadComplete = true;
     this.moveCamera(() => {
-      this.createRaycaster();
       this.onClick();
       this.detectCollision();
       this.createHint();
@@ -394,7 +400,9 @@ class BellStrike extends PhysicsBase {
   }
   // 点击木棍时
   onClickStick() {
-    const intersect = this.onChooseIntersect(this.stickObj.mesh);
+    const intersect = this.raycastSelector.onChooseIntersect(
+      this.stickObj.mesh
+    );
     if (intersect && !this.startStrike) {
       this.strikeBell();
       this.startStrike = true;

@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { PhysicsBase } from "@/commons/base";
 import { menuFontConfig, menuFontUrl } from "@/consts/menu";
-import { createText, loadFont } from "@/utils/misc";
+import { createText, loadFont, RaycastSelector } from "@/utils/misc";
 
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;
@@ -31,6 +31,7 @@ class Menu extends PhysicsBase {
   offset!: number;
   groundMat!: CANNON.Material;
   letterMat!: CANNON.Material;
+  raycastSelector: RaycastSelector;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.cameraPosition = new THREE.Vector3(-10, 10, 10);
@@ -53,12 +54,12 @@ class Menu extends PhysicsBase {
     this.createWorld();
     this.createScene();
     this.createOrthographicCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     this.createLight();
     this.createContactMaterial();
     await this.createMenu();
     this.createFog();
-    this.createRaycaster();
     this.addListeners();
     this.setLoop();
   }
@@ -160,7 +161,7 @@ class Menu extends PhysicsBase {
   onClickLetter() {
     this.meshPhysicsObjs.forEach((obj) => {
       const { mesh, body } = obj;
-      const intersect = this.onChooseIntersect(mesh);
+      const intersect = this.raycastSelector.onChooseIntersect(mesh);
       if (intersect) {
         const { face } = intersect;
         const impulse = new THREE.Vector3()

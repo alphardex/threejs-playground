@@ -195,6 +195,9 @@
       <li>
         <router-link :to="{ name: 'FloatPaper' }"> FloatPaper </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ShoeConfig' }"> ShoeConfig </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

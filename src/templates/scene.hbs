@@ -56,7 +56,7 @@ class {{nameUpper}} extends Base {
   // 动画
   update() {
     const elapsedTime = this.clock.getElapsedTime();
-    const mousePos = this.mousePos;
+    const mousePos = this.mouseTracker.mousePos;
     if (this.{{name}}Material) {
       this.{{name}}Material.uniforms.uTime.value = elapsedTime;
       this.{{name}}Material.uniforms.uMouse.value = mousePos;
