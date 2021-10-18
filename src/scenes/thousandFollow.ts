@@ -9,7 +9,9 @@ import {
   thousandFollowFontConfig,
   thousandFollowFontUrl,
 } from "@/consts/thousandFollow";
-import { createText, loadFont, RaycastSelector } from "@/utils/misc";
+import { loadFont } from "@/utils/loader";
+import { RaycastSelector } from "@/utils/raycast";
+import { createText } from "@/utils/misc";
 
 class ThousandFollow extends Base {
   clock!: THREE.Clock;

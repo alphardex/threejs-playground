@@ -7,7 +7,7 @@ import { faceModelUrl } from "@/consts/lineWave";
 import lineWaveVertexShader from "../shaders/lineWave/vertex.glsl";
 // @ts-ignore
 import lineWaveFragmentShader from "../shaders/lineWave/fragment.glsl";
-import { loadModel } from "@/utils/misc";
+import { loadModel } from "@/utils/loader";
 
 class LineWave extends Base {
   rt!: THREE.WebGLRenderTarget;

@@ -7,7 +7,7 @@ import curlTubeVertexShader from "../shaders/curlTube/vertex.glsl";
 // @ts-ignore
 import curlTubeFragmentShader from "../shaders/curlTube/fragment.glsl";
 import { computeCurl } from "@/utils/noise";
-import { RaycastSelector } from "@/utils/misc";
+import { RaycastSelector } from "@/utils/raycast";
 
 class CurlTube extends Base {
   clock!: THREE.Clock;

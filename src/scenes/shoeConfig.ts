@@ -1,11 +1,7 @@
 import * as THREE from "three";
 import { Base } from "@/commons/base";
-import {
-  RaycastSelector,
-  loadModel,
-  flatModel,
-  printModel,
-} from "@/utils/misc";
+import { loadModel, flatModel, printModel } from "@/utils/loader";
+import { RaycastSelector } from "@/utils/raycast";
 import { shoeModelUrl } from "@/consts/shoeConfig";
 
 class ShoeConfig extends Base {

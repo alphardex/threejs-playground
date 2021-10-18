@@ -20,12 +20,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import * as dat from "dat.gui";
-import {
-  loadAudio,
-  loadFBXModel,
-  loadModel,
-  RaycastSelector,
-} from "@/utils/misc";
+import { loadAudio, loadFBXModel, loadModel } from "@/utils/loader";
+import { RaycastSelector } from "@/utils/raycast";
 
 class BellStrike extends PhysicsBase {
   bellObj!: MeshPhysicsObject;

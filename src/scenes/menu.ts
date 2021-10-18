@@ -3,7 +3,9 @@ import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import { PhysicsBase } from "@/commons/base";
 import { menuFontConfig, menuFontUrl } from "@/consts/menu";
-import { createText, loadFont, RaycastSelector } from "@/utils/misc";
+import { loadFont } from "@/utils/loader";
+import { RaycastSelector } from "@/utils/raycast";
+import { createText } from "@/utils/misc";
 
 class LetterObject extends MeshPhysicsObject {
   xOffset!: number;

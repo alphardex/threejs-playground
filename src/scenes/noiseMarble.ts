@@ -13,7 +13,7 @@ import noiseMarbleFragmentMainShader from "../shaders/noiseMarble/fragmentMain.g
 // @ts-ignore
 import noiseMarbleFragmentColorShader from "../shaders/noiseMarble/fragmentColor.glsl";
 import { displacementMapUrl, hdrUrl, heightMapUrl } from "@/consts/noiseMarble";
-import { loadHDR } from "@/utils/misc";
+import { loadHDR } from "@/utils/loader";
 
 class NoiseMarble extends Base {
   clock!: THREE.Clock;

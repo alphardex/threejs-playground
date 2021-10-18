@@ -13,7 +13,7 @@ import FBOParticlesBasicFragmentShader from "../shaders/FBOParticles/basic/fragm
 // @ts-ignore
 import FBOParticlesGPUFragmentShader from "../shaders/FBOParticles/gpu/fragment.glsl";
 import { faceModelUrl } from "@/consts/FBOParticles";
-import { loadModel } from "@/utils/misc";
+import { loadModel } from "@/utils/loader";
 
 class FBOParticles extends Base {
   clock!: THREE.Clock;

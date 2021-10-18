@@ -8,7 +8,7 @@ import {
   buildingModelUrl,
   buildingPositions,
 } from "@/consts/sunshineSimulation";
-import { loadModel } from "@/utils/misc";
+import { loadModel } from "@/utils/loader";
 
 class SunshineSimulation extends Base {
   clock!: THREE.Clock;

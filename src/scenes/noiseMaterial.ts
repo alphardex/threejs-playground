@@ -8,7 +8,7 @@ import noiseMaterialVertexShader from "../shaders/noiseMaterial/vertex.glsl";
 // @ts-ignore
 import noiseMaterialFragmentShader from "../shaders/noiseMaterial/fragment.glsl";
 import { perlinNoiseTextureUrl } from "@/consts/noiseMaterial";
-import { RaycastSelector } from "@/utils/misc";
+import { RaycastSelector } from "@/utils/raycast";
 
 class NoiseMaterial extends Base {
   clock!: THREE.Clock;
