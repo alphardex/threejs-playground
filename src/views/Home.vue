@@ -193,6 +193,9 @@
       <li>
         <router-link :to="{ name: 'ShoeConfig' }"> ShoeConfig </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'DNAParticle' }">DNAParticle</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

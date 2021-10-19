@@ -56,6 +56,7 @@ import UnrollImages from "../views/UnrollImages.vue";
 import ImageRipple from "../views/ImageRipple.vue";
 import FloatPaper from "../views/FloatPaper.vue";
 import ShoeConfig from "../views/ShoeConfig.vue";
+import DNAParticle from "../views/DNAParticle.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -337,6 +338,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/shoe-config",
     name: "ShoeConfig",
     component: ShoeConfig,
+  },
+  {
+    path: "/dna-particle",
+    name: "DNAParticle",
+    component: DNAParticle,
   },
   {
     path: "/:pathMatch(.*)*",
