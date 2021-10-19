@@ -16,7 +16,7 @@ class DNAParticle extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createShaderMaterial();
-    this.createPlane();
+    this.createPoints();
     this.createLight();
     this.mouseTracker.trackMousePos();
     this.createOrbitControls();
@@ -43,14 +43,12 @@ class DNAParticle extends Base {
     });
     this.shaderMaterial = shaderMaterial;
   }
-  // 创建平面
-  createPlane() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 100, 100);
+  // 创建点阵
+  createPoints() {
+    const geometry = new THREE.PlaneBufferGeometry(1, 1, 10, 10);
     const material = this.shaderMaterial;
-    this.createMesh({
-      geometry,
-      material,
-    });
+    const points = new THREE.Points(geometry, material);
+    this.scene.add(points);
   }
   // 动画
   update() {
