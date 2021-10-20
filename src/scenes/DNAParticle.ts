@@ -40,7 +40,7 @@ class DNAParticle extends Base {
       fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
-      depthTest: false,
+      depthWrite: false,
       blending: THREE.AdditiveBlending,
       uniforms: {
         uTime: {
