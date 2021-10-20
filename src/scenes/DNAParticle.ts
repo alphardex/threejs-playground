@@ -14,6 +14,7 @@ import { DNAModelUrl } from "@/consts/DNAParticle";
 
 class DNAParticle extends Base {
   clock: THREE.Clock;
+  DNAMaterial: THREE.ShaderMaterial;
   modelParts: THREE.Object3D[];
   points: THREE.Points;
   bloomPass!: UnrealBloomPass;
@@ -35,8 +36,10 @@ class DNAParticle extends Base {
       color2: "#293583",
       color3: "#1954ec",
       size: 15,
-      gradMaskTop: 0.41,
-      gradMaskBottom: 0.72,
+      // gradMaskTop: 0.41,
+      // gradMaskBottom: 0.72,
+      gradMaskTop: 0,
+      gradMaskBottom: 0,
     };
     this.bloomParams = {
       bloomStrength: 1.4,
@@ -53,9 +56,10 @@ class DNAParticle extends Base {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
-    this.createShaderMaterial();
-    await this.createDNA();
-    this.createPoints();
+    this.createDNAMaterial();
+    await this.loadDNAModel();
+    this.createDNA();
+    // this.createSphere();
     this.createLight();
     this.createPostprocessingEffect();
     this.mouseTracker.trackMousePos();
@@ -65,8 +69,8 @@ class DNAParticle extends Base {
     this.setLoop();
   }
   // 创建材质
-  createShaderMaterial() {
-    const shaderMaterial = new THREE.ShaderMaterial({
+  createDNAMaterial() {
+    const DNAMaterial = new THREE.ShaderMaterial({
       vertexShader: mainVertexShader,
       fragmentShader: mainFragmentShader,
       side: THREE.DoubleSide,
@@ -103,23 +107,30 @@ class DNAParticle extends Base {
         },
       },
     });
-    this.shaderMaterial = shaderMaterial;
+    this.DNAMaterial = DNAMaterial;
   }
-  // 创建DNA
-  async createDNA() {
+  // 创建球体
+  createSphere() {
+    const geometry = new THREE.SphereBufferGeometry(2, 64, 64);
+    const material = this.DNAMaterial;
+    const points = new THREE.Points(geometry, material);
+    this.points = points;
+    this.scene.add(points);
+  }
+  // 加载DNA模型
+  async loadDNAModel() {
     const model = await loadModel(DNAModelUrl);
     const modelParts = flatModel(model);
     printModel(modelParts);
     this.modelParts = modelParts;
   }
-  // 创建点阵
-  createPoints() {
+  // 创建DNA
+  createDNA() {
     const { modelParts } = this;
     const twist1_1 = modelParts[1] as THREE.Mesh;
     const geometry = twist1_1.geometry;
     geometry.center();
-    // const geometry = new THREE.SphereBufferGeometry(1, 64, 64);
-    const material = this.shaderMaterial;
+    const material = this.DNAMaterial;
     const points = new THREE.Points(geometry, material);
     points.position.y = -3;
     this.points = points;
@@ -173,9 +184,9 @@ class DNAParticle extends Base {
   update() {
     const elapsedTime = this.clock.getElapsedTime();
     const mousePos = this.mouseTracker.mousePos;
-    if (this.shaderMaterial) {
-      this.shaderMaterial.uniforms.uTime.value = elapsedTime;
-      this.shaderMaterial.uniforms.uMouse.value = mousePos;
+    if (this.DNAMaterial) {
+      this.DNAMaterial.uniforms.uTime.value = elapsedTime;
+      this.DNAMaterial.uniforms.uMouse.value = mousePos;
     }
     if (this.points) {
       this.points.rotation.y = elapsedTime * 0.1;
@@ -195,7 +206,7 @@ class DNAParticle extends Base {
   createDebugPanel() {
     const gui = new dat.GUI({ width: 300 });
     const { params, bloomParams, caParams } = this;
-    const uniforms = this.shaderMaterial.uniforms;
+    const uniforms = this.DNAMaterial.uniforms;
     gui.addColor(params, "color1").onFinishChange((value) => {
       uniforms.uColor1.value.set(value);
     });
