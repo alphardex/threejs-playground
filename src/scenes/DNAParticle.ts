@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
+import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -11,6 +12,7 @@ import caVertexShader from "../shaders/DNAParticle/ca/vertex.glsl";
 import caFragmentShader from "../shaders/DNAParticle/ca/fragment.glsl";
 import { flatModel, loadModel, printModel } from "@/utils/loader";
 import { DNAModelUrl } from "@/consts/DNAParticle";
+import { hyperbolicHelicoidFunction, sphubeFunction } from "@/utils/parametric";
 
 class DNAParticle extends Base {
   clock: THREE.Clock;
@@ -57,9 +59,11 @@ class DNAParticle extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createDNAMaterial();
+    // this.createSphere();
+    // this.createSpiral();
+    // this.createSphube();
     await this.loadDNAModel();
     this.createDNA();
-    // this.createSphere();
     this.createLight();
     this.createPostprocessingEffect();
     this.mouseTracker.trackMousePos();
@@ -112,6 +116,22 @@ class DNAParticle extends Base {
   // 创建球体
   createSphere() {
     const geometry = new THREE.SphereBufferGeometry(2, 64, 64);
+    const material = this.DNAMaterial;
+    const points = new THREE.Points(geometry, material);
+    this.points = points;
+    this.scene.add(points);
+  }
+  // 创建螺旋体
+  createSpiral() {
+    const geometry = new ParametricGeometry(hyperbolicHelicoidFunction, 64, 64);
+    const material = this.DNAMaterial;
+    const points = new THREE.Points(geometry, material);
+    this.points = points;
+    this.scene.add(points);
+  }
+  // 创建Sphube
+  createSphube() {
+    const geometry = new ParametricGeometry(sphubeFunction, 64, 64);
     const material = this.DNAMaterial;
     const points = new THREE.Points(geometry, material);
     this.points = points;
