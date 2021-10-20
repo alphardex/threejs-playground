@@ -1,5 +1,5 @@
 <template>
-  <div class="dna-particle w-screen h-screen bg-black overflow-hidden"></div>
+  <div class="dna-particle w-screen h-screen overflow-hidden bg-black"></div>
 </template>
 
 <script lang="ts">

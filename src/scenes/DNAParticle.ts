@@ -4,7 +4,6 @@ import vertexShader from "../shaders/DNAParticle/vertex.glsl";
 import fragmentShader from "../shaders/DNAParticle/fragment.glsl";
 import { flatModel, loadModel, printModel } from "@/utils/loader";
 import { DNAModelUrl } from "@/consts/DNAParticle";
-import { randomNumberArrayInRange } from "@/utils/math";
 
 class DNAParticle extends Base {
   clock: THREE.Clock;
@@ -40,6 +39,7 @@ class DNAParticle extends Base {
       vertexShader,
       fragmentShader,
       side: THREE.DoubleSide,
+      transparent: true,
       uniforms: {
         uTime: {
           value: 0,
