@@ -8,10 +8,16 @@ import { DNAModelUrl } from "@/consts/DNAParticle";
 class DNAParticle extends Base {
   clock: THREE.Clock;
   modelParts: THREE.Object3D[];
+  params: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
     this.cameraPosition = new THREE.Vector3(0, 60, 2);
+    this.params = {
+      color1: "#612574",
+      color2: "#293583",
+      color3: "#1954ec",
+    };
   }
   // 初始化
   async init() {
@@ -42,6 +48,15 @@ class DNAParticle extends Base {
         },
         uResolution: {
           value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uColor1: {
+          value: new THREE.Color(this.params.color1),
+        },
+        uColor2: {
+          value: new THREE.Color(this.params.color2),
+        },
+        uColor3: {
+          value: new THREE.Color(this.params.color3),
         },
       },
     });
