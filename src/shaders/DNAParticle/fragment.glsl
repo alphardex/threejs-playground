@@ -8,6 +8,8 @@ uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform vec3 uColor3;
 uniform float uGradInner;
+uniform float uGradMaskTop;
+uniform float uGradMaskBottom;
 
 varying vec2 vUv;
 varying vec3 vPosition;
@@ -28,7 +30,8 @@ void main(){
     // circle alpha
     float alpha=circle(gl_PointCoord,1.);
     // vertical grad mask
-    alpha*=smoothstep(.41,.72,vUv.y);
+    float gradMask=smoothstep(uGradMaskTop,uGradMaskBottom,vUv.y);
+    alpha*=gradMask;
     
     vec4 finalColor=vec4(color,1.)*alpha;
     gl_FragColor=finalColor;

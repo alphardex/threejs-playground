@@ -13,9 +13,9 @@ class DNAParticle extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 4);
+    this.cameraPosition = new THREE.Vector3(0, 0, 5);
     this.perspectiveCameraParams = {
-      fov: 75,
+      fov: 60,
       near: 0.1,
       far: 100,
     };
@@ -24,6 +24,8 @@ class DNAParticle extends Base {
       color2: "#293583",
       color3: "#1954ec",
       size: 15,
+      gradMaskTop: 0.41,
+      gradMaskBottom: 0.72,
     };
   }
   // 初始化
@@ -71,6 +73,12 @@ class DNAParticle extends Base {
         uSize: {
           value: this.params.size,
         },
+        uGradMaskTop: {
+          value: this.params.gradMaskTop,
+        },
+        uGradMaskBottom: {
+          value: this.params.gradMaskBottom,
+        },
       },
     });
     this.shaderMaterial = shaderMaterial;
@@ -91,7 +99,7 @@ class DNAParticle extends Base {
     // const geometry = new THREE.SphereBufferGeometry(1, 64, 64);
     const material = this.shaderMaterial;
     const points = new THREE.Points(geometry, material);
-    points.position.y = -5;
+    points.position.y = -3;
     this.points = points;
     this.scene.add(points);
   }
