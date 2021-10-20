@@ -17,6 +17,7 @@ class DNAParticle extends Base {
       color1: "#612574",
       color2: "#293583",
       color3: "#1954ec",
+      size: 15,
     };
   }
   // 初始化
@@ -60,6 +61,9 @@ class DNAParticle extends Base {
         },
         uColor3: {
           value: new THREE.Color(this.params.color3),
+        },
+        uSize: {
+          value: this.params.size,
         },
       },
     });
