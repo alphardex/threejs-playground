@@ -8,11 +8,17 @@ import { DNAModelUrl } from "@/consts/DNAParticle";
 class DNAParticle extends Base {
   clock: THREE.Clock;
   modelParts: THREE.Object3D[];
+  points: THREE.Points;
   params: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 4);
+    this.perspectiveCameraParams = {
+      fov: 75,
+      near: 0.1,
+      far: 100,
+    };
     this.params = {
       color1: "#612574",
       color2: "#293583",
@@ -85,6 +91,8 @@ class DNAParticle extends Base {
     // const geometry = new THREE.SphereBufferGeometry(1, 64, 64);
     const material = this.shaderMaterial;
     const points = new THREE.Points(geometry, material);
+    points.position.y = -5;
+    this.points = points;
     this.scene.add(points);
   }
   // 动画
@@ -94,6 +102,9 @@ class DNAParticle extends Base {
     if (this.shaderMaterial) {
       this.shaderMaterial.uniforms.uTime.value = elapsedTime;
       this.shaderMaterial.uniforms.uMouse.value = mousePos;
+    }
+    if (this.points) {
+      this.points.rotation.y = elapsedTime * 0.1;
     }
   }
 }
