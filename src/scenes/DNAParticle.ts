@@ -3,6 +3,7 @@ import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { EffectPass, ChromaticAberrationEffect } from "postprocessing";
 import { Base } from "@/commons/base";
 import vertexShader from "../shaders/DNAParticle/vertex.glsl";
 import fragmentShader from "../shaders/DNAParticle/fragment.glsl";
@@ -118,7 +119,13 @@ class DNAParticle extends Base {
   }
   // 创建后期特效
   createPostprocessingEffect() {
-    const renderScene = new RenderPass(this.scene, this.camera);
+    const composer = new EffectComposer(this.renderer);
+    this.composer = composer;
+
+    const renderPass = new RenderPass(this.scene, this.camera);
+    composer.addPass(renderPass);
+
+    // unreal bloom
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
       1.4,
@@ -128,10 +135,8 @@ class DNAParticle extends Base {
     bloomPass.strength = this.bloomParams.bloomStrength;
     bloomPass.radius = this.bloomParams.bloomRadius;
     bloomPass.threshold = this.bloomParams.bloomThreshold;
+    composer.addPass(bloomPass);
     this.bloomPass = bloomPass;
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(renderScene);
-    this.composer.addPass(bloomPass);
   }
   // 动画
   update() {
