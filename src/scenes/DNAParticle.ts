@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -50,6 +51,7 @@ class DNAParticle extends Base {
     this.createPostprocessingEffect();
     this.mouseTracker.trackMousePos();
     this.createOrbitControls();
+    // this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
@@ -142,6 +144,42 @@ class DNAParticle extends Base {
     if (this.points) {
       this.points.rotation.y = elapsedTime * 0.1;
     }
+    if (this.bloomPass) {
+      this.bloomPass.strength = this.bloomParams.bloomStrength;
+      this.bloomPass.radius = this.bloomParams.bloomRadius;
+      this.bloomPass.threshold = this.bloomParams.bloomThreshold;
+    }
+  }
+  // 创建调试面板
+  createDebugPanel() {
+    const gui = new dat.GUI({ width: 300 });
+    const { params, bloomParams } = this;
+    const uniforms = this.shaderMaterial.uniforms;
+    gui.addColor(params, "color1").onFinishChange((value) => {
+      uniforms.uColor1.value.set(value);
+    });
+    gui.addColor(params, "color2").onFinishChange((value) => {
+      uniforms.uColor2.value.set(value);
+    });
+    gui.addColor(params, "color3").onFinishChange((value) => {
+      uniforms.uColor3.value.set(value);
+    });
+    gui.add(uniforms.uSize, "value").min(0).max(50).step(0.01).name("size");
+    gui
+      .add(uniforms.uGradMaskTop, "value")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("gradMaskTop");
+    gui
+      .add(uniforms.uGradMaskBottom, "value")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("gradMaskBottom");
+    gui.add(bloomParams, "bloomStrength").min(0).max(10).step(0.01);
+    gui.add(bloomParams, "bloomRadius").min(0).max(10).step(0.01);
+    gui.add(bloomParams, "bloomThreshold").min(0).max(10).step(0.01);
   }
 }
 
