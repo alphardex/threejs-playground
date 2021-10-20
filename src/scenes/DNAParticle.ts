@@ -1,4 +1,7 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { Base } from "@/commons/base";
 import vertexShader from "../shaders/DNAParticle/vertex.glsl";
 import fragmentShader from "../shaders/DNAParticle/fragment.glsl";
@@ -9,7 +12,9 @@ class DNAParticle extends Base {
   clock: THREE.Clock;
   modelParts: THREE.Object3D[];
   points: THREE.Points;
+  bloomPass!: UnrealBloomPass;
   params: any;
+  bloomParams: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -27,6 +32,9 @@ class DNAParticle extends Base {
       gradMaskTop: 0.41,
       gradMaskBottom: 0.72,
     };
+    this.bloomParams = {
+      bloomThreshold: 0.23,
+    };
   }
   // 初始化
   async init() {
@@ -37,6 +45,7 @@ class DNAParticle extends Base {
     await this.createDNA();
     this.createPoints();
     this.createLight();
+    this.createPostprocessingEffect();
     this.mouseTracker.trackMousePos();
     this.createOrbitControls();
     this.addListeners();
@@ -102,6 +111,21 @@ class DNAParticle extends Base {
     points.position.y = -3;
     this.points = points;
     this.scene.add(points);
+  }
+  // 创建后期特效
+  createPostprocessingEffect() {
+    const renderScene = new RenderPass(this.scene, this.camera);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.4,
+      0.87,
+      0.23
+    );
+    bloomPass.threshold = this.params.bloomThreshold;
+    this.bloomPass = bloomPass;
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(renderScene);
+    this.composer.addPass(bloomPass);
   }
   // 动画
   update() {
