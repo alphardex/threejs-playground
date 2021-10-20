@@ -3,10 +3,12 @@ import * as dat from "dat.gui";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { EffectPass, ChromaticAberrationEffect } from "postprocessing";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { Base } from "@/commons/base";
-import vertexShader from "../shaders/DNAParticle/vertex.glsl";
-import fragmentShader from "../shaders/DNAParticle/fragment.glsl";
+import mainVertexShader from "../shaders/DNAParticle/main/vertex.glsl";
+import mainFragmentShader from "../shaders/DNAParticle/main/fragment.glsl";
+import caVertexShader from "../shaders/DNAParticle/ca/vertex.glsl";
+import caFragmentShader from "../shaders/DNAParticle/ca/fragment.glsl";
 import { flatModel, loadModel, printModel } from "@/utils/loader";
 import { DNAModelUrl } from "@/consts/DNAParticle";
 
@@ -15,8 +17,10 @@ class DNAParticle extends Base {
   modelParts: THREE.Object3D[];
   points: THREE.Points;
   bloomPass!: UnrealBloomPass;
+  caPass!: ShaderPass;
   params: any;
   bloomParams: any;
+  caParams: any;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -39,6 +43,10 @@ class DNAParticle extends Base {
       bloomRadius: 0.87,
       bloomThreshold: 0.23,
     };
+    this.caParams = {
+      CAMaxDistortion: 0.085,
+      CASize: 0.58,
+    };
   }
   // 初始化
   async init() {
@@ -52,15 +60,15 @@ class DNAParticle extends Base {
     this.createPostprocessingEffect();
     this.mouseTracker.trackMousePos();
     this.createOrbitControls();
-    // this.createDebugPanel();
+    this.createDebugPanel();
     this.addListeners();
     this.setLoop();
   }
   // 创建材质
   createShaderMaterial() {
     const shaderMaterial = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
+      vertexShader: mainVertexShader,
+      fragmentShader: mainFragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
       depthWrite: false,
@@ -137,6 +145,29 @@ class DNAParticle extends Base {
     bloomPass.threshold = this.bloomParams.bloomThreshold;
     composer.addPass(bloomPass);
     this.bloomPass = bloomPass;
+
+    // CA
+    const caPass = new ShaderPass({
+      vertexShader: caVertexShader,
+      fragmentShader: caFragmentShader,
+      uniforms: {
+        tDiffuse: {
+          value: null,
+        },
+        uResolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uCAMaxDistortion: {
+          value: this.caParams.CAMaxDistortion,
+        },
+        uCASize: {
+          value: this.caParams.CASize,
+        },
+      },
+    });
+    caPass.renderToScreen = true;
+    composer.addPass(caPass);
+    this.caPass = caPass;
   }
   // 动画
   update() {
@@ -154,11 +185,16 @@ class DNAParticle extends Base {
       this.bloomPass.radius = this.bloomParams.bloomRadius;
       this.bloomPass.threshold = this.bloomParams.bloomThreshold;
     }
+    if (this.caPass) {
+      this.caPass.uniforms.uCAMaxDistortion.value =
+        this.caParams.CAMaxDistortion;
+      this.caPass.uniforms.uCASize.value = this.caParams.CASize;
+    }
   }
   // 创建调试面板
   createDebugPanel() {
     const gui = new dat.GUI({ width: 300 });
-    const { params, bloomParams } = this;
+    const { params, bloomParams, caParams } = this;
     const uniforms = this.shaderMaterial.uniforms;
     gui.addColor(params, "color1").onFinishChange((value) => {
       uniforms.uColor1.value.set(value);
@@ -185,6 +221,8 @@ class DNAParticle extends Base {
     gui.add(bloomParams, "bloomStrength").min(0).max(10).step(0.01);
     gui.add(bloomParams, "bloomRadius").min(0).max(10).step(0.01);
     gui.add(bloomParams, "bloomThreshold").min(0).max(10).step(0.01);
+    gui.add(caParams, "CAMaxDistortion").min(0).max(10).step(0.01);
+    gui.add(caParams, "CASize").min(0).max(10).step(0.01);
   }
 }
 

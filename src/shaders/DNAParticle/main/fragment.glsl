@@ -1,4 +1,4 @@
-#pragma glslify:circle=require(../modules/circle)
+#pragma glslify:circle=require(../../modules/circle)
 
 uniform float uTime;
 uniform vec2 uMouse;
