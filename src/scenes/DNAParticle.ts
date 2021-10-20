@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
-import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeometry";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -12,11 +11,12 @@ import caVertexShader from "../shaders/DNAParticle/ca/vertex.glsl";
 import caFragmentShader from "../shaders/DNAParticle/ca/fragment.glsl";
 import { flatModel, loadModel, printModel } from "@/utils/loader";
 import { DNAModelUrl } from "@/consts/DNAParticle";
-import { hyperbolicHelicoidFunction, sphubeFunction } from "@/utils/parametric";
+import { ModifierStack, Twist, Vector3 } from "three.modifiers";
 
 class DNAParticle extends Base {
   clock: THREE.Clock;
   DNAMaterial: THREE.ShaderMaterial;
+  modifier: ModifierStack;
   modelParts: THREE.Object3D[];
   points: THREE.Points;
   bloomPass!: UnrealBloomPass;
@@ -37,11 +37,13 @@ class DNAParticle extends Base {
       color1: "#612574",
       color2: "#293583",
       color3: "#1954ec",
+      progress: 0,
       size: 15,
-      // gradMaskTop: 0.41,
-      // gradMaskBottom: 0.72,
-      gradMaskTop: 0,
-      gradMaskBottom: 0,
+      gradMaskTop: 0.41,
+      gradMaskBottom: 0.72,
+      // size: 36,
+      // gradMaskTop: 0,
+      // gradMaskBottom: 0,
     };
     this.bloomParams = {
       bloomStrength: 1.4,
@@ -59,9 +61,7 @@ class DNAParticle extends Base {
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createDNAMaterial();
-    // this.createSphere();
     // this.createSpiral();
-    // this.createSphube();
     await this.loadDNAModel();
     this.createDNA();
     this.createLight();
@@ -109,6 +109,9 @@ class DNAParticle extends Base {
         uGradMaskBottom: {
           value: this.params.gradMaskBottom,
         },
+        uProgress: {
+          value: this.params.progress,
+        },
       },
     });
     this.DNAMaterial = DNAMaterial;
@@ -123,17 +126,16 @@ class DNAParticle extends Base {
   }
   // 创建螺旋体
   createSpiral() {
-    const geometry = new ParametricGeometry(hyperbolicHelicoidFunction, 64, 64);
+    const geometry = new THREE.CylinderBufferGeometry(0.5, 0.5, 5, 3, 60);
     const material = this.DNAMaterial;
-    const points = new THREE.Points(geometry, material);
-    this.points = points;
-    this.scene.add(points);
-  }
-  // 创建Sphube
-  createSphube() {
-    const geometry = new ParametricGeometry(sphubeFunction, 64, 64);
-    const material = this.DNAMaterial;
-    const points = new THREE.Points(geometry, material);
+    const points = new THREE.Points(geometry, material) as any;
+
+    const modifier = new ModifierStack(points);
+    const twist = new Twist(360);
+    twist.vector = new Vector3(0, 1, 0);
+    modifier.addModifier(twist);
+    this.modifier = modifier;
+
     this.points = points;
     this.scene.add(points);
   }
@@ -221,6 +223,9 @@ class DNAParticle extends Base {
         this.caParams.CAMaxDistortion;
       this.caPass.uniforms.uCASize.value = this.caParams.CASize;
     }
+    if (this.modifier) {
+      this.modifier.apply();
+    }
   }
   // 创建调试面板
   createDebugPanel() {
@@ -249,6 +254,12 @@ class DNAParticle extends Base {
       .max(1)
       .step(0.01)
       .name("gradMaskBottom");
+    gui
+      .add(uniforms.uProgress, "value")
+      .min(0)
+      .max(1)
+      .step(0.01)
+      .name("progress");
     gui.add(bloomParams, "bloomStrength").min(0).max(10).step(0.01);
     gui.add(bloomParams, "bloomRadius").min(0).max(10).step(0.01);
     gui.add(bloomParams, "bloomThreshold").min(0).max(10).step(0.01);
