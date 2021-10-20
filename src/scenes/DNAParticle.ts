@@ -12,7 +12,7 @@ class DNAParticle extends Base {
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 60, 2);
+    this.cameraPosition = new THREE.Vector3(0, 0, 2);
     this.params = {
       color1: "#612574",
       color2: "#293583",
@@ -78,6 +78,7 @@ class DNAParticle extends Base {
     const twist1_1 = modelParts[1] as THREE.Mesh;
     const geometry = twist1_1.geometry;
     geometry.center();
+    // const geometry = new THREE.SphereBufferGeometry(1, 64, 64);
     const material = this.shaderMaterial;
     const points = new THREE.Points(geometry, material);
     this.scene.add(points);
