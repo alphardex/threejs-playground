@@ -32,6 +32,10 @@ const point2CannonVec = (point) => new CANNON.Vec3(point.x, point.y, point.z);
 // 2PI
 const TAU = 2 * Math.PI;
 
+// 生成随机数数组
+const randomNumberArrayInRange = (min, max, n = 1) =>
+  Array.from({ length: n }, () => Math.random() * (max - min) + min);
+
 export {
   Point,
   array2Point,
@@ -40,4 +44,5 @@ export {
   point2ThreeVector,
   point2CannonVec,
   TAU,
+  randomNumberArrayInRange,
 };
