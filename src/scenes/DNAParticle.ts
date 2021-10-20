@@ -41,6 +41,7 @@ class DNAParticle extends Base {
       side: THREE.DoubleSide,
       transparent: true,
       depthTest: false,
+      blending: THREE.AdditiveBlending,
       uniforms: {
         uTime: {
           value: 0,
