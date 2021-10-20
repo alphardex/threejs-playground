@@ -33,6 +33,8 @@ class DNAParticle extends Base {
       gradMaskBottom: 0.72,
     };
     this.bloomParams = {
+      bloomStrength: 1.4,
+      bloomRadius: 0.87,
       bloomThreshold: 0.23,
     };
   }
@@ -121,7 +123,9 @@ class DNAParticle extends Base {
       0.87,
       0.23
     );
-    bloomPass.threshold = this.params.bloomThreshold;
+    bloomPass.strength = this.bloomParams.bloomStrength;
+    bloomPass.radius = this.bloomParams.bloomRadius;
+    bloomPass.threshold = this.bloomParams.bloomThreshold;
     this.bloomPass = bloomPass;
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(renderScene);
