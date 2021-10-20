@@ -2,20 +2,24 @@ import * as THREE from "three";
 import { Base } from "@/commons/base";
 import vertexShader from "../shaders/DNAParticle/vertex.glsl";
 import fragmentShader from "../shaders/DNAParticle/fragment.glsl";
+import { flatModel, loadModel, printModel } from "@/utils/loader";
+import { DNAModelUrl } from "@/consts/DNAParticle";
 
 class DNAParticle extends Base {
   clock: THREE.Clock;
+  modelParts: THREE.Object3D[];
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
-    this.cameraPosition = new THREE.Vector3(0, 0, 1);
+    this.cameraPosition = new THREE.Vector3(0, 60, 2);
   }
   // 初始化
-  init() {
+  async init() {
     this.createScene();
     this.createPerspectiveCamera();
     this.createRenderer();
     this.createShaderMaterial();
+    await this.createDNA();
     this.createPoints();
     this.createLight();
     this.mouseTracker.trackMousePos();
@@ -43,9 +47,19 @@ class DNAParticle extends Base {
     });
     this.shaderMaterial = shaderMaterial;
   }
+  // 创建DNA
+  async createDNA() {
+    const model = await loadModel(DNAModelUrl);
+    const modelParts = flatModel(model);
+    printModel(modelParts);
+    this.modelParts = modelParts;
+  }
   // 创建点阵
   createPoints() {
-    const geometry = new THREE.PlaneBufferGeometry(1, 1, 10, 10);
+    const { modelParts } = this;
+    const twist1_1 = modelParts[1] as THREE.Mesh;
+    const geometry = twist1_1.geometry;
+    geometry.center();
     const material = this.shaderMaterial;
     const points = new THREE.Points(geometry, material);
     this.scene.add(points);
