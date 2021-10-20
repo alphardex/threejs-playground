@@ -44,7 +44,7 @@ class DNAParticle extends Base {
       bloomThreshold: 0.23,
     };
     this.caParams = {
-      CAMaxDistortion: 0.085,
+      CAMaxDistortion: 0.25,
       CASize: 0.58,
     };
   }
