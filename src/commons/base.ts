@@ -159,13 +159,11 @@ class Base {
   }
   // 创建调试UI
   createDebugUI() {
-    if (this.debug) {
-      const axisHelper = new THREE.AxesHelper();
-      this.scene.add(axisHelper);
-      const stats = Stats();
-      this.container.appendChild(stats.dom);
-      this.stats = stats;
-    }
+    const axisHelper = new THREE.AxesHelper();
+    this.scene.add(axisHelper);
+    const stats = Stats();
+    this.container.appendChild(stats.dom);
+    this.stats = stats;
   }
   // 监听事件
   addListeners() {
