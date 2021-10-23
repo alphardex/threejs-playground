@@ -29,6 +29,7 @@ void main(){
     
     // circle alpha
     float alpha=circle(gl_PointCoord,1.);
+    
     // vertical grad mask
     float gradMask=smoothstep(uGradMaskTop,uGradMaskBottom,vUv.y);
     alpha*=gradMask;
