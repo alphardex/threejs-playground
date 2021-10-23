@@ -111,28 +111,15 @@ class Base {
   createRenderer() {
     const { rendererParams } = this;
     const renderer = new THREE.WebGLRenderer(rendererParams);
-    renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-    this.resizeRendererToDisplaySize();
     this.container.appendChild(renderer.domElement);
     this.renderer = renderer;
-    this.renderer.setClearColor(0x000000, 0);
+    this.resizeRendererToDisplaySize();
   }
   // 调整渲染器尺寸
   resizeRendererToDisplaySize() {
     const { renderer } = this;
-    if (!renderer) {
-      return;
-    }
-    const canvas = renderer.domElement;
-    const pixelRatio = window.devicePixelRatio;
-    const { clientWidth, clientHeight } = canvas;
-    const width = (clientWidth * pixelRatio) | 0;
-    const height = (clientHeight * pixelRatio) | 0;
-    const isResizeNeeded = canvas.width !== width || canvas.height !== height;
-    if (isResizeNeeded) {
-      renderer.setSize(width, height, false);
-    }
-    return isResizeNeeded;
+    renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
   // 创建网格
   createMesh(
@@ -187,33 +174,14 @@ class Base {
   // 监听画面缩放
   onResize() {
     window.addEventListener("resize", (e) => {
+      const aspect = calcAspect(this.container);
+      const camera = this.camera as THREE.PerspectiveCamera;
+      camera.aspect = aspect;
+      camera.updateProjectionMatrix();
+      this.resizeRendererToDisplaySize();
       if (this.shaderMaterial) {
         this.shaderMaterial.uniforms.uResolution.value.x = window.innerWidth;
         this.shaderMaterial.uniforms.uResolution.value.y = window.innerHeight;
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-      } else {
-        if (this.camera instanceof THREE.PerspectiveCamera) {
-          const aspect = calcAspect(this.container);
-          const camera = this.camera as THREE.PerspectiveCamera;
-          camera.aspect = aspect;
-          camera.updateProjectionMatrix();
-        } else if (this.camera instanceof THREE.OrthographicCamera) {
-          this.updateOrthographicCameraParams();
-          const camera = this.camera as THREE.OrthographicCamera;
-          const { left, right, top, bottom, near, far } =
-            this.orthographicCameraParams;
-          camera.left = left;
-          camera.right = right;
-          camera.top = top;
-          camera.bottom = bottom;
-          camera.near = near;
-          camera.far = far;
-          camera.updateProjectionMatrix();
-        }
-        this.renderer.setSize(
-          this.container.clientWidth,
-          this.container.clientHeight
-        );
       }
     });
   }
@@ -224,7 +192,6 @@ class Base {
   // 渲染
   setLoop() {
     this.renderer.setAnimationLoop(() => {
-      this.resizeRendererToDisplaySize();
       this.update();
       if (this.controls) {
         this.controls.update();
