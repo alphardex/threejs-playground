@@ -111,6 +111,7 @@ class Base {
   createRenderer() {
     const { rendererParams } = this;
     const renderer = new THREE.WebGLRenderer(rendererParams);
+    renderer.setClearColor(0x000000, 0);
     this.container.appendChild(renderer.domElement);
     this.renderer = renderer;
     this.resizeRendererToDisplaySize();
