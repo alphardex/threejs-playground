@@ -22,10 +22,10 @@ class Base {
   rendererParams: THREE.WebGLRendererParameters;
   mouseTracker: MouseTracker;
   scene: THREE.Scene;
-  stats: Stats;
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
   renderer: THREE.WebGLRenderer;
   controls: OrbitControls;
+  stats: Stats;
   shaderMaterial: THREE.ShaderMaterial;
   composer: EffectComposer;
   constructor(sel: string, debug = false) {
@@ -57,18 +57,13 @@ class Base {
     this.createMesh({});
     this.createLight();
     this.createOrbitControls();
+    this.createDebugUI();
     this.addListeners();
     this.setLoop();
   }
   // 创建场景
   createScene() {
     const scene = new THREE.Scene();
-    if (this.debug) {
-      scene.add(new THREE.AxesHelper());
-      const stats = Stats();
-      this.container.appendChild(stats.dom);
-      this.stats = stats;
-    }
     this.scene = scene;
   }
   // 创建透视相机
@@ -174,6 +169,16 @@ class Base {
     controls.target.copy(lookAtPosition);
     controls.update();
     this.controls = controls;
+  }
+  // 创建调试UI
+  createDebugUI() {
+    if (this.debug) {
+      const axisHelper = new THREE.AxesHelper();
+      this.scene.add(axisHelper);
+      const stats = Stats();
+      this.container.appendChild(stats.dom);
+      this.stats = stats;
+    }
   }
   // 监听事件
   addListeners() {
