@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import ky from "kyouka";
+import gsap from "gsap";
 import { MakuGroup, Scroller, Maku, getScreenFov } from "maku.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -9,6 +11,7 @@ import mainVertexShader from "../shaders/gooeyImage/main/vertex.glsl";
 import mainFragmentShader from "../shaders/gooeyImage/main/fragment.glsl";
 import postprocessingVertexShader from "../shaders/gooeyImage/postprocessing/vertex.glsl";
 import postprocessingFragmentShader from "../shaders/gooeyImage/postprocessing/fragment.glsl";
+import { RaycastSelector } from "@/utils/raycast";
 
 class GooeyImage extends Base {
   clock: THREE.Clock;
@@ -16,6 +19,7 @@ class GooeyImage extends Base {
   makuGroup: MakuGroup;
   scroller: Scroller;
   customPass: ShaderPass;
+  raycastSelector: RaycastSelector;
   constructor(sel: string, debug: boolean) {
     super(sel, debug);
     this.clock = new THREE.Clock();
@@ -34,9 +38,11 @@ class GooeyImage extends Base {
   async init() {
     this.createScene();
     this.createPerspectiveCamera();
+    this.raycastSelector = new RaycastSelector(this.scene, this.camera);
     this.createRenderer();
     await preloadImages();
     this.createEverything();
+    this.mouseTracker.trackMousePos();
     this.addListeners();
     this.setLoop();
   }
@@ -52,6 +58,7 @@ class GooeyImage extends Base {
       vertexShader: mainVertexShader,
       fragmentShader: mainFragmentShader,
       side: THREE.DoubleSide,
+      transparent: true,
       uniforms: {
         uTime: {
           value: 0,
@@ -64,6 +71,12 @@ class GooeyImage extends Base {
         },
         uTexture: {
           value: null,
+        },
+        uHoverState: {
+          value: 0,
+        },
+        uHoverUv: {
+          value: new THREE.Vector2(2, 2),
         },
       },
     });
@@ -114,6 +127,8 @@ class GooeyImage extends Base {
   update() {
     this.syncScroll();
     this.updatePassTime();
+    this.updateMaterialUniforms();
+    this.createMouseHoverEffect();
   }
   // 同步滚动
   syncScroll() {
@@ -126,6 +141,55 @@ class GooeyImage extends Base {
     const uniforms = this.customPass.uniforms;
     const elapsedTime = this.clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
+  }
+  // 更新材质参数
+  updateMaterialUniforms() {
+    this.makuGroup.makus.forEach((maku) => {
+      const shaderMaterial = maku.mesh.material as THREE.ShaderMaterial;
+      const { uniforms } = shaderMaterial;
+      const elapsedTime = this.clock.getElapsedTime();
+      uniforms.uTime.value = elapsedTime;
+      const { width, height } = maku.rect;
+      uniforms.uResolution.value = new THREE.Vector2(width, height);
+    });
+  }
+  // 创建鼠标悬浮效果
+  createMouseHoverEffect() {
+    // 鼠标进入和离开图片时
+    this.makuGroup.makus.forEach((obj) => {
+      const { el, mesh } = obj;
+      const material = mesh.material as THREE.ShaderMaterial;
+      const uniforms = material.uniforms;
+      el.addEventListener("mouseenter", () => {
+        gsap.to(uniforms.uHoverState, {
+          value: 1,
+          duration: 1,
+        });
+      });
+      el.addEventListener("mouseleave", () => {
+        gsap.set(uniforms.uHoverUv, {
+          value: new THREE.Vector2(2, 2),
+        });
+        gsap.to(uniforms.uHoverState, {
+          value: 0,
+          duration: 1,
+        });
+      });
+    });
+
+    // 鼠标在图片上移动时
+    window.addEventListener(
+      "mousemove",
+      ky.debounce(() => {
+        const intersect = this.raycastSelector.getFirstIntersect();
+        if (intersect) {
+          const obj = intersect.object as THREE.Mesh;
+          const material = obj.material as THREE.ShaderMaterial;
+          const uniforms = material.uniforms;
+          uniforms.uHoverUv.value = intersect.uv;
+        }
+      }, 10)
+    );
   }
 }
 

@@ -114,6 +114,7 @@ class ImagePlane extends Base {
   update() {
     this.syncScroll();
     this.updatePassTime();
+    this.updateMaterialUniforms();
   }
   // 同步滚动
   syncScroll() {
@@ -126,6 +127,15 @@ class ImagePlane extends Base {
     const uniforms = this.customPass.uniforms;
     const elapsedTime = this.clock.getElapsedTime();
     uniforms.uTime.value = elapsedTime;
+  }
+  // 更新材质参数
+  updateMaterialUniforms() {
+    this.makuGroup.makus.forEach((maku) => {
+      const shaderMaterial = maku.mesh.material as THREE.ShaderMaterial;
+      const { uniforms } = shaderMaterial;
+      const elapsedTime = this.clock.getElapsedTime();
+      uniforms.uTime.value = elapsedTime;
+    });
   }
 }
 

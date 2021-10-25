@@ -209,7 +209,7 @@ class DistortImage extends Base {
       });
     });
     window.addEventListener("mousemove", () => {
-      const intersect = this.raycastSelector.getInterSects()[0];
+      const intersect = this.raycastSelector.getFirstIntersect();
       if (intersect) {
         const obj = intersect.object as any;
         if (obj.material.uniforms) {
