@@ -50,6 +50,7 @@ class GooeyImage extends Base {
   createEverything() {
     this.createShaderMaterial();
     this.createMakuGroup();
+    this.addInnerImage();
     this.createPostprocessingEffect();
   }
   // 创建材质
@@ -72,6 +73,9 @@ class GooeyImage extends Base {
         uTexture: {
           value: null,
         },
+        uTexture2: {
+          value: null,
+        },
         uHoverState: {
           value: 0,
         },
@@ -88,6 +92,19 @@ class GooeyImage extends Base {
     const { images, scene, shaderMaterial } = this;
     const makus = images.map((image) => new Maku(image, shaderMaterial, scene));
     this.makuGroup.addMultiple(makus);
+  }
+  // 添加内部图
+  addInnerImage() {
+    this.makuGroup.makus.forEach((maku) => {
+      const innerImgUrl = maku.el.dataset.inner;
+      const innerImg = new Image();
+      innerImg.src = innerImgUrl;
+      const texture = new THREE.Texture(innerImg);
+      texture.needsUpdate = true;
+      const material = maku.mesh.material as THREE.ShaderMaterial;
+      const uniforms = material.uniforms;
+      uniforms.uTexture2.value = texture;
+    });
   }
   // 创建后期处理特效
   createPostprocessingEffect() {

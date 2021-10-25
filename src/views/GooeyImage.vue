@@ -7,6 +7,7 @@
     <div class="gallery">
       <img
         :src="require(`../assets/pixel-river/${n}.jpg`)"
+        :data-inner="require(`../assets/pixel-river/${9 + 1 - n}.jpg`)"
         alt=""
         class="gallery-item"
         v-for="n in 9"
