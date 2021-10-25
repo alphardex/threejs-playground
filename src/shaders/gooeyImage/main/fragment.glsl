@@ -7,7 +7,6 @@ uniform vec2 uResolution;
 uniform sampler2D uTexture;
 
 uniform sampler2D uTexture2;
-uniform float uHoverState;
 uniform vec2 uHoverUv;
 
 varying vec2 vUv;
@@ -22,7 +21,6 @@ void main(){
     
     vec2 cUv=centerUv(vUv,uResolution);
     vec2 cHoverUv=centerUv(uHoverUv,uResolution);
-    float alpha=uHoverState;
     
     // circle
     float circleShape=1.-distance(cUv,cHoverUv);

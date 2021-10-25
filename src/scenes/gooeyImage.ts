@@ -76,9 +76,6 @@ class GooeyImage extends Base {
         uTexture2: {
           value: null,
         },
-        uHoverState: {
-          value: 0,
-        },
         uHoverUv: {
           value: new THREE.Vector2(2, 2),
         },
@@ -172,24 +169,14 @@ class GooeyImage extends Base {
   }
   // 创建鼠标悬浮效果
   createMouseHoverEffect() {
-    // 鼠标进入和离开图片时
+    // 鼠标离开图片时
     this.makuGroup.makus.forEach((obj) => {
       const { el, mesh } = obj;
       const material = mesh.material as THREE.ShaderMaterial;
       const uniforms = material.uniforms;
-      el.addEventListener("mouseenter", () => {
-        gsap.to(uniforms.uHoverState, {
-          value: 1,
-          duration: 1,
-        });
-      });
       el.addEventListener("mouseleave", () => {
         gsap.set(uniforms.uHoverUv, {
           value: new THREE.Vector2(2, 2),
-        });
-        gsap.to(uniforms.uHoverState, {
-          value: 0,
-          duration: 1,
         });
       });
     });
