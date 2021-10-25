@@ -96,6 +96,7 @@ class GooeyImage extends Base {
       const innerImgUrl = maku.el.dataset.inner;
       const innerImg = new Image();
       innerImg.src = innerImgUrl;
+      innerImg.crossOrigin = "anonymous";
       const texture = new THREE.Texture(innerImg);
       texture.needsUpdate = true;
       const material = maku.mesh.material as THREE.ShaderMaterial;
