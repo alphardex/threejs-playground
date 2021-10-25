@@ -17,11 +17,14 @@ void main(){
     
     vec2 cUv=centerUv(vUv,uResolution);
     vec2 cHoverUv=centerUv(uHoverUv,uResolution);
-    
-    // circle
-    float c=1.-distance(cUv,cHoverUv);
     float alpha=uHoverState;
-    color=vec3(c*alpha);
     
-    gl_FragColor=vec4(color,alpha);
+    // circle mask
+    float circleShape=1.-distance(cUv,cHoverUv);
+    float circleMask=smoothstep(.4,.5,circleShape)*alpha;
+    
+    // final
+    vec3 finalColor=mix(color,vec3(1.),circleMask);
+    
+    gl_FragColor=vec4(finalColor,1.);
 }
