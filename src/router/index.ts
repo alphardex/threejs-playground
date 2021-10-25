@@ -57,6 +57,7 @@ import ImageRipple from "../views/ImageRipple.vue";
 import FloatPaper from "../views/FloatPaper.vue";
 import ShoeConfig from "../views/ShoeConfig.vue";
 import DNAParticle from "../views/DNAParticle.vue";
+import GooeyImage from "../views/GooeyImage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -343,6 +344,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/dna-particle",
     name: "DNAParticle",
     component: DNAParticle,
+  },
+  {
+    path: "/gooey-image",
+    name: "GooeyImage",
+    component: GooeyImage,
   },
   {
     path: "/:pathMatch(.*)*",

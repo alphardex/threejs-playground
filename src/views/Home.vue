@@ -196,6 +196,9 @@
       <li>
         <router-link :to="{ name: 'DNAParticle' }">DNAParticle</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'GooeyImage' }">GooeyImage</router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
