@@ -5,14 +5,13 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "@/commons/base";
-import imagePlaneMainVertexShader from "../shaders/imagePlane/main/vertex.glsl";
-import imagePlaneMainFragmentShader from "../shaders/imagePlane/main/fragment.glsl";
-import imagePlanePostprocessingVertexShader from "../shaders/imagePlane/postprocessing/vertex.glsl";
-import imagePlanePostprocessingFragmentShader from "../shaders/imagePlane/postprocessing/fragment.glsl";
+import mainVertexShader from "../shaders/imagePlane/main/vertex.glsl";
+import mainFragmentShader from "../shaders/imagePlane/main/fragment.glsl";
+import postprocessingVertexShader from "../shaders/imagePlane/postprocessing/vertex.glsl";
+import postprocessingFragmentShader from "../shaders/imagePlane/postprocessing/fragment.glsl";
 
 class ImagePlane extends Base {
   clock: THREE.Clock;
-  imagePlaneMaterial: THREE.ShaderMaterial;
   images: HTMLImageElement[];
   makuGroup: MakuGroup;
   scroller: Scroller;
@@ -43,15 +42,15 @@ class ImagePlane extends Base {
   }
   // 创建一切
   createEverything() {
-    this.createImagePlaneMaterial();
+    this.createShaderMaterial();
     this.createMakuGroup();
     this.createPostprocessingEffect();
   }
   // 创建材质
-  createImagePlaneMaterial() {
-    const imagePlaneMaterial = new THREE.ShaderMaterial({
-      vertexShader: imagePlaneMainVertexShader,
-      fragmentShader: imagePlaneMainFragmentShader,
+  createShaderMaterial() {
+    const shaderMaterial = new THREE.ShaderMaterial({
+      vertexShader: mainVertexShader,
+      fragmentShader: mainFragmentShader,
       side: THREE.DoubleSide,
       uniforms: {
         uTime: {
@@ -68,15 +67,13 @@ class ImagePlane extends Base {
         },
       },
     });
-    this.imagePlaneMaterial = imagePlaneMaterial;
+    this.shaderMaterial = shaderMaterial;
   }
   // 创建图片DOM物体组
   createMakuGroup() {
     this.makuGroup.clear();
-    const { images, scene, imagePlaneMaterial } = this;
-    const makus = images.map(
-      (image) => new Maku(image, imagePlaneMaterial, scene)
-    );
+    const { images, scene, shaderMaterial } = this;
+    const makus = images.map((image) => new Maku(image, shaderMaterial, scene));
     this.makuGroup.addMultiple(makus);
   }
   // 创建后期处理特效
@@ -87,8 +84,8 @@ class ImagePlane extends Base {
     composer.addPass(renderPass);
 
     const customPass = new ShaderPass({
-      vertexShader: imagePlanePostprocessingVertexShader,
-      fragmentShader: imagePlanePostprocessingFragmentShader,
+      vertexShader: postprocessingVertexShader,
+      fragmentShader: postprocessingFragmentShader,
       uniforms: {
         tDiffuse: {
           value: null,
