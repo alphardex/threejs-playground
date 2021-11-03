@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
@@ -10,7 +10,7 @@ const loadModel = (
   url: string,
   useDraco = true,
   dracoPath = "./static/draco/"
-): Promise<THREE.Object3D> => {
+): Promise<GLTF> => {
   const loader = new GLTFLoader();
   if (useDraco) {
     const dracoLoader = new DRACOLoader();
@@ -21,8 +21,7 @@ const loadModel = (
     loader.load(
       url,
       (gltf) => {
-        const model = gltf.scene;
-        resolve(model);
+        resolve(gltf);
       },
       undefined,
       (err) => {

@@ -94,7 +94,7 @@ class LineWave extends Base {
   // 创建人脸
   async createFace() {
     const model = await loadModel(faceModelUrl);
-    const mesh = model.children[0].children[0];
+    const mesh = model.scene.children[0].children[0];
     mesh.scale.set(0.05, 0.05, 0.05);
     mesh.position.set(0, 0, this.params.faceZ);
     mesh.rotation.set(ky.deg2rad(90), 0, 0);

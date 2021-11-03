@@ -92,7 +92,7 @@ class FBOParticles extends Base {
   // 获取模型
   async getModel() {
     const model = await loadModel(faceModelUrl);
-    const mesh = model.children[0].children[0].children[4] as THREE.Mesh;
+    const mesh = model.scene.children[0].children[0].children[4] as THREE.Mesh;
     mesh.geometry.scale(0.1, 0.1, 0.1);
     mesh.geometry.rotateX(ky.deg2rad(90));
     return mesh;

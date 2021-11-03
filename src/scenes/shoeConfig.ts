@@ -32,8 +32,8 @@ class ShoeConfig extends Base {
   // 创建鞋子
   async createShoe() {
     const model = await loadModel(shoeModelUrl, true);
-    this.scene.add(model);
-    const modelParts = flatModel(model);
+    this.scene.add(model.scene);
+    const modelParts = flatModel(model.scene);
     printModel(modelParts);
     this.modelParts = modelParts;
   }

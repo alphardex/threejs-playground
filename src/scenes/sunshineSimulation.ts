@@ -106,7 +106,7 @@ class SunshineSimulation extends Base {
     let building;
     if (!this.buildingModel) {
       const model = await loadModel(buildingModelUrl);
-      building = model.children[0];
+      building = model.scene.children[0];
       this.buildingModel = building;
       building.rotation.x = ky.deg2rad(-90);
       building.traverse((obj) => {

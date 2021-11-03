@@ -229,7 +229,7 @@ class BellStrike extends PhysicsBase {
   // 创建亭子
   async createPavilion() {
     const model = await loadModel(pavilionModelUrl);
-    const mesh = model.children[2];
+    const mesh = model.scene.children[2];
     mesh.position.set(0, 6.5, 0);
     mesh.scale.set(0.002, 0.002, 0.002);
     mesh.rotateY(ky.deg2rad(90));
@@ -243,7 +243,7 @@ class BellStrike extends PhysicsBase {
     const loader = new THREE.TextureLoader();
     const texture = loader.load(bellTextureUrl);
     const model = await loadModel(bellModelUrl);
-    const mesh = model.children[0].parent!.children[3];
+    const mesh = model.scene.children[0].parent!.children[3];
     mesh.traverse((obj) => {
       // @ts-ignore
       if (obj.material) {

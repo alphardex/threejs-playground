@@ -142,7 +142,7 @@ class DNAParticle extends Base {
   // 加载DNA模型
   async loadDNAModel() {
     const model = await loadModel(DNAModelUrl);
-    const modelParts = flatModel(model);
+    const modelParts = flatModel(model.scene);
     printModel(modelParts);
     this.modelParts = modelParts;
   }
