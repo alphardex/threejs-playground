@@ -143,8 +143,8 @@ class GridWave extends Base {
   }
   // 重新生成网格
   regenerateGrid() {
-    this.geo!.dispose();
-    this.mat!.dispose();
+    this.geo.dispose();
+    this.mat.dispose();
     this.scene.remove(this.points!);
     this.createGrid();
   }
