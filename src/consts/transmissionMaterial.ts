@@ -1,6 +1,6 @@
-const bgUrl = "./static/textures/ocean.jpg";
+const bgUrl = "./static/textures/ruin.jpg";
 
-const hdrUrl = "./static/hdrs/orbita.hdr";
+const hdrUrl = "./static/hdrs/warehouse.hdr";
 
 const normalMapUrl = "./static/textures/normal.jpg";
 

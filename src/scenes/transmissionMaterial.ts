@@ -44,16 +44,35 @@ class TransmissionMaterial extends Base {
     normalMap.wrapS = THREE.RepeatWrapping;
     normalMap.wrapT = THREE.RepeatWrapping;
     const material = new THREE.MeshPhysicalMaterial({
-      roughness: 0.6, // frosted glass
+      // 1. glass
+      // roughness: 0,
+      // transmission: 1,
+      // // @ts-ignore
+      // thickness: 0.5, // refraction
+      // 2. frosted glass
+      // roughness: 0.7,
+      // transmission: 1,
+      // // @ts-ignore
+      // thickness: 1,
+      // 3. glass with envmap
+      // roughness: 0.07,
+      // transmission: 1,
+      // // @ts-ignore
+      // thickness: 1.5,
+      // envMap: this.envmap,
+      // envMapIntensity: 1.5,
+      // 4. glass with normalmap and clearcoat
+      roughness: 0.6,
       transmission: 1,
       // @ts-ignore
       thickness: 1.2, // refraction
       envMap: this.envmap,
       envMapIntensity: 1.5,
       normalMap,
-      clearcoatNormalMap: normalMap,
       clearcoat: 1,
       clearcoatRoughness: 0.1,
+      clearcoatNormalMap: normalMap,
+      clearcoatNormalScale: new THREE.Vector2(0.3, 0.3),
     });
     this.physicalMaterial = material;
   }
@@ -75,7 +94,7 @@ class TransmissionMaterial extends Base {
   // 创建背景
   createBg() {
     const texture = new THREE.TextureLoader().load(bgUrl);
-    const geometry = new THREE.PlaneGeometry(5, 5);
+    const geometry = new THREE.PlaneGeometry(10, 5);
     const material = new THREE.MeshBasicMaterial({
       map: texture,
     });
