@@ -72,6 +72,7 @@ body {
   --black-color-4: rgba(255, 255, 255, 0.5);
   --black-color-5: rgba(255, 255, 255, 0.4);
   --black-color-6: #{transparentize(black, 0.6)};
+  --black-color-7: #1f1e1c;
   --white-color-1: #c7c8c9;
   --white-color-2: #f0f0f0;
   --white-color-3: #{transparentize(white, 0.4)};
@@ -202,6 +203,10 @@ a {
 
 .bg-black-6 {
   background: var(--black-color-6);
+}
+
+.bg-black-7 {
+  background: var(--black-color-7);
 }
 
 .border-0 {

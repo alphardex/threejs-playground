@@ -199,6 +199,11 @@
       <li>
         <router-link :to="{ name: 'GooeyImage' }">GooeyImage</router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'TransmissionMaterial' }">
+          TransmissionMaterial
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div
