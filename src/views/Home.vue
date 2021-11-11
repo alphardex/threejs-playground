@@ -204,6 +204,9 @@
           TransmissionMaterial
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'ImageCloth' }"> ImageCloth </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

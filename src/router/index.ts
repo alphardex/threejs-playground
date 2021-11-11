@@ -59,6 +59,7 @@ import ShoeConfig from "../views/ShoeConfig.vue";
 import DNAParticle from "../views/DNAParticle.vue";
 import GooeyImage from "../views/GooeyImage.vue";
 import TransmissionMaterial from "../views/TransmissionMaterial.vue";
+import ImageCloth from "../views/ImageCloth.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -355,6 +356,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/transmission-material",
     name: "TransmissionMaterial",
     component: TransmissionMaterial,
+  },
+  {
+    path: "/image-cloth",
+    name: "ImageCloth",
+    component: ImageCloth,
   },
   {
     path: "/:pathMatch(.*)*",
