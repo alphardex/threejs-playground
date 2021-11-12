@@ -1,3 +1,3 @@
-const projectTexUrl = "./static/textures/dog.jpg";
+const projectTexUrl = "./static/textures/ocean.jpg";
 
 export { projectTexUrl };
