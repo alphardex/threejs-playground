@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import PoissonDiskSampling from "poisson-disk-sampling";
 
 // 三维点
 class Point {
@@ -32,6 +33,22 @@ const point2CannonVec = (point) => new CANNON.Vec3(point.x, point.y, point.z);
 // 2PI
 const TAU = 2 * Math.PI;
 
+// 泊松分布
+const poisson = ({ range, minRadius, maxRadius }) => {
+  const scale = (n) => n * 100;
+  const scaleInvert = (n) => n / 100;
+
+  const rangeScaled = range.map(scale);
+  return new PoissonDiskSampling({
+    shape: rangeScaled,
+    minDistance: minRadius,
+    maxDistance: maxRadius,
+    tries: 10,
+  })
+    .fill()
+    .map((p) => p.map(scaleInvert));
+};
+
 export {
   Point,
   array2Point,
@@ -40,4 +57,5 @@ export {
   point2ThreeVector,
   point2CannonVec,
   TAU,
+  poisson,
 };

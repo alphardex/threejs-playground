@@ -2,6 +2,7 @@ import * as THREE from "three";
 import ProjectedMaterial from "three-projected-material";
 import { Base } from "@/commons/base";
 import { projectTexUrl } from "@/consts/texProjection";
+import { array2Point, point2ThreeVector, poisson } from "@/utils/math";
 
 class TexProjection extends Base {
   clock: THREE.Clock;
@@ -34,16 +35,26 @@ class TexProjection extends Base {
     return projectedMaterial;
   }
   // 创建多个二十面体
-  createIcos(count = 100) {
+  createIcos(count = 300) {
     const icoGroup = new THREE.Group();
+    const points = poisson({
+      range: [1, 1],
+      minRadius: 4,
+      maxRadius: 36,
+    });
+    // center points
+    points.forEach((p) => {
+      p[0] -= 0.5;
+      p[1] -= 0.5;
+      p[0] *= 1.5;
+      p[1] *= 1.5;
+    });
+    const positions = points.map((p) => point2ThreeVector(array2Point(p)));
     for (let i = 0; i < count; i++) {
-      const x = THREE.MathUtils.randFloat(-1, 1);
-      const y = THREE.MathUtils.randFloat(-1, 1);
-      const z = 0;
-      const scaleValue = THREE.MathUtils.randFloat(0.5, 1);
-      const position = new THREE.Vector3(x, y, z);
+      const scaleValue = THREE.MathUtils.randFloat(0.5, 0.75);
+      const position = positions[i];
       const scale = new THREE.Vector3(scaleValue, scaleValue, scaleValue);
-      const geometry = new THREE.IcosahedronGeometry(0.25);
+      const geometry = new THREE.IcosahedronGeometry(0.1);
       const material = this.createProjectedMaterial();
       const ico = new THREE.Mesh(geometry, material);
       ico.position.copy(position);
