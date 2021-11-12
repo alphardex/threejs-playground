@@ -30,6 +30,9 @@ const point2ThreeVector = (point) =>
 // 点转化为Cannon.js的向量
 const point2CannonVec = (point) => new CANNON.Vec3(point.x, point.y, point.z);
 
+// 点转化为Three.js的Euler
+const point2ThreeEuler = (point) => new THREE.Euler(point.x, point.y, point.z);
+
 // 2PI
 const TAU = 2 * Math.PI;
 
@@ -56,6 +59,7 @@ export {
   arrays2Point,
   point2ThreeVector,
   point2CannonVec,
+  point2ThreeEuler,
   TAU,
   poisson,
 };

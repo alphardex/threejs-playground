@@ -7,8 +7,8 @@ import { MeshPhysicsObject } from "@/utils/physics";
 import {
   arrays2Point,
   Point,
-  point2Array,
   point2CannonVec,
+  point2ThreeEuler,
   point2ThreeVector,
 } from "@/utils/math";
 import {
@@ -120,8 +120,7 @@ class BouncyBalloon extends PhysicsBase {
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.copy(point2ThreeVector(position));
-    // @ts-ignore
-    mesh.rotation.set(...point2Array(rotation));
+    mesh.rotation.copy(point2ThreeEuler(rotation));
     this.scene.add(mesh);
 
     // 在cannon.js中创建物理物体
@@ -129,8 +128,9 @@ class BouncyBalloon extends PhysicsBase {
       shape: new CANNON.Plane(),
       position: point2CannonVec(position),
       quaternion: new CANNON.Quaternion().setFromEuler(
-        // @ts-ignore
-        ...point2Array(rotation)
+        rotation.x,
+        rotation.y,
+        rotation.z
       ),
     });
     this.world.addBody(body);
