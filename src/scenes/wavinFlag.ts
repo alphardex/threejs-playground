@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import wavinFlagVertexShader from "@/shaders/wavinFlag/vertex.glsl";
-// @ts-ignore
 import wavinFlagFragmentShader from "@/shaders/wavinFlag/fragment.glsl";
 import { flagTextureUrl } from "@/consts/wavingFlag";
 import * as dat from "dat.gui";

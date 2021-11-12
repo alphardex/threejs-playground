@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import curlTubeVertexShader from "../shaders/curlTube/vertex.glsl";
-// @ts-ignore
 import curlTubeFragmentShader from "../shaders/curlTube/fragment.glsl";
 import { computeCurl } from "@/utils/noise";
 import { RaycastSelector } from "@/utils/raycast";

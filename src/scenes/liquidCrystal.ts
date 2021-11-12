@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import liquidCrystalVertexShader from "../shaders/liquidCrystal/vertex.glsl";
-// @ts-ignore
 import liquidCrystalFragmentShader from "../shaders/liquidCrystal/fragment.glsl";
 import ThinFilmFresnelMap from "@/libs/ThinFilmFresnelMap";
 

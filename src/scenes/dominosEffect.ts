@@ -5,8 +5,8 @@ import * as CANNON from "cannon-es";
 import { MeshPhysicsObject } from "@/utils/physics";
 import {
   Point,
-  point2Array,
   point2CannonVec,
+  point2ThreeEuler,
   point2ThreeVector,
 } from "@/utils/math";
 
@@ -70,8 +70,7 @@ class DominosEffect extends PhysicsBase {
     const mat = this.groundMat;
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.copy(point2ThreeVector(position));
-    // @ts-ignore
-    mesh.rotation.set(...point2Array(rotation));
+    mesh.rotation.copy(point2ThreeEuler(rotation));
     mesh.receiveShadow = true;
     this.scene.add(mesh);
 
@@ -79,8 +78,9 @@ class DominosEffect extends PhysicsBase {
       shape: new CANNON.Plane(),
       position: point2CannonVec(position),
       quaternion: new CANNON.Quaternion().setFromEuler(
-        // @ts-ignore
-        ...point2Array(rotation)
+        rotation.x,
+        rotation.y,
+        rotation.z
       ),
     });
     this.world.addBody(body);

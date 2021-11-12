@@ -2,17 +2,11 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import gridIcosahedronShapeVertexShader from "../shaders/gridIcosahedron/shape/vertex.glsl";
-// @ts-ignore
 import gridIcosahedronShapeFragmentShader from "../shaders/gridIcosahedron/shape/fragment.glsl";
-// @ts-ignore
 import gridIcosahedronEdgeVertexShader from "../shaders/gridIcosahedron/edge/vertex.glsl";
-// @ts-ignore
 import gridIcosahedronEdgeFragmentShader from "../shaders/gridIcosahedron/edge/fragment.glsl";
-// @ts-ignore
 import gridIcosahedronPostprocessingVertexShader from "../shaders/gridIcosahedron/postprocessing/vertex.glsl";
-// @ts-ignore
 import gridIcosahedronPostprocessingFragmentShader from "../shaders/gridIcosahedron/postprocessing/fragment.glsl";
 import { gridIcosahedronTextureUrl } from "@/consts/gridIcosahedron";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";

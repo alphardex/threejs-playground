@@ -1,33 +1,20 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-// @ts-ignore
 import loadFont from "load-bmfont";
-// @ts-ignore
 import createGeometry from "three-bmfont-text";
-// @ts-ignore
 import MSDFShader from "three-bmfont-text/shaders/msdf";
 import { Base } from "@/commons/base";
 import { fontAtlas, fontFile } from "@/consts/kineticText";
-// @ts-ignore
 import kineticTextTorusKnotVertexShader from "../shaders/kineticText/torusKnot/vertex.glsl";
-// @ts-ignore
 import kineticTextTorusKnotFragmentShader from "../shaders/kineticText/torusKnot/fragment.glsl";
-// @ts-ignore
 import kineticTextSphereVertexShader from "../shaders/kineticText/sphere/vertex.glsl";
-// @ts-ignore
 import kineticTextSphereFragmentShader from "../shaders/kineticText/sphere/fragment.glsl";
-// @ts-ignore
 import kineticTextPlaneVertexShader from "../shaders/kineticText/plane/vertex.glsl";
-// @ts-ignore
 import kineticTextPlaneFragmentShader from "../shaders/kineticText/plane/fragment.glsl";
-// @ts-ignore
 import kineticTextTorusVertexShader from "../shaders/kineticText/torus/vertex.glsl";
-// @ts-ignore
 import kineticTextTorusFragmentShader from "../shaders/kineticText/torus/fragment.glsl";
-// @ts-ignore
 import kineticTextCylinderVertexShader from "../shaders/kineticText/cylinder/vertex.glsl";
-// @ts-ignore
 import kineticTextCylinderFragmentShader from "../shaders/kineticText/cylinder/fragment.glsl";
 
 interface Params {

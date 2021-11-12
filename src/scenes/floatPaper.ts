@@ -5,13 +5,9 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import floatPaperMainVertexShader from "../shaders/floatPaper/main/vertex.glsl";
-// @ts-ignore
 import floatPaperMainFragmentShader from "../shaders/floatPaper/main/fragment.glsl";
-// @ts-ignore
 import floatPaperPostprocessingVertexShader from "../shaders/floatPaper/postprocessing/vertex.glsl";
-// @ts-ignore
 import floatPaperPostprocessingFragmentShader from "../shaders/floatPaper/postprocessing/fragment.glsl";
 
 class FloatPaper extends Base {

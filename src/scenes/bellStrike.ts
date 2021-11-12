@@ -244,13 +244,11 @@ class BellStrike extends PhysicsBase {
     const texture = loader.load(bellTextureUrl);
     const model = await loadModel(bellModelUrl);
     const mesh = model.scene.children[0].parent!.children[3];
-    mesh.traverse((obj) => {
-      // @ts-ignore
+    mesh.traverse((obj: THREE.Mesh) => {
       if (obj.material) {
-        // @ts-ignore
-        obj.material.map = texture;
-        // @ts-ignore
-        obj.material.color = new THREE.Color("#988259");
+        const mat = obj.material as THREE.MeshBasicMaterial;
+        mat.map = texture;
+        mat.color = new THREE.Color("#988259");
       }
     });
     mesh.scale.set(0.001, 0.001, 0.001);

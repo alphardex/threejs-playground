@@ -3,9 +3,7 @@ import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
 import { faceModelUrl } from "@/consts/lineWave";
-// @ts-ignore
 import lineWaveVertexShader from "../shaders/lineWave/vertex.glsl";
-// @ts-ignore
 import lineWaveFragmentShader from "../shaders/lineWave/fragment.glsl";
 import { loadModel } from "@/utils/loader";
 

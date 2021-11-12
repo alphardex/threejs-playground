@@ -1,9 +1,7 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import rayMarchingVertexShader from "../shaders/rayMarching/vertex.glsl";
-// @ts-ignore
 import rayMarchingFragmentShader from "../shaders/rayMarching/fragment.glsl";
 import { matcapTextureUrl } from "@/consts/rayMarching";
 

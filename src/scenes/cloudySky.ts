@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import cloudySkyVertexShader from "../shaders/cloudySky/vertex.glsl";
-// @ts-ignore
 import cloudySkyFragmentShader from "../shaders/cloudySky/fragment.glsl";
 
 class CloudySky extends Base {

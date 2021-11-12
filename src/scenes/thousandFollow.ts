@@ -1,9 +1,7 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import thousandFollowVertexShader from "../shaders/thousandFollow/vertex.glsl";
-// @ts-ignore
 import thousandFollowFragmentShader from "../shaders/thousandFollow/fragment.glsl";
 import {
   thousandFollowFontConfig,

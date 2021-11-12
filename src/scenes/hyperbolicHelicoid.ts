@@ -3,9 +3,7 @@ import { ParametricGeometry } from "three/examples/jsm/geometries/ParametricGeom
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import hyperbolicHelicoidColorFragmentShader from "../shaders/hyperbolicHelicoid/color/fragment.glsl";
-// @ts-ignore
 import hyperbolicHelicoidFunctionFragmentShader from "../shaders/hyperbolicHelicoid/function/fragment.glsl";
 import { hyperbolicHelicoidFunction } from "@/utils/parametric";
 import {

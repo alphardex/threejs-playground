@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import waveClothVertexShader from "../shaders/waveCloth/vertex.glsl";
-// @ts-ignore
 import waveClothFragmentShader from "../shaders/waveCloth/fragment.glsl";
 
 class WaveCloth extends Base {

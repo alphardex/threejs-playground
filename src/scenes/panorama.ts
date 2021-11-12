@@ -1,5 +1,7 @@
 import "pannellum";
 
+let pannellum: any;
+
 class Panorama {
   config: Record<string, any>;
   viewer: any;
@@ -9,7 +11,6 @@ class Panorama {
   }
   init() {
     const { config } = this;
-    // @ts-ignore
     const viewer = pannellum.viewer(config.id, config.data);
     this.viewer = viewer;
   }

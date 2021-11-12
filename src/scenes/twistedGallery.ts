@@ -2,16 +2,11 @@ import * as THREE from "three";
 import ky from "kyouka";
 import { Maku, MakuGroup, getScreenFov } from "maku.js";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import twistedGalleryMainVertexShader from "../shaders/twistedGallery/main/vertex.glsl";
-// @ts-ignore
 import twistedGalleryMainFragmentShader from "../shaders/twistedGallery/main/fragment.glsl";
-// @ts-ignore
 import twistedGalleryPostprocessingVertexShader from "../shaders/twistedGallery/postprocessing/vertex.glsl";
-// @ts-ignore
 import twistedGalleryPostprocessingFragmentShader from "../shaders/twistedGallery/postprocessing/fragment.glsl";
 import { preloadImages } from "@/utils/dom";
-// @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
 import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";

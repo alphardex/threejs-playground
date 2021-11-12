@@ -1,9 +1,7 @@
 import * as THREE from "three";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import twistedColorfulSphereVertexShader from "../shaders/twistedColorfulSphere/vertex.glsl";
-// @ts-ignore
 import twistedColorfulSphereFragmentShader from "../shaders/twistedColorfulSphere/fragment.glsl";
 
 class TwistedColorfulSphere extends Base {

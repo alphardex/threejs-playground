@@ -3,9 +3,7 @@ import ky from "kyouka";
 import gsap from "gsap";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import rayTracingVertexShader from "../shaders/rayTracing/vertex.glsl";
-// @ts-ignore
 import rayTracingFragmentShader from "../shaders/rayTracing/fragment.glsl";
 
 class RayTracing extends Base {

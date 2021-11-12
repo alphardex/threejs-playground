@@ -2,17 +2,11 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import sunNoiseVertexShader from "../shaders/sun/noise/vertex.glsl";
-// @ts-ignore
 import sunNoiseFragmentShader from "../shaders/sun/noise/fragment.glsl";
-// @ts-ignore
 import sunShapeVertexShader from "../shaders/sun/shape/vertex.glsl";
-// @ts-ignore
 import sunShapeFragmentShader from "../shaders/sun/shape/fragment.glsl";
-// @ts-ignore
 import sunRingVertexShader from "../shaders/sun/ring/vertex.glsl";
-// @ts-ignore
 import sunRingFragmentShader from "../shaders/sun/ring/fragment.glsl";
 
 class Sun extends Base {

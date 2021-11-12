@@ -7,13 +7,9 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import unrollImagesMainVertexShader from "../shaders/unrollImages/main/vertex.glsl";
-// @ts-ignore
 import unrollImagesMainFragmentShader from "../shaders/unrollImages/main/fragment.glsl";
-// @ts-ignore
 import unrollImagesPostprocessingVertexShader from "../shaders/unrollImages/postprocessing/vertex.glsl";
-// @ts-ignore
 import unrollImagesPostprocessingFragmentShader from "../shaders/unrollImages/postprocessing/fragment.glsl";
 
 class UnrollImages extends Base {

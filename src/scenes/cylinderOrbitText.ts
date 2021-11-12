@@ -1,17 +1,12 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-// @ts-ignore
 import loadFont from "load-bmfont";
-// @ts-ignore
 import createGeometry from "three-bmfont-text";
-// @ts-ignore
 import MSDFShader from "three-bmfont-text/shaders/msdf";
 import { fontAtlas, fontFile } from "@/consts/cylinderOrbitText";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import cylinderOrbitTextVertexShader from "../shaders/cylinderOrbitText/vertex.glsl";
-// @ts-ignore
 import cylinderOrbitTextFragmentShader from "../shaders/cylinderOrbitText/fragment.glsl";
 
 class CylinderOrbitText extends Base {

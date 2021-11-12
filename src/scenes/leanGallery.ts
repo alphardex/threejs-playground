@@ -6,13 +6,9 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import leanGalleryMainVertexShader from "../shaders/leanGallery/main/vertex.glsl";
-// @ts-ignore
 import leanGalleryMainFragmentShader from "../shaders/leanGallery/main/fragment.glsl";
-// @ts-ignore
 import leanGalleryPostprocessingVertexShader from "../shaders/leanGallery/postprocessing/vertex.glsl";
-// @ts-ignore
 import leanGalleryPostprocessingFragmentShader from "../shaders/leanGallery/postprocessing/fragment.glsl";
 
 class LeanGallery extends Base {

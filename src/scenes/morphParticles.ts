@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import morphParticlesVertexShader from "../shaders/morphParticles/vertex.glsl";
-// @ts-ignore
 import morphParticlesFragmentShader from "../shaders/morphParticles/fragment.glsl";
 import gsap from "gsap";
 import { sampleParticlesPositionFromMesh } from "@/utils/misc";

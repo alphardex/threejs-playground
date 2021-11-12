@@ -8,13 +8,9 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import pixelRiverMainVertexShader from "../shaders/pixelRiver/main/vertex.glsl";
-// @ts-ignore
 import pixelRiverMainFragmentShader from "../shaders/pixelRiver/main/fragment.glsl";
-// @ts-ignore
 import pixelRiverPostprocessingVertexShader from "../shaders/pixelRiver/postprocessing/vertex.glsl";
-// @ts-ignore
 import pixelRiverPostprocessingFragmentShader from "../shaders/pixelRiver/postprocessing/fragment.glsl";
 
 class PixelRiver extends Base {

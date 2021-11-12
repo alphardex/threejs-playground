@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import rayMarchingFireVertexShader from "../shaders/rayMarchingFire/vertex.glsl";
-// @ts-ignore
 import rayMarchingFireFragmentShader from "../shaders/rayMarchingFire/fragment.glsl";
 
 class RayMarchingFire extends Base {

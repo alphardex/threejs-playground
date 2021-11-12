@@ -1,12 +1,9 @@
 import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
-// @ts-ignore
 import colors from "nice-color-palettes";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import spikyBlobVertexShader from "../shaders/spikyBlob/vertex.glsl";
-// @ts-ignore
 import spikyBlobFragmentShader from "../shaders/spikyBlob/fragment.glsl";
 
 class SpikyBlob extends Base {

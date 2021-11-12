@@ -6,11 +6,8 @@ import {
   GPUComputationRenderer,
   Variable,
 } from "three/examples/jsm/misc/GPUComputationRenderer.js";
-// @ts-ignore
 import FBOParticlesBasicVertexShader from "../shaders/FBOParticles/basic/vertex.glsl";
-// @ts-ignore
 import FBOParticlesBasicFragmentShader from "../shaders/FBOParticles/basic/fragment.glsl";
-// @ts-ignore
 import FBOParticlesGPUFragmentShader from "../shaders/FBOParticles/gpu/fragment.glsl";
 import { faceModelUrl } from "@/consts/FBOParticles";
 import { loadModel } from "@/utils/loader";

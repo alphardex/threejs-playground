@@ -5,9 +5,7 @@ import { Base } from "@/commons/base";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-// @ts-ignore
 import particleShapeVertexShader from "../shaders/particleShape/vertex.glsl";
-// @ts-ignore
 import particleShapeFragmentShader from "../shaders/particleShape/fragment.glsl";
 
 class ParticleShape extends Base {

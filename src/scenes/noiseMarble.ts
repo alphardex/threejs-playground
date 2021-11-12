@@ -2,15 +2,10 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import noiseMarbleVertexTopShader from "../shaders/noiseMarble/vertexTop.glsl";
-// @ts-ignore
 import noiseMarbleVertexMainShader from "../shaders/noiseMarble/vertexMain.glsl";
-// @ts-ignore
 import noiseMarbleFragmentTopShader from "../shaders/noiseMarble/fragmentTop.glsl";
-// @ts-ignore
 import noiseMarbleFragmentMainShader from "../shaders/noiseMarble/fragmentMain.glsl";
-// @ts-ignore
 import noiseMarbleFragmentColorShader from "../shaders/noiseMarble/fragmentColor.glsl";
 import { displacementMapUrl, hdrUrl, heightMapUrl } from "@/consts/noiseMarble";
 import { loadHDR } from "@/utils/loader";

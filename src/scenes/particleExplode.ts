@@ -3,9 +3,7 @@ import { Maku, getScreenFov } from "maku.js";
 import gsap from "gsap";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import particleExplodeVertexShader from "../shaders/particleExplode/vertex.glsl";
-// @ts-ignore
 import particleExplodeFragmentShader from "../shaders/particleExplode/fragment.glsl";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";

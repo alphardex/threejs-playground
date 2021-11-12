@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import shapeTransitionVertexShader from "../shaders/shapeTransition/vertex.glsl";
-// @ts-ignore
 import shapeTransitionFragmentShader from "../shaders/shapeTransition/fragment.glsl";
 import { array2Point, TAU } from "@/utils/math";
 

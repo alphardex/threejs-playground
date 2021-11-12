@@ -26,8 +26,6 @@ class LetterObject extends MeshPhysicsObject {
 }
 
 class Menu extends PhysicsBase {
-  // @ts-ignore
-  meshPhysicsObjs!: LetterObject[];
   menuItems!: Element[];
   margin!: number;
   offset!: number;
@@ -188,7 +186,7 @@ class Menu extends PhysicsBase {
         if (!nextLetterIdx) {
           continue;
         }
-        const letterObj = this.meshPhysicsObjs[letterIdx];
+        const letterObj = this.meshPhysicsObjs[letterIdx] as LetterObject;
         const nextLetterObj = this.meshPhysicsObjs[nextLetterIdx];
         // 支点A为第二个字母的原点
         const c = new CANNON.ConeTwistConstraint(

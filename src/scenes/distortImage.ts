@@ -3,32 +3,19 @@ import * as dat from "dat.gui";
 import ky from "kyouka";
 import { Maku, MakuGroup, getScreenFov } from "maku.js";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import distortImageDefaultVertexShader from "../shaders/distortImage/postprocessing/default/vertex.glsl";
-// @ts-ignore
 import distortImageDefaultFragmentShader from "../shaders/distortImage/postprocessing/default/fragment.glsl";
-// @ts-ignore
 import distortImageMouseWaveVertexShader from "../shaders/distortImage/main/mousewave/vertex.glsl";
-// @ts-ignore
 import distortImageMouseWaveFragmentShader from "../shaders/distortImage/main/mousewave/fragment.glsl";
-// @ts-ignore
 import distortImageScrollVertexShader from "../shaders/distortImage/postprocessing/scroll/vertex.glsl";
-// @ts-ignore
 import distortImageScrollFragmentShader from "../shaders/distortImage/postprocessing/scroll/fragment.glsl";
-// @ts-ignore
 import distortImageHoverWaveVertexShader from "../shaders/distortImage/main/hoverwave/vertex.glsl";
-// @ts-ignore
 import distortImageHoverWaveFragmentShader from "../shaders/distortImage/main/hoverwave/fragment.glsl";
-// @ts-ignore
 import distortImageNoiseVertexShader from "../shaders/distortImage/postprocessing/noise/vertex.glsl";
-// @ts-ignore
 import distortImageNoiseFragmentShader from "../shaders/distortImage/postprocessing/noise/fragment.glsl";
-// @ts-ignore
 import distortImageTwistVertexShader from "../shaders/distortImage/main/twist/vertex.glsl";
-// @ts-ignore
 import distortImageTwistFragmentShader from "../shaders/distortImage/main/twist/fragment.glsl";
 import { preloadImages } from "@/utils/dom";
-// @ts-ignore
 import LocomotiveScroll from "locomotive-scroll";
 import gsap from "gsap";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";

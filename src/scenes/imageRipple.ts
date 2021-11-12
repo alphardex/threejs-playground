@@ -6,13 +6,9 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { preloadImages } from "@/utils/dom";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import imageRippleMainVertexShader from "../shaders/imageRipple/main/vertex.glsl";
-// @ts-ignore
 import imageRippleMainFragmentShader from "../shaders/imageRipple/main/fragment.glsl";
-// @ts-ignore
 import imageRipplePostprocessingVertexShader from "../shaders/imageRipple/postprocessing/vertex.glsl";
-// @ts-ignore
 import imageRipplePostprocessingFragmentShader from "../shaders/imageRipple/postprocessing/fragment.glsl";
 
 class ImageRipple extends Base {

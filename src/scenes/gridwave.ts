@@ -92,9 +92,11 @@ class GridWave extends Base {
           pos[1] = Math.sin(elapsedTime * speed + (xValue + zValue) / rate);
         }
       }
-      // @ts-ignore
-      geo!.attributes.position.array = new Float32Array(positions.flat(2));
-      geo!.attributes.position.needsUpdate = true;
+      geo.setAttribute(
+        "position",
+        new THREE.BufferAttribute(new Float32Array(positions.flat(2)), 3)
+      );
+      geo.attributes.position.needsUpdate = true;
     }
   }
   // 创建调试面板

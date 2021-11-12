@@ -2,11 +2,8 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import floatBubblesNoiseVertexShader from "../shaders/floatBubbles/vertex/noise.glsl";
-// @ts-ignore
 import floatBubblesUniformsVertexShader from "../shaders/floatBubbles/vertex/uniforms.glsl";
-// @ts-ignore
 import floatBubblesVertexShader from "../shaders/floatBubbles/vertex/vertex.glsl";
 import { bumpMapUrl, cubeMapUrls } from "@/consts/floatBubbles";
 

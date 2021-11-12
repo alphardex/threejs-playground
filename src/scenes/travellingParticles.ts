@@ -2,9 +2,7 @@ import * as THREE from "three";
 import ky from "kyouka";
 import * as dat from "dat.gui";
 import { Base } from "@/commons/base";
-// @ts-ignore
 import travellingParticlesVertexShader from "../shaders/travellingParticles/vertex.glsl";
-// @ts-ignore
 import travellingParticlesFragmentShader from "../shaders/travellingParticles/fragment.glsl";
 import { getPointsInPath } from "@/utils/dom";
 
