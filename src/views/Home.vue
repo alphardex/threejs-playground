@@ -207,6 +207,11 @@
       <li>
         <router-link :to="{ name: 'ImageCloth' }"> ImageCloth </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'TexProjection' }">
+          TexProjection
+        </router-link>
+      </li>
     </ul>
     <teleport to="#dialogs">
       <div

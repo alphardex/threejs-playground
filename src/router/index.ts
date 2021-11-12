@@ -60,6 +60,7 @@ import DNAParticle from "../views/DNAParticle.vue";
 import GooeyImage from "../views/GooeyImage.vue";
 import TransmissionMaterial from "../views/TransmissionMaterial.vue";
 import ImageCloth from "../views/ImageCloth.vue";
+import TexProjection from "../views/TexProjection.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -361,6 +362,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/image-cloth",
     name: "ImageCloth",
     component: ImageCloth,
+  },
+  {
+    path: "/tex-projection",
+    name: "TexProjection",
+    component: TexProjection,
   },
   {
     path: "/:pathMatch(.*)*",
