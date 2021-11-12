@@ -47,15 +47,15 @@ class TransmissionMaterial extends Base {
       // 1. glass
       // roughness: 0,
       // transmission: 1,
-      //       // thickness: 0.5, // refraction
+      // // thickness: 0.5, // refraction
       // 2. frosted glass
       // roughness: 0.7,
       // transmission: 1,
-      //       // thickness: 1,
+      // // thickness: 1,
       // 3. glass with envmap
       // roughness: 0.07,
       // transmission: 1,
-      //       // thickness: 1.5,
+      // // thickness: 1.5,
       // envMap: this.envmap,
       // envMapIntensity: 1.5,
       // 4. glass with normalmap and clearcoat
