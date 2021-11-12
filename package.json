@@ -48,6 +48,7 @@
     "sweetalert2": "^10.3.6",
     "three": "^0.133.1",
     "three-bmfont-text": "^3.0.1",
+    "three-projected-material": "^2.0.5",
     "three.modifiers": "^2.5.7",
     "vconsole": "^3.4.0",
     "vue": "^3.0.2",
