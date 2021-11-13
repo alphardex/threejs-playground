@@ -82,9 +82,12 @@ class ImageCloth extends PhysicsBase {
     const { images, scene, shaderMaterial, world } = this;
     const makus = images.map(
       (image) =>
-        new ClothMaku(image, shaderMaterial, scene, world, "mesh", "scale", {
-          width: 8,
-          height: 8,
+        new ClothMaku(image, shaderMaterial, scene, world, {
+          meshSizeType: "scale",
+          segments: {
+            width: 8,
+            height: 8,
+          },
         })
     );
     this.makuGroup.addMultiple(makus);

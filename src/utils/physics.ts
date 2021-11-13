@@ -2,7 +2,12 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import gsap from "gsap";
 import { Maku } from "maku.js";
-import { HTMLIVCElement, MeshSizeType, MeshType } from "maku.js/types/types";
+import {
+  HTMLIVCElement,
+  MakuConfig,
+  MeshSizeType,
+  MeshType,
+} from "maku.js/types/types";
 import SimplexNoise from "simplex-noise";
 import { MouseTracker } from "./dom";
 
@@ -24,30 +29,18 @@ class MeshPhysicsObject {
   }
 }
 
-interface Segments {
-  width: number;
-  height: number;
-}
-
 class ClothMaku extends Maku {
   world: CANNON.World;
   stitches: CANNON.Body[];
-  segments: Segments;
   constructor(
     el: HTMLIVCElement,
     material: THREE.ShaderMaterial,
     scene: THREE.Scene,
     world: CANNON.World,
-    meshType: MeshType = "mesh",
-    meshSizeType: MeshSizeType = "size",
-    segments = {
-      width: 64,
-      height: 64,
-    }
+    config: MakuConfig
   ) {
-    super(el, material, scene, meshType, meshSizeType, segments);
+    super(el, material, scene, config);
     this.world = world;
-    this.segments = segments;
     this.createStitches();
     this.connectStitches();
   }

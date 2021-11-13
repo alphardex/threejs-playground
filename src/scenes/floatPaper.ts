@@ -78,7 +78,10 @@ class FloatPaper extends Base {
     this.makuGroup.clear();
     const { images, scene, floatPaperMaterial } = this;
     const makus = images.map(
-      (image) => new Maku(image, floatPaperMaterial, scene, "mesh", "scale")
+      (image) =>
+        new Maku(image, floatPaperMaterial, scene, {
+          meshSizeType: "scale",
+        })
     );
     this.makuGroup.addMultiple(makus);
   }

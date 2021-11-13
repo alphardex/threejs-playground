@@ -93,7 +93,10 @@ class UnrollImages extends Base {
     this.makuGroup.clear();
     const { images, scene, unrollImagesMaterial } = this;
     const makus = images.map(
-      (image) => new Maku(image, unrollImagesMaterial, scene, "mesh", "scale")
+      (image) =>
+        new Maku(image, unrollImagesMaterial, scene, {
+          meshSizeType: "scale",
+        })
     );
     this.makuGroup.addMultiple(makus);
   }

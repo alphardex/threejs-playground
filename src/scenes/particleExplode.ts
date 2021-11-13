@@ -83,17 +83,13 @@ class ParticleExplode extends Base {
   // 创建点
   createMaku() {
     const { image, particleExplodeMaterial, scene } = this;
-    const maku = new Maku(
-      image,
-      particleExplodeMaterial,
-      scene,
-      "points",
-      "size",
-      {
+    const maku = new Maku(image, particleExplodeMaterial, scene, {
+      meshType: "points",
+      segments: {
         width: 128,
         height: 128,
-      }
-    );
+      },
+    });
     maku.setPosition();
     this.maku = maku;
   }
