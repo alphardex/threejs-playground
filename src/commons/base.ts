@@ -211,10 +211,14 @@ class PhysicsBase extends Base {
   world: CANNON.World;
   gravity: CANNON.Vec3;
   meshPhysicsObjs: MeshPhysicsObject[];
+  physicsClock: THREE.Clock;
+  oldElapsedTime: number;
   constructor(sel: string, debug = false) {
     super(sel, debug);
     this.gravity = new CANNON.Vec3(0, -9.82, 0);
     this.meshPhysicsObjs = [];
+    this.physicsClock = new THREE.Clock();
+    this.oldElapsedTime = 0;
   }
   // 创建物理世界
   createWorld() {
@@ -237,7 +241,7 @@ class PhysicsBase extends Base {
   // 动画
   update() {
     this.sync();
-    this.world.step(1 / 60);
+    this.step();
   }
   // 同步物理和渲染
   sync() {
@@ -250,6 +254,13 @@ class PhysicsBase extends Base {
         mesh.quaternion.copy(body.quaternion as any);
       }
     });
+  }
+  // 帧
+  step() {
+    const elapsedTime = this.physicsClock.getElapsedTime();
+    const deltaTime = elapsedTime - this.oldElapsedTime;
+    this.world.step(1 / 60, deltaTime);
+    this.oldElapsedTime = elapsedTime;
   }
 }
 
