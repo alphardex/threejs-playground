@@ -59,16 +59,16 @@ class TransmissionMaterial extends Base {
       // envMap: this.envmap,
       // envMapIntensity: 1.5,
       // 4. glass with normalmap and clearcoat
+      envMap: this.envmap,
+      envMapIntensity: 1.5,
+      normalMap,
+      clearcoatNormalMap: normalMap,
       roughness: 0.6,
       transmission: 1,
       // @ts-ignore
       thickness: 1.2, // refraction
-      envMap: this.envmap,
-      envMapIntensity: 1.5,
-      normalMap,
       clearcoat: 1,
       clearcoatRoughness: 0.1,
-      clearcoatNormalMap: normalMap,
       clearcoatNormalScale: new THREE.Vector2(0.3, 0.3),
     });
     this.physicalMaterial = material;
